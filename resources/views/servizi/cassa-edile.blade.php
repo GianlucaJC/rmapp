@@ -25,7 +25,7 @@
                                                 <i class="bi bi-info-circle"></i> Info
                                             </a>
                                             <a href="#" class="btn btn-sm btn-primary" title="Richiedi Servizio">
-                                                <i class="bi bi-pencil-square"></i> Richiedi
+                                                <i class="bi bi-pencil-square"></i> Guida alla prestazione
                                             </a>
                                         </div>
                                     </div>
