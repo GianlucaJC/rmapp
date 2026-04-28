@@ -4,10 +4,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- Colore della barra degli indirizzi su mobile -->
+    <meta name="theme-color" content="#cc0000">
+
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'FILLEA CGIL') }}</title>
+    <title>@yield('title', config('app.name', 'FILLEA CGIL'))</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%23c8102e%22></circle><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2240%22 font-weight=%22bold%22 fill=%22white%22>CGIL</text></svg>">
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
