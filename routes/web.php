@@ -20,7 +20,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
+Auth::routes();
 
 // Rotta per la dashboard utente dopo il login.
 Route::get('/home', [HomeController::class, 'index'])->name('home');

@@ -19,6 +19,9 @@
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -203,29 +206,39 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Gestisce il click sul bottone 'Info' per girare la card
-            document.querySelectorAll('.btn-flip-info').forEach(button => {
-                button.addEventListener('click', function (e) {
-                    e.preventDefault(); // Evita che il link # si attivi
-                    e.stopPropagation(); // Ferma la propagazione dell'evento
-                    const flipCardInner = this.closest('.flip-card-inner');
-                    if (flipCardInner) {
-                        flipCardInner.classList.add('is-flipped');
-                    }
-                });
-            });
+            // Gestisce la modale per la guida alla prestazione
+            const serviceModalEl = document.getElementById('serviceModal');
+            if (serviceModalEl) {
+                const serviceModal = new bootstrap.Modal(serviceModalEl);
+                const modalTitle = document.getElementById('serviceModalLabel');
+                const modalBody = document.getElementById('serviceModalBody');
+                const modalProceedBtn = document.getElementById('modalProceedBtn');
 
-            // Gestisce il click sul bottone 'Torna' per rigirare la card
-            document.querySelectorAll('.btn-flip-back').forEach(button => {
-                button.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const flipCardInner = this.closest('.flip-card-inner');
-                    if (flipCardInner) {
-                        flipCardInner.classList.remove('is-flipped');
-                    }
+                document.querySelectorAll('.btn-show-guide').forEach(button => {
+                    button.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        modalTitle.innerHTML = this.dataset.serviceTitle;
+                        modalBody.innerHTML = this.dataset.serviceDescription; // Usa innerHTML per il contenuto HTML
+
+                        serviceModal.show();
+                    });
                 });
-            });
+
+                modalProceedBtn.addEventListener('click', function(e) {
+                    @guest
+                        e.preventDefault();
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Accesso Richiesto',
+                            html: `Per procedere con la richiesta del servizio è necessario effettuare il <a href="{{ route('login') }}">login</a>.`,
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#c8102e',
+                        });
+                    @endguest
+                });
+            }
         });
     </script>
 </body>
