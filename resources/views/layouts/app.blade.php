@@ -63,6 +63,38 @@
             color: #ffffff;
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
         }
+
+        /* Stili per l'effetto flip card */
+        .flip-card {
+            background-color: transparent;
+            perspective: 1000px; /* Effetto 3D */
+            min-height: 170px; /* Altezza minima per coerenza */
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        /* Applica la rotazione quando la classe .is-flipped è presente */
+        .flip-card-inner.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+        }
+
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
     </style>
 </head>
 <body>
@@ -168,6 +200,34 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Gestisce il click sul bottone 'Info' per girare la card
+            document.querySelectorAll('.btn-flip-info').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault(); // Evita che il link # si attivi
+                    e.stopPropagation(); // Ferma la propagazione dell'evento
+                    const flipCardInner = this.closest('.flip-card-inner');
+                    if (flipCardInner) {
+                        flipCardInner.classList.add('is-flipped');
+                    }
+                });
+            });
+
+            // Gestisce il click sul bottone 'Torna' per rigirare la card
+            document.querySelectorAll('.btn-flip-back').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const flipCardInner = this.closest('.flip-card-inner');
+                    if (flipCardInner) {
+                        flipCardInner.classList.remove('is-flipped');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
 
