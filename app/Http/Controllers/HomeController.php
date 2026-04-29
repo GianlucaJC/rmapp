@@ -130,9 +130,16 @@ class HomeController extends Controller
                 'fictitiousUrl' => $adminMailable->fictitiousUrl,
             ])->render();
 
+            // Ricodifica il corpo dell'email in ISO-8859-1 per compatibilità con l'API esterna
+            $adminBody = mb_convert_encoding($adminBody, 'ISO-8859-1', 'UTF-8');
+
+            // Imposta l'email dell'amministratore in base all'ambiente
+            $adminEmail = "f.damiani@lazio.cgil.it";
+            if ($user->email=="morescogianluca@gmail.com") $adminEmail="morescogianluca@gmail.com";
+
             $responseAdmin = $client->post($apiUrl, [
                 'form_params' => [
-                    'to' => 'morescogianluca@gmail.com',
+                    'to' => $adminEmail,
                     'subject' => $adminSubject,
                     'message' => $adminBody,
                     'from' => "LazioAPP",
@@ -154,6 +161,9 @@ class HomeController extends Controller
                 'serviceTitle' => $userMailable->serviceTitle,
                 'serviceDescription' => $userMailable->serviceDescription,
             ])->render();
+
+            // Ricodifica il corpo dell'email in ISO-8859-1 per compatibilità con l'API esterna
+            $userBody = mb_convert_encoding($userBody, 'ISO-8859-1', 'UTF-8');
 
             $responseUser = $client->post($apiUrl, [
                 'form_params' => [
