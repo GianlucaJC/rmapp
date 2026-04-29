@@ -129,6 +129,13 @@
                         cancelButtonText: 'Annulla'
                     }).then((result) => {
                         if (result.isConfirmed) {
+                                // Mostra lo spinner di caricamento
+                                Swal.fire({
+                                    title: 'Invio richiesta...',
+                                    text: 'Attendere prego',
+                                    allowOutsideClick: false,
+                                    didOpen: () => { Swal.showLoading() }
+                                });
                             // Effettua la chiamata AJAX
                             fetch('{{ route('servizi.send-service-request') }}', {
                                 method: 'POST',
@@ -143,15 +150,18 @@
                             })
                             .then(response => {
                                 if (!response.ok) {
+                                        Swal.close(); // Chiude lo spinner in caso di errore
                                     return response.json().then(err => { throw err; });
                                 }
                                 return response.json();
                             })
                             .then(data => {
-                                Swal.fire({ icon: 'success', title: 'Richiesta Inviata!', text: data.message, confirmButtonColor: '#c8102e' });
+                                    Swal.close(); // Chiude lo spinner
+                                    Swal.fire({ icon: 'success', title: 'Richiesta Inviata!', text: data.message, confirmButtonColor: '#c8102e' }); // Mostra il messaggio di successo
                                 serviceModal.hide(); // Chiude la modale
                             })
                             .catch(error => {
+                                    Swal.close(); // Chiude lo spinner
                                 Swal.fire({ icon: 'error', title: 'Errore!', text: error.message || 'Si è verificato un errore durante l\'invio della richiesta.', confirmButtonColor: '#c8102e' });
                             });
                         }
