@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use App\Mail\ServiceRequestAdminMail;
+use App\Mail\ServiceRequestUserMail;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -10,7 +14,7 @@ class HomeController extends Controller
     // Helper function to clean HTML for description_completa
     private function cleanHtmlDescription($html) {
         $html = preg_replace('/<a[^>]*>(.*?)<\/a>/is', '$1', $html); // Remove <a> tags but keep content
-        $html = preg_replace('/style="[^"]*"/i', '', $html); // Remove style attributes
+        $html = preg_replace('/style="[^"]*"/i', '', $html);        // Remove style attributes
         $allowed_tags = '<b><strong><em><i><u><ul><li><p><h4><br>';
         return strip_tags($html, $allowed_tags);
     }
@@ -87,5 +91,99 @@ class HomeController extends Controller
         ];
 
         return view('servizi.edilcassa', compact('prestazioniEdilcassa'));
+    }
+
+    /**
+     * Gestisce l'invio della richiesta di servizio tramite email.
+     */
+    public function sendServiceRequest(Request $request)
+    {
+        $request->validate([
+            'serviceTitle' => 'required|string',
+            'serviceDescription' => 'required|string',
+        ]);
+
+        $serviceTitle = $request->input('serviceTitle');
+        $serviceDescription = $request->input('serviceDescription');
+        $user = auth()->user(); // Ottiene l'utente autenticato
+
+        $apiUrl = 'https://www.filleaoffice.it:8013/auth_mail/api_send_mail.php';
+
+        
+
+
+        $client = new Client();
+
+        // Genera un URL fittizio per l'amministratore per recuperare la pratica
+        // In un'applicazione reale, questo punterebbe a un pannello di amministrazione.
+        $fictitiousUrl = url('/admin/service-requests?service=' . urlencode($serviceTitle) . '&user_id=' . $user->id);
+
+        try {
+            // Prepara e invia email all'amministratore
+            $adminMailable = new ServiceRequestAdminMail($user, $serviceTitle, $serviceDescription, $fictitiousUrl);
+            $adminSubject = $adminMailable->envelope()->subject;
+            // Renderizza la vista Blade in una stringa HTML
+            $adminBody = view($adminMailable->content()->view, [
+                'user' => $adminMailable->user,
+                'serviceTitle' => $adminMailable->serviceTitle,
+                'serviceDescription' => $adminMailable->serviceDescription,
+                'fictitiousUrl' => $adminMailable->fictitiousUrl,
+            ])->render();
+
+            $responseAdmin = $client->post($apiUrl, [
+                'form_params' => [
+                    'to' => 'morescogianluca@gmail.com',
+                    'subject' => $adminSubject,
+                    'message' => $adminBody,
+                    'from' => "LazioAPP",
+                ]
+            ]);
+
+            $resultAdmin = json_decode($responseAdmin->getBody()->getContents(), true);
+
+            if (!isset($resultAdmin['status']) || $resultAdmin['status'] !== 'success') {
+                throw new \Exception('Errore nell\'invio dell\'email all\'amministratore: ' . ($resultAdmin['message'] ?? 'Errore sconosciuto dall\'API.'));
+            }
+
+            // Prepara e invia email di conferma all'utente
+            $userMailable = new ServiceRequestUserMail($user, $serviceTitle, $serviceDescription);
+            $userSubject = $userMailable->envelope()->subject;
+            // Renderizza la vista Blade in una stringa HTML
+            $userBody = view($userMailable->content()->view, [
+                'user' => $userMailable->user,
+                'serviceTitle' => $userMailable->serviceTitle,
+                'serviceDescription' => $userMailable->serviceDescription,
+            ])->render();
+
+            $responseUser = $client->post($apiUrl, [
+                'form_params' => [
+                    'to' => $user->email,
+                    'subject' => $userSubject,
+                    'message' => $userBody,
+                    'from' => "LazioAPP",
+                ]
+            ]);
+
+            $resultUser = json_decode($responseUser->getBody()->getContents(), true);
+
+            if (!isset($resultUser['status']) || $resultUser['status'] !== 'success') {
+                throw new \Exception('Errore nell\'invio dell\'email di conferma all\'utente: ' . ($resultUser['message'] ?? 'Errore sconosciuto dall\'API.'));
+            }
+
+            return response()->json(['message' => 'Richiesta inviata con successo! Riceverai una mail di conferma.']);
+
+        } catch (RequestException $e) {
+            // Errore nella richiesta HTTP (es. problema di rete, 4xx/5xx dall'API)
+            $errorMessage = $e->getMessage();
+            if ($e->hasResponse()) {
+                $errorMessage .= ' - Risposta API: ' . $e->getResponse()->getBody()->getContents();
+            }
+            \Log::error('Errore Guzzle nell\'invio email tramite API: ' . $errorMessage);
+            return response()->json(['message' => 'Si è verificato un errore di comunicazione con il servizio di invio email.', 'error' => $errorMessage], 500);
+        } catch (\Exception $e) {
+            // Errore generico (es. l'API ha restituito uno stato di errore)
+            \Log::error('Errore logico nell\'invio email tramite API: ' . $e->getMessage());
+            return response()->json(['message' => 'Si è verificato un errore durante l\'elaborazione della richiesta di invio email.', 'error' => $e->getMessage()], 500);
+        }
     }
 }

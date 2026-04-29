@@ -204,43 +204,7 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Gestisce la modale per la guida alla prestazione
-            const serviceModalEl = document.getElementById('serviceModal');
-            if (serviceModalEl) {
-                const serviceModal = new bootstrap.Modal(serviceModalEl);
-                const modalTitle = document.getElementById('serviceModalLabel');
-                const modalBody = document.getElementById('serviceModalBody');
-                const modalProceedBtn = document.getElementById('modalProceedBtn');
-
-                document.querySelectorAll('.btn-show-guide').forEach(button => {
-                    button.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        modalTitle.innerHTML = this.dataset.serviceTitle;
-                        modalBody.innerHTML = this.dataset.serviceDescription; // Usa innerHTML per il contenuto HTML
-
-                        serviceModal.show();
-                    });
-                });
-
-                modalProceedBtn.addEventListener('click', function(e) {
-                    @guest
-                        e.preventDefault();
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Accesso Richiesto',
-                            html: `Per procedere con la richiesta del servizio è necessario effettuare il <a href="{{ route('login') }}">login</a>.`,
-                            confirmButtonText: 'OK',
-                            confirmButtonColor: '#c8102e',
-                        });
-                    @endguest
-                });
-            }
-        });
-    </script>
+    @stack('scripts')
 </body>
 </html>
 

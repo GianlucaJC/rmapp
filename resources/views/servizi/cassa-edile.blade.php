@@ -59,8 +59,10 @@
                   </div>
                   <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-                    {{-- Il link href verrà aggiunto in futuro per puntare al modulo corretto --}}
-                    <a href="#" id="modalProceedBtn" class="btn btn-success">Procedi con la presentazione</a>
+                    <a href="#" id="modalProceedBtn" class="btn btn-success"
+                       {{-- Questi attributi verranno popolati dinamicamente dal JS quando la modale si apre --}}
+                       data-service-title=""
+                       data-service-description="">Procedi con la presentazione</a>
                   </div>
                 </div>
               </div>
@@ -73,3 +75,90 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const serviceModalEl = document.getElementById('serviceModal');
+        if (serviceModalEl) {
+            const serviceModal = new bootstrap.Modal(serviceModalEl);
+            const modalTitleEl = document.getElementById('serviceModalLabel');
+            const modalBodyEl = document.getElementById('serviceModalBody');
+            const modalProceedBtn = document.getElementById('modalProceedBtn');
+
+            document.querySelectorAll('.btn-show-guide').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    modalTitleEl.innerHTML = this.dataset.serviceTitle;
+                    modalBodyEl.innerHTML = this.dataset.serviceDescription;
+
+                    // Popola i data-* attributi del pulsante "Procedi"
+                    modalProceedBtn.dataset.serviceTitle = this.dataset.serviceTitle;
+                    modalProceedBtn.dataset.serviceDescription = this.dataset.serviceDescription;
+
+                    serviceModal.show();
+                });
+            });
+
+            modalProceedBtn.addEventListener('click', function(e) {
+                e.preventDefault(); // Impedisce l'azione predefinita del link
+
+                @guest
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Accesso Richiesto',
+                        html: `Per procedere con la richiesta del servizio è necessario effettuare il <a href="{{ route('login') }}">login</a>.`,
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#c8102e',
+                    });
+                @else
+                    const serviceTitle = this.dataset.serviceTitle;
+                    const serviceDescription = this.dataset.serviceDescription;
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                    Swal.fire({
+                        title: 'Confermi la richiesta?',
+                        html: `Stai per richiedere il servizio: <strong>${serviceTitle}</strong>. Vuoi procedere?`,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#c8102e',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Sì, procedi!',
+                        cancelButtonText: 'Annulla'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Effettua la chiamata AJAX
+                            fetch('{{ route('servizi.send-service-request') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': csrfToken
+                                },
+                                body: JSON.stringify({
+                                    serviceTitle: serviceTitle,
+                                    serviceDescription: serviceDescription
+                                })
+                            })
+                            .then(response => {
+                                if (!response.ok) {
+                                    return response.json().then(err => { throw err; });
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                Swal.fire({ icon: 'success', title: 'Richiesta Inviata!', text: data.message, confirmButtonColor: '#c8102e' });
+                                serviceModal.hide(); // Chiude la modale
+                            })
+                            .catch(error => {
+                                Swal.fire({ icon: 'error', title: 'Errore!', text: error.message || 'Si è verificato un errore durante l\'invio della richiesta.', confirmButtonColor: '#c8102e' });
+                            });
+                        }
+                    });
+                @endguest
+            });
+        }
+    });
+</script>
+@endpush
