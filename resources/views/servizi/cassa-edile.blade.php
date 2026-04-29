@@ -20,7 +20,7 @@
                                             <i class="bi {{ $prestazione['icona'] }} fs-1 mb-3 text-success"></i>
                                             <h6 class="card-title mb-0">{{ $prestazione['nome'] }}</h6>
                                             @if (isset($prestazione['current_status']))
-                                                <span class="badge bg-info mt-2">Stato: {{ $prestazione['current_status'] }}</span>
+                                                <span class="badge bg-info mt-2">Stato: {{ $prestazione['current_status'] }} del {{ $prestazione['request_date'] }}</span>
                                             @endif
                                         </div>
                                         <div class="card-footer bg-transparent border-0 d-flex justify-content-center pt-0 pb-3">
@@ -28,7 +28,7 @@
                                                data-service-title="{{ $prestazione['nome'] }}"
                                                data-service-description="{{ $prestazione['descrizione_completa'] }}"
                                                data-service-type="{{ $prestazione['service_type'] ?? 'Cassa Edile' }}"
-                                               data-current-status="{{ $prestazione['current_status'] ?? '' }}"
+                                               data-current-status="{{ $prestazione['current_status'] ?? '' }}" data-request-date="{{ $prestazione['request_date'] ?? '' }}"
                                             >
                                                 <i class="bi bi-book"></i> Dettagli
                                             </a>

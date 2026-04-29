@@ -85,7 +85,10 @@ class HomeController extends Controller
 
             foreach ($prestazioniCassaEdile as &$prestazione) {
                 if (isset($activeRequests[$prestazione['nome']])) {
-                    $prestazione['current_status'] = $activeRequests[$prestazione['nome']]->status;
+                    $request = $activeRequests[$prestazione['nome']];
+                    $prestazione['current_status'] = $request->status;
+                    $prestazione['request_date'] = $request->updated_at->format('d/m/Y');
+
                 }
             }
             unset($prestazione); // Break the reference
@@ -121,8 +124,11 @@ class HomeController extends Controller
 
             foreach ($prestazioniEdilcassa as &$prestazione) {
                 if (isset($activeRequests[$prestazione['nome']])) {
-                    $prestazione['current_status'] = $activeRequests[$prestazione['nome']]->status;
-                }
+                    $request = $activeRequests[$prestazione['nome']];
+                    $prestazione['current_status'] = $request->status;
+                    $prestazione['request_date'] = $request->updated_at->format('d/m/Y');
+
+                }            
             }
             unset($prestazione); // Break the reference
         }
