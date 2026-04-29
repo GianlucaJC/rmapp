@@ -19,12 +19,17 @@
                                         <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-4">
                                             <i class="bi {{ $prestazione['icona'] }} fs-1 mb-3 text-success"></i>
                                             <h6 class="card-title mb-0">{{ $prestazione['nome'] }}</h6>
+                                            @if (isset($prestazione['current_status']))
+                                                <span class="badge bg-info mt-2">Stato: {{ $prestazione['current_status'] }}</span>
+                                            @endif
                                         </div>
                                         <div class="card-footer bg-transparent border-0 d-flex justify-content-center pt-0 pb-3">
                                             <a href="#" class="btn btn-sm btn-primary btn-show-guide" title="Dettagli e Guida alla presentazione"
                                                data-service-title="{{ $prestazione['nome'] }}"
                                                data-service-description="{{ $prestazione['descrizione_completa'] }}"
-                                               >
+                                               data-service-type="{{ $prestazione['service_type'] ?? 'Cassa Edile' }}"
+                                               data-current-status="{{ $prestazione['current_status'] ?? '' }}"
+                                            >
                                                 <i class="bi bi-book"></i> Dettagli
                                             </a>
                                         </div>
@@ -62,7 +67,7 @@
                     <a href="#" id="modalProceedBtn" class="btn btn-success"
                        {{-- Questi attributi verranno popolati dinamicamente dal JS quando la modale si apre --}}
                        data-service-title=""
-                       data-service-description="">Procedi con la presentazione</a>
+                       data-service-description="" data-service-type="" data-current-status="">Procedi con la presentazione</a>
                   </div>
                 </div>
               </div>
@@ -86,6 +91,30 @@
             const modalBodyEl = document.getElementById('serviceModalBody');
             const modalProceedBtn = document.getElementById('modalProceedBtn');
 
+            // Dichiarare serviceType qui per assicurarsi che sia sempre definita nello scope esterno
+            let currentServiceType = ''; // Inizializza con una stringa vuota
+
+            // Funzione per aggiornare lo stato e gli attributi data del pulsante "Procedi"
+            function updateProceedButton(serviceTitle, serviceDescription, serviceType, currentStatus) {
+                modalProceedBtn.dataset.serviceTitle = serviceTitle;
+                modalProceedBtn.dataset.serviceDescription = serviceDescription;
+                modalProceedBtn.dataset.serviceType = serviceType;
+                modalProceedBtn.dataset.currentStatus = currentStatus; // Manteniamo questo per potenziale uso futuro o debug
+                currentServiceType = serviceType; // Aggiorna la variabile nello scope esterno
+
+                if (currentStatus && currentStatus !== 'Concluso') {
+                    modalProceedBtn.classList.add('disabled');
+                    modalProceedBtn.removeAttribute('href'); // Rimuove href per prevenire la navigazione
+                    modalProceedBtn.textContent = `Richiesta ${currentStatus}`;
+                    modalProceedBtn.title = `Hai già una richiesta per questo servizio in stato di "${currentStatus}". Non puoi inviare una nuova richiesta finché quella precedente non è conclusa.`;
+                } else {
+                    modalProceedBtn.classList.remove('disabled');
+                    modalProceedBtn.setAttribute('href', '#'); // Ripristina href
+                    modalProceedBtn.textContent = 'Procedi con la presentazione';
+                    modalProceedBtn.title = ''; // Pulisce il titolo
+                }
+            }
+
             document.querySelectorAll('.btn-show-guide').forEach(button => {
                 button.addEventListener('click', function (e) {
                     e.preventDefault();
@@ -93,10 +122,7 @@
 
                     modalTitleEl.innerHTML = this.dataset.serviceTitle;
                     modalBodyEl.innerHTML = this.dataset.serviceDescription;
-
-                    // Popola i data-* attributi del pulsante "Procedi"
-                    modalProceedBtn.dataset.serviceTitle = this.dataset.serviceTitle;
-                    modalProceedBtn.dataset.serviceDescription = this.dataset.serviceDescription;
+                    updateProceedButton(this.dataset.serviceTitle, this.dataset.serviceDescription, this.dataset.serviceType, this.dataset.currentStatus);
 
                     serviceModal.show();
                 });
@@ -145,7 +171,8 @@
                                 },
                                 body: JSON.stringify({
                                     serviceTitle: serviceTitle,
-                                    serviceDescription: serviceDescription
+                                    serviceDescription: serviceDescription,
+                                    serviceType: currentServiceType // Invia il tipo di servizio
                                 })
                             })
                             .then(response => {
@@ -159,6 +186,7 @@
                                     Swal.close(); // Chiude lo spinner
                                     Swal.fire({ icon: 'success', title: 'Richiesta Inviata!', text: data.message, confirmButtonColor: '#c8102e' }); // Mostra il messaggio di successo
                                 serviceModal.hide(); // Chiude la modale
+                                location.reload(); // Ricarica la pagina per aggiornare lo stato del badge
                             })
                             .catch(error => {
                                     Swal.close(); // Chiude lo spinner
