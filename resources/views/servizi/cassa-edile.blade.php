@@ -20,7 +20,7 @@
                                             <i class="bi {{ $prestazione['icona'] }} fs-1 mb-3 text-success"></i>
                                             <h6 class="card-title mb-0">{{ $prestazione['nome'] }}</h6>
                                             @if (isset($prestazione['current_status']))
-                                                <span class="badge bg-info mt-2">Stato: {{ $prestazione['current_status'] }} del {{ $prestazione['request_date'] }}</span>
+                                                <span class="badge bg-info mt-2">Stato: {{ $prestazione['current_status'] }} il {{ $prestazione['request_date'] }}</span>
                                             @endif
                                         </div>
                                         <div class="card-footer bg-transparent border-0 d-flex justify-content-center pt-0 pb-3">

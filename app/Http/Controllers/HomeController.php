@@ -178,7 +178,7 @@ class HomeController extends Controller
             'service_type' => $serviceType,
             'service_name' => $serviceTitle,
             'service_description' => $serviceDescription,
-            'status' => 'Inviato', // Default status
+            'status' => 'Inviata', // Default status
         ]);
 
         $fictitiousUrl = url('/admin/service-requests?service=' . urlencode($serviceTitle) . '&user_id=' . $user->id);
