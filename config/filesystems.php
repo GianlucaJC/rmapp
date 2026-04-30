@@ -44,6 +44,14 @@ return [
             'throw' => false,
         ],
 
+        'private' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private'), // I file saranno salvati in storage/app/private
+            'throw' => false,
+            // La visibilità è 'private' per impostazione predefinita per i dischi 'local'
+            // e non dovrebbero essere accessibili direttamente via URL.
+        ],        
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
