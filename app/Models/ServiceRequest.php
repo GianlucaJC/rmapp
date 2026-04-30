@@ -15,10 +15,15 @@ class ServiceRequest extends Model
         'service_name',
         'service_description',
         'status',
+        'additional_data',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
+    protected $casts = [
+        'additional_data' => 'array',
+    ];
 }
