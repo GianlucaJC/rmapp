@@ -153,7 +153,7 @@
                     </ul>
 
                     <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
+                    <ul class="navbar-nav ms-auto align-items-center">
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
@@ -167,6 +167,13 @@
                                     <a class="nav-link" href="{{ route('register') }}">{{ __('Registrati') }}</a>
                                 </li>
                             @endif
+
+                            <!-- Admin Login Icon -->
+                            <li class="nav-item border-start ms-2 ps-2">
+                                <a class="nav-link" href="{{ route('admin.login') }}" title="Login Admin">
+                                    <i class="bi bi-person-fill-gear fs-5"></i>
+                                </a>
+                            </li>
                         @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>

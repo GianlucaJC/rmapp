@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\Auth\LoginController as AdminLoginController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\HomeController; // Assicurati di importare il controller
 
 /*
@@ -34,3 +36,14 @@ Route::get('/servizi/edilcassa', [HomeController::class, 'edilcassa'])->name('se
 Route::post('/servizi/send-service-request', [HomeController::class, 'sendServiceRequest'])
     ->middleware('auth')
     ->name('servizi.send-service-request');
+
+// Admin Routes
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminLoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AdminLoginController::class, 'login'])->name('login.attempt');
+
+    Route::middleware('admin')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
+    });
+});
