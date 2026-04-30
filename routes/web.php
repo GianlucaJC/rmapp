@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\Auth\LoginController as AdminLoginController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ServiceRequestController; // Import the new controller
 use App\Http\Controllers\HomeController; // Assicurati di importare il controller
 
 /*
@@ -44,6 +45,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::middleware('admin')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/service-requests/data', [ServiceRequestController::class, 'getServiceRequestsData'])->name('service-requests.data');
+        Route::get('/service-requests/{serviceRequest}', [ServiceRequestController::class, 'show'])->name('service-requests.show');
         Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
     });
 });

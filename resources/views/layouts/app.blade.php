@@ -154,27 +154,42 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto align-items-center">
-                        <!-- Authentication Links -->
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
-
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Registrati') }}</a>
-                                </li>
-                            @endif
-
-                            <!-- Admin Login Icon -->
-                            <li class="nav-item border-start ms-2 ps-2">
-                                <a class="nav-link" href="{{ route('admin.login') }}" title="Login Admin">
-                                    <i class="bi bi-person-fill-gear fs-5"></i>
+                        {{-- Check if Admin is logged in --}}
+                        @if (session()->has('admin_logged_in') && session()->get('admin_logged_in'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.dashboard') }}" title="Dashboard Admin">
+                                    <i class="bi bi-speedometer2 fs-5"></i> Dashboard Admin
                                 </a>
                             </li>
+                            <li class="nav-item border-start ms-2 ps-2">
+                                <a class="nav-link" href="{{ route('admin.logout') }}" title="Logout Admin"
+                                   onclick="event.preventDefault(); document.getElementById('admin-logout-form').submit();">
+                                    <i class="bi bi-box-arrow-right fs-5"></i>
+                                </a>
+                                <form id="admin-logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">@csrf</form>
+                            </li>
                         @else
+                            {{-- Admin is NOT logged in, check for regular user --}}
+                            @guest
+                                @if (Route::has('login'))
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                    </li>
+                                @endif
+
+                                @if (Route::has('register'))
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('register') }}">{{ __('Registrati') }}</a>
+                                    </li>
+                                @endif
+
+                                <!-- Admin Login Icon (only if no one is logged in) -->
+                                <li class="nav-item border-start ms-2 ps-2">
+                                    <a class="nav-link" href="{{ route('admin.login') }}" title="Login Admin">
+                                        <i class="bi bi-person-fill-gear fs-5"></i>
+                                    </a>
+                                </li>
+                            @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
@@ -192,7 +207,8 @@
                                     </form>
                                 </div>
                             </li>
-                        @endguest
+                            @endguest
+                        @endif
                     </ul>
                 </div>
             </div>
@@ -209,6 +225,9 @@
     </div>
 
     <!-- Bootstrap JS -->
+    {{-- jQuery è richiesto da DataTables --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     @stack('scripts')
