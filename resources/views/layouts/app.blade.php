@@ -98,6 +98,17 @@
         .flip-card-back {
             transform: rotateY(180deg);
         }
+
+        /* Stili per nascondere il widget e il banner di Google Translate */
+        #google_translate_element {
+            display: none;
+        }
+        .goog-te-banner-frame.skiptranslate {
+            display: none !important;
+        }
+        body {
+            top: 0px !important; /* Sovrascrive lo stile inline aggiunto da Google Translate per il banner */
+        }
     </style>
 </head>
 <body>
@@ -248,7 +259,39 @@
 
     @stack('scripts')
 
-    <script>
+    <!-- Elemento per Google Translate, reso invisibile -->
+    <div id="google_translate_element" style="display:none;"></div>
+
+    <script type="text/javascript">
+        // Funzione di callback per l'API di Google Translate
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'it', // Lingua originale del sito
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+
+        // Funzione per cambiare la lingua tramite cookie e ricaricamento
+        function triggerGoogleTranslate(lang) {
+            const googleCookie = document.cookie.match(/googtrans=([^;]+)/);
+            const currentTranslation = googleCookie && googleCookie[1] ? googleCookie[1].split('/')[2] : 'it';
+
+            if (lang === currentTranslation) {
+                return; // Già nella lingua desiderata, non fare nulla
+            }
+
+            if (lang === 'it') {
+                // Rimuove il cookie di traduzione per tornare all'originale
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + window.location.hostname;
+            } else {
+                // Imposta il cookie per la lingua desiderata
+                document.cookie = `googtrans=/it/${lang}; path=/`;
+            }
+            // Ricarica la pagina per applicare la traduzione
+            location.reload();
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const htmlTag = document.documentElement;
             const savedLocale = localStorage.getItem('app_locale');
@@ -263,11 +306,17 @@
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
                     const lang = this.dataset.lang;
-                    htmlTag.lang = lang;
+                    
+                    // Salva la preferenza prima di avviare il ricaricamento
                     localStorage.setItem('app_locale', lang);
+                    
+                    // Attiva la traduzione
+                    triggerGoogleTranslate(lang);
                 });
             });
         });
     </script>
+    <!-- Script di Google Translate, caricato alla fine -->
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
