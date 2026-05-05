@@ -13,6 +13,7 @@
                     <a href="{{ route('admin.logout') }}" class="btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
                     <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">@csrf</form>
                 </div>
+                
 
                 <div class="card-body p-4 admin-dashboard-card-body">
                     <h5 class="mb-3">Richieste di Servizio</h5>
@@ -67,6 +68,33 @@
         </div>
     </div>
 </div>
+
+<!-- User Details Modal -->
+<div class="modal fade" id="userDetailsModal" tabindex="-1" aria-labelledby="userDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userDetailsModalLabel">Dettagli Utente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-user-details-content">
+                    <p><strong>Nome:</strong> <span id="modal-user-name"></span></p>
+                    <p><strong>Cognome:</strong> <span id="modal-user-last-name"></span></p>
+                    <p><strong>Email:</strong> <span id="modal-user-email"></span></p>
+                    <p><strong>Codice Fiscale:</strong> <span id="modal-user-codice-fiscale"></span></p>
+                    <p><strong>Numero di Telefono:</strong> <span id="modal-user-phone-number"></span></p>
+                    <p><strong>Tipo Contratto:</strong> <span id="modal-user-contract-type"></span></p>
+                    <p><strong>Qualifica:</strong> <span id="modal-user-job-title"></span></p>
+                    <p><strong>Registrato il:</strong> <span id="modal-user-created-at"></span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -97,6 +125,22 @@
                     { data: 'created_at', name: 'created_at' },
                     { data: 'actions', name: 'actions', orderable: false, searchable: false },
                 ],
+                columnDefs: [
+                    {
+                        targets: 1, // Colonna "Utente"
+                        render: function(data, type, row) {
+                            return '<a href="#" class="user-details-link" data-user-id="' + row.user.id + '">' + data + '</a>';
+                        }
+                    },
+                    {
+                        targets: 2, // Colonna "Servizio"
+                        render: function(data, type, row) {
+                            var detailUrl = '{{ route('admin.service-requests.show', ':id') }}';
+                            detailUrl = detailUrl.replace(':id', row.id);
+                            return '<a href="' + detailUrl + '" class="service-details-link">' + data + '</a>';
+                        }
+                    }
+                ],
                 language: {
                     url: '{{ asset('js/datatables/i18n/Italian.json') }}'
                 }
@@ -106,6 +150,43 @@
             $('#applyFilters').on('click', function() {
                 $('#serviceRequestsTable').DataTable().ajax.reload();
             });
+
+            // Handle click on user name to show modal
+            $('#serviceRequestsTable').on('click', '.user-details-link', function(e) {
+                e.preventDefault();
+                var userId = $(this).data('user-id');
+                
+                // Clear previous data
+                $('#modal-user-details-content span').text('');
+
+                $.ajax({
+                    url: '{{ url('admin/users') }}/' + userId + '/details-modal', // New route
+                    method: 'GET',
+                    success: function(response) {
+                        if (response.success) {
+                            var user = response.user;
+                            $('#modal-user-name').text(user.name);
+                            $('#modal-user-last-name').text(user.last_name);
+                            $('#modal-user-email').text(user.email);
+                            $('#modal-user-codice-fiscale').text(user.codice_fiscale);
+                            $('#modal-user-phone-number').text(user.phone_number);
+                            $('#modal-user-contract-type').text(user.contract_type);
+                            $('#modal-user-job-title').text(user.job_title);
+                            $('#modal-user-created-at').text(user.created_at);
+                            
+                            var userDetailsModal = new bootstrap.Modal(document.getElementById('userDetailsModal'));
+                            userDetailsModal.show();
+                        } else {
+                            Swal.fire('Errore', response.message || 'Impossibile caricare i dettagli utente.', 'error');
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire('Errore', 'Si è verificato un errore durante il recupero dei dati utente.', 'error');
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+
         });
     </script>
     <style>

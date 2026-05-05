@@ -172,6 +172,11 @@
                                     <i class="bi bi-speedometer2 fs-5"></i> Dashboard Admin
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.users.index') }}" title="Gestione Utenti">
+                                    <i class="bi bi-people fs-5"></i> Gestione Utenti
+                                </a>
+                            </li>
                             <li class="nav-item border-start ms-2 ps-2">
                                 <a class="nav-link" href="{{ route('admin.logout') }}" title="Logout Admin"
                                    onclick="event.preventDefault(); document.getElementById('admin-logout-form').submit();">

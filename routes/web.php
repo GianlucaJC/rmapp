@@ -63,5 +63,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/service-requests/{serviceRequest}/download-document/{filePath}', [ServiceRequestController::class, 'downloadDocument'])
             ->where('filePath', '.*')->name('service-requests.download-document'); // Permette slash nel filePath
         Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
+
+        Route::get('/users', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
+        Route::get('/users/data', [App\Http\Controllers\Admin\UserController::class, 'getUsersData'])->name('users.data');
+        Route::get('/users/{user}/edit', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
+        Route::get('/users/{user}/details-modal', [App\Http\Controllers\Admin\UserController::class, 'getUserDetails'])->name('users.details-modal');
+        Route::put('/users/{user}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
     });
 });
