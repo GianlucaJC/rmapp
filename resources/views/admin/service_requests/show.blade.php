@@ -21,7 +21,7 @@
         <div class="card-body">
             <p><strong>Utente:</strong> {{ $serviceRequest->user->name }} ({{ $serviceRequest->user->email }})</p>
             <p><strong>Servizio:</strong> {{ $serviceRequest->service_name }} ({{ $serviceRequest->service_type }})</p>
-            <p><strong>Descrizione:</strong> {{ $serviceRequest->service_description }}</p>
+            <div><strong>Descrizione:</strong> {!! $serviceRequest->service_description !!}</div>
             <p><strong>Data Richiesta:</strong> {{ $serviceRequest->created_at->format('d/m/Y H:i') }}</p>
             <p><strong>Ultimo Aggiornamento:</strong> {{ $serviceRequest->updated_at->format('d/m/Y H:i') }}</p>
             @if ($serviceRequest->additional_data)

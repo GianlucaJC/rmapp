@@ -56,7 +56,7 @@
         {{-- Sezione pubblica con i bottoni dei servizi --}}
         <div class="col-md-12">
             <div class="text-center mb-5 page-title">
-                <h1>Benvenuto nell'App FILLEA</h1>
+                <h1>LazioAPP</h1>
                 <p class="lead">Seleziona il servizio di tuo interesse.</p>
             </div>
 
