@@ -1,146 +1,169 @@
 @extends('layouts.app')
 
+@section('title', 'Prestazioni Edilcassa')
+
 @section('content')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-12">
-            <div class="page-title text-center mb-5">
-                <h1>Elenco Prestazioni Edilcassa</h1>
-                <p class="lead">Prestazioni OPERAI della edilcassa del lazio</p>
-            </div>
+    <h1 class="text-white mb-4">Servizi Edilcassa</h1>
 
-            <div class="row g-4 justify-content-center">
-                @foreach ($prestazioniEdilcassa as $prestazione)
-                    <div class="col-md-6 col-lg-4 d-flex align-items-stretch">
-                        <div class="flip-card w-100" tabindex="0">
-                            <div class="flip-card-inner">
-                                <div class="flip-card-front">
-                                    <div class="card h-100 w-100 d-flex flex-column">
-                                        <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-4">
-                                            <i class="bi {{ $prestazione['icona'] }} fs-1 mb-3 text-success"></i>
-                                            <h6 class="card-title mb-0">{{ $prestazione['nome'] }}</h6>
-                                        </div>
-                                        <div class="card-footer bg-transparent border-0 d-flex justify-content-center pb-3">
-                                            <a href="#" class="btn btn-sm btn-primary disabled" title="Guida alla presentazione non disponibile">
-                                                <i class="bi bi-book"></i>  Guida alla presentazione
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="flip-card-back">
-                                    <div class="card bg-dark text-white h-100 w-100">
-                                        <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-3">
-                                            <p class="small">{{ $prestazione['descrizione'] }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+    @if (session('success'))
+        <div class="alert alert-success" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if (session('error'))
+        <div class="alert alert-danger" role="alert">
+            {{ session('error') }}
+        </div>
+    @endif
 
-            <!-- Service Guide Modal (Copied from cassa-edile.blade.php) -->
-            <div class="modal fade" id="serviceModal" tabindex="-1" aria-labelledby="serviceModalLabel" aria-hidden="true">
-              <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="serviceModalLabel">Dettaglio Prestazione</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div id="serviceModalDescription" style="white-space: pre-wrap;">
-                        {{-- La descrizione completa del servizio verrà iniettata qui --}}
+    <div class="row">
+        @foreach ($prestazioniEdilcassa as $prestazione)
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi {{ $prestazione['icona'] }}"></i> {{ $prestazione['nome'] }}</h5>
+                        <p class="card-text">{{ $prestazione['descrizione'] }}</p>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#serviceModal"
+                                data-service-name="{{ $prestazione['nome'] }}"
+                                data-service-description="{{ $prestazione['descrizione_completa'] }}"
+                                data-service-type="{{ $prestazione['service_type'] }}"
+                                @if (isset($prestazione['active_request']))
+                                    data-active-request="{{ json_encode($prestazione['active_request']) }}"
+                                @endif
+                                {{-- Pass initial form inputs if any --}}
+                                @if (isset($prestazione['documentazione_richiesta']) && !empty($prestazione['documentazione_richiesta']))
+                                    data-form-inputs="{{ json_encode($prestazione['documentazione_richiesta']) }}"
+                                @endif
+                                >
+                            Dettagli e Richiedi
+                        </button>
                     </div>
-                    <div id="serviceModalDocsContainer" class="mt-4 border-top pt-3">
-                        {{-- I campi per i documenti verranno iniettati qui dal JS --}}
-                    </div>
-                  </div>
-                  <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-                    <a href="#" id="modalProceedBtn" class="btn btn-success">Procedi con la presentazione</a>
-                  </div>
                 </div>
-              </div>
             </div>
+        @endforeach
+    </div>
+</div>
 
-            <div class="text-center mt-5">
-                <a href="{{ route('servizi.index') }}" class="btn btn-light mt-4"><i class="bi bi-arrow-left"></i> Torna alla selezione</a>
+{{-- Modale per i dettagli del servizio e il form di richiesta --}}
+<div class="modal fade" id="serviceModal" tabindex="-1" aria-labelledby="serviceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="serviceModalLabel">Dettaglio Prestazione</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="serviceFullDescription" style="white-space: pre-wrap;">
+            {{-- La descrizione completa del servizio verrà iniettata qui --}}
+        </div>
+                    <div id="serviceModalDocsContainer" class="mt-4 border-top pt-3">
+            {{-- I campi per i documenti verranno iniettati qui dal JS --}}
+        </div>
+        <div id="serviceModalActiveRequestInfo" class="mt-4 border-top pt-3"></div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+        <a href="#" id="modalProceedBtn" class="btn btn-success">Procedi con la presentazione</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{-- Modale per messaggi di successo/errore (per upload) --}}
+<div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="responseModalLabel">Messaggio</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="responseModalBody">
+                <!-- Il messaggio verrà inserito qui -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
             </div>
         </div>
     </div>
 </div>
+
 @endsection
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const serviceModalEl = document.getElementById('serviceModal');
         if (serviceModalEl) {
             const serviceModal = new bootstrap.Modal(serviceModalEl);
             const modalTitleEl = document.getElementById('serviceModalLabel');
             const modalDescriptionEl = document.getElementById('serviceModalDescription');
-            const modalDocsContainerEl = document.getElementById('modalServiceDocsContainer'); // Changed ID to avoid conflict if both pages are loaded
+            const modalDocsContainerEl = document.getElementById('serviceModalDocsContainer');
+            const serviceModalActiveRequestInfoEl = document.getElementById('serviceModalActiveRequestInfo');
             const modalProceedBtn = document.getElementById('modalProceedBtn');
 
             // Funzione per aggiornare lo stato e gli attributi data del pulsante "Procedi"
-            function updateProceedButton(serviceTitle, serviceDescription, serviceType, currentStatus) {
+            function updateProceedButton(serviceTitle, serviceDescription, serviceType, currentStatus, requestId = null) {
                 modalProceedBtn.dataset.serviceTitle = serviceTitle;
                 modalProceedBtn.dataset.serviceDescription = serviceDescription;
                 modalProceedBtn.dataset.serviceType = serviceType;
                 modalProceedBtn.dataset.currentStatus = currentStatus;
-
-                const hasActiveRequest = currentStatus && currentStatus !== 'Concluso';
+                modalProceedBtn.dataset.requestId = requestId; // Aggiungi l'ID della richiesta
+                
+                // Una richiesta è considerata "attiva" se non è né Conclusa né Rifiutata
+                const hasActiveRequest = currentStatus && currentStatus !== 'Conclusa' && currentStatus !== 'Rifiutata';
                 if (hasActiveRequest) {
                     modalProceedBtn.classList.add('disabled');
-                    modalProceedBtn.removeAttribute('href'); // Rimuove href per prevenire la navigazione
+                    modalProceedBtn.removeAttribute('href');
                     modalProceedBtn.textContent = `Richiesta ${currentStatus}`;
-                    modalProceedBtn.title = `Hai già una richiesta per questo servizio in stato di "${currentStatus}". Non puoi inviare una nuova richiesta finché quella precedente non è conclusa.`;
+                    modalProceedBtn.title = `Hai già una richiesta per questo servizio in stato di "${currentStatus}".`;
                 } else {
+                    // Se la richiesta precedente è Conclusa o Rifiutata, si può procedere con una nuova
                     modalProceedBtn.classList.remove('disabled');
-                    modalProceedBtn.setAttribute('href', '#'); // Ripristina href
-                    modalProceedBtn.textContent = 'Procedi con la presentazione';
-                    modalProceedBtn.title = ''; // Pulisce il titolo
+                    modalProceedBtn.setAttribute('href', '#');
+                    if (currentStatus === 'Conclusa' || currentStatus === 'Rifiutata') {
+                        modalProceedBtn.textContent = 'Procedi con una nuova presentazione';
+                    } else {
+                        modalProceedBtn.textContent = 'Procedi con la presentazione';
+                    }
+                    modalProceedBtn.title = '';
                 }
             }
 
-            document.querySelectorAll('.btn-show-guide').forEach(button => {
+            document.querySelectorAll('[data-bs-toggle="modal"]').forEach(button => {
                 button.addEventListener('click', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
 
-                    const serviceTitle = this.dataset.serviceTitle;
+                    const serviceTitle = this.dataset.serviceName;
                     const serviceDescription = this.dataset.serviceDescription;
                     const serviceType = this.dataset.serviceType;
-                    const currentStatus = this.dataset.currentStatus;
-                    const requiredDocs = this.dataset.requiredDocs ? JSON.parse(this.dataset.requiredDocs) : [];
+                    const currentStatus = this.dataset.currentStatus || '';
+                    const activeRequestData = this.dataset.activeRequest ? JSON.parse(this.dataset.activeRequest) : null;
+                    const requiredDocs = this.dataset.formInputs ? JSON.parse(this.dataset.formInputs) : [];
 
                     modalTitleEl.innerHTML = serviceTitle;
                     modalDescriptionEl.innerHTML = serviceDescription;
 
-                    // Popola dinamicamente il contenitore dei documenti
-                    modalDocsContainerEl.innerHTML = ''; // Pulisce il contenuto precedente
+                    modalDocsContainerEl.innerHTML = '';
+                    serviceModalActiveRequestInfoEl.innerHTML = '';
+
                     if (requiredDocs.length > 0) {
                         let docsHtml = '<h6 class="text-muted">Documentazione/Dati Richiesti</h6>';
                         requiredDocs.forEach(group => {
                             if (group.description) {
                                 docsHtml += `<p class="small fst-italic">${group.description}</p>`;
                             }
-                            // Only render inputs if type is not 'info'
-                            if (group.type !== 'info') {
-                                group.inputs.forEach(input => {
-                                    const requiredStar = input.required ? ' <span class="text-danger">*</span>' : '';
-                                    const requiredAttr = input.required ? 'required' : '';
-                                    docsHtml += '<div class="mb-3">';
-                                    docsHtml += `<label for="doc_${input.name}" class="form-label small">${input.label}${requiredStar}</label>`;
-                                    if (group.type === 'upload') {
-                                        docsHtml += `<input type="file" class="form-control form-control-sm" id="doc_${input.name}" name="${input.name}" ${requiredAttr}>`;
-                                    } else if (group.type === 'form') {
-                                        docsHtml += `<input type="${input.type}" class="form-control form-control-sm" id="doc_${input.name}" name="${input.name}" placeholder="${input.placeholder || ''}" ${requiredAttr}>`;
-                                    }
-                                    docsHtml += '</div>';
-                                });
-                            }
+                            group.inputs.forEach(input => {
+                                const requiredStar = input.required ? ' <span class="text-danger">*</span>' : '';
+                                const requiredAttr = input.required ? 'required' : '';
+                                docsHtml += '<div class="mb-3">';
+                                docsHtml += `<label for="doc_${input.name}" class="form-label small">${input.label}${requiredStar}</label>`;
+                                if (group.type === 'form') {
+                                    docsHtml += `<input type="${input.type}" class="form-control form-control-sm" id="doc_${input.name}" name="${input.name}" placeholder="${input.placeholder || ''}" ${requiredAttr}>`;
+                                }
+                                docsHtml += '</div>';
+                            });
                         });
                         modalDocsContainerEl.innerHTML = docsHtml;
                         modalDocsContainerEl.style.display = 'block';
@@ -148,13 +171,65 @@
                         modalDocsContainerEl.style.display = 'none';
                     }
 
-                    updateProceedButton(serviceTitle, serviceDescription, serviceType, currentStatus);
+                    if (activeRequestData) {
+                        let activeRequestHtml = `
+                            <hr>
+                            <p class="mb-1">Stato della tua richiesta: <strong>${activeRequestData.status}</strong></p>
+                            <small class="text-muted">Ultimo aggiornamento: ${new Date(activeRequestData.updated_at).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</small>
+                        `;
+                        if (activeRequestData.admin_notes) {
+                            activeRequestHtml += `
+                                <div class="alert alert-info mt-2" role="alert">
+                                    <strong>Note del funzionario:</strong>
+                                    <p class="mb-0">${activeRequestData.admin_notes.replace(/\n/g, '<br>')}</p>
+                                </div>
+                            `;
+                        }
+
+                        if (activeRequestData.status === 'Richiesta integrazione') {
+                            activeRequestHtml += `
+                                <hr>
+                                <h6>Area Documenti - Carica i file richiesti</h6>
+                                <form id="uploadFormModal-${activeRequestData.id}" class="upload-form-modal" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="hidden" name="service_request_id" value="${activeRequestData.id}">
+                                    <div class="mb-3">
+                                        <label for="documents-modal-${activeRequestData.id}" class="form-label">Seleziona uno o più documenti (PDF, JPG, PNG - max 5MB ciascuno):</label>
+                                        <input class="form-control" type="file" name="documents[]" id="documents-modal-${activeRequestData.id}" multiple required>
+                                        <div class="invalid-feedback" id="documents-feedback-modal-${activeRequestData.id}">
+                                            Devi caricare almeno un documento.
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary upload-btn-modal" data-request-id="${activeRequestData.id}">Invia pratica aggiornata</button>
+                                </form>
+                            `;
+                            modalProceedBtn.style.display = 'none';
+                        } else {
+                            modalProceedBtn.style.display = 'block';
+                        }
+
+                        if (activeRequestData.uploaded_documents && activeRequestData.uploaded_documents.length > 0) {
+                            activeRequestHtml += `<div class="mt-3"><h6>Documenti caricati:</h6><ul class="list-group">`;
+                            activeRequestData.uploaded_documents.forEach(doc => {
+                                activeRequestHtml += `<li class="list-group-item d-flex justify-content-between align-items-center">${doc.original_name || 'Nome file non disponibile'} <a href="#" class="btn btn-sm btn-outline-secondary disabled" title="Download non ancora disponibile"><i class="bi bi-download"></i></a></li>`;
+                            });
+                            activeRequestHtml += `</ul></div>`;
+                        }
+                        serviceModalActiveRequestInfoEl.innerHTML = activeRequestHtml;
+                        serviceModalActiveRequestInfoEl.style.display = 'block';
+                        modalDocsContainerEl.style.display = 'none';
+                    } else {
+                        serviceModalActiveRequestInfoEl.style.display = 'none';
+                        modalProceedBtn.style.display = 'block';
+                    }
+
+                    updateProceedButton(serviceTitle, serviceDescription, serviceType, currentStatus, activeRequestData ? activeRequestData.id : null);
                     serviceModal.show();
                 });
             });
 
             modalProceedBtn.addEventListener('click', function(e) {
-                e.preventDefault(); // Impedisce l'azione predefinita del link
+                e.preventDefault();
 
                 @guest
                     Swal.fire({
@@ -164,13 +239,12 @@
                         confirmButtonText: 'OK',
                         confirmButtonColor: '#c8102e',
                     });
-                @else
-                    const serviceTitle = this.dataset.serviceTitle;
-                    const serviceDescription = this.dataset.serviceDescription;
-                    const serviceType = this.dataset.serviceType;
+                @else // User is authenticated
+                    const serviceDescription = modalProceedBtn.dataset.serviceDescription;
+                    const serviceType = modalProceedBtn.dataset.serviceType;
+                    const currentStatus = modalProceedBtn.dataset.currentStatus;
                     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-                    // Validazione client-side
                     const form = serviceModalEl.querySelector('.modal-body');
                     const requiredInputs = form.querySelectorAll('[required]');
                     let isValid = true;
@@ -192,6 +266,11 @@
                         return;
                     }
 
+                    if (currentStatus && currentStatus !== 'Conclusa') {
+                        Swal.fire({ icon: 'warning', title: 'Richiesta Attiva', text: `Hai già una richiesta per questo servizio in stato di "${currentStatus}".`, confirmButtonColor: '#c8102e' });
+                        return;
+                    }
+
                     Swal.fire({
                         title: 'Confermi la richiesta?',
                         html: `Stai per richiedere il servizio: <strong>${serviceTitle}</strong>. Vuoi procedere?`,
@@ -203,21 +282,18 @@
                         cancelButtonText: 'Annulla'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                                // Mostra lo spinner di caricamento
-                                Swal.fire({
-                                    title: 'Invio richiesta...',
-                                    text: 'Attendere prego',
-                                    allowOutsideClick: false,
-                                    didOpen: () => { Swal.showLoading() }
-                                });
+                            Swal.fire({
+                                title: 'Invio richiesta...',
+                                text: 'Attendere prego',
+                                allowOutsideClick: false,
+                                didOpen: () => { Swal.showLoading() }
+                            });
 
-                            // Prepara FormData
                             const formData = new FormData();
                             formData.append('serviceTitle', serviceTitle);
                             formData.append('serviceDescription', serviceDescription);
                             formData.append('serviceType', serviceType);
 
-                            // Aggiunge i campi dinamici
                             const docInputs = modalDocsContainerEl.querySelectorAll('input');
                             docInputs.forEach(input => {
                                 if (input.type === 'file') {
@@ -229,7 +305,6 @@
                                 }
                             });
 
-                            // Chiamata AJAX con FormData
                             fetch('{{ route('servizi.send-service-request') }}', {
                                 method: 'POST',
                                 headers: {
@@ -239,8 +314,8 @@
                                 body: formData
                             })
                             .then(response => {
-                                Swal.close(); // Chiude lo spinner
-                                if (response.status === 422) { // Errore di validazione dal backend
+                                Swal.close();
+                                if (response.status === 422) {
                                     return response.json().then(err => {
                                         const errorMessages = err.errors.join('<br>');
                                         throw { message: `Errore di validazione:<br>${errorMessages}` };
@@ -253,8 +328,8 @@
                             })
                             .then(data => {
                                 Swal.fire({ icon: 'success', title: 'Richiesta Inviata!', text: data.message, confirmButtonColor: '#c8102e' });
-                                serviceModal.hide(); // Chiude la modale
-                                location.reload(); // Ricarica la pagina per aggiornare lo stato del badge
+                                serviceModal.hide();
+                                location.reload();
                             })
                             .catch(error => {
                                 Swal.fire({ icon: 'error', title: 'Errore!', text: error.message || 'Si è verificato un errore durante l\'invio della richiesta.', confirmButtonColor: '#c8102e' });
@@ -263,6 +338,13 @@
                     });
                 @endguest
             });
+        }
+
+        function showModal(title, message) {
+            const modal = new bootstrap.Modal(document.getElementById('responseModal'));
+            document.getElementById('responseModalLabel').textContent = title;
+            document.getElementById('responseModalBody').innerHTML = message;
+            modal.show();
         }
     });
 </script>

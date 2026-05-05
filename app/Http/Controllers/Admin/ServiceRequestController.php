@@ -3,9 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ServiceRequestStatusUpdateMail; // Import the Mailable
 use App\Models\ServiceRequest;
+use GuzzleHttp\Client; // Import Guzzle Client
+use GuzzleHttp\Exception\RequestException; // Import Guzzle Exception
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Log; // Import Log facade
+use Illuminate\Support\Facades\Storage; // Import Storage facade
+use Illuminate\Support\Facades\Mail; // Import Mail facade
 
 class ServiceRequestController extends Controller
 {
@@ -59,5 +65,105 @@ class ServiceRequestController extends Controller
     public function show(ServiceRequest $serviceRequest)
     {
         return view('admin.service_requests.show', compact('serviceRequest'));
+    }
+
+    /**
+     * Update the status and admin notes of a service request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\ServiceRequest  $serviceRequest
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(Request $request, ServiceRequest $serviceRequest)
+    {
+        $request->validate([
+            'status' => 'required|string|in:Inviata,Richiesta integrazione,Conclusa,Rifiutata', // Definisci gli stati consentiti
+            'admin_notes' => 'nullable|string',
+        ]);
+
+        $oldStatus = $serviceRequest->status;
+
+        $serviceRequest->status = $request->input('status');
+        $serviceRequest->admin_notes = $request->input('admin_notes');
+        $serviceRequest->save();
+
+        // Invia notifica all'utente se lo stato cambia a 'Richiesta integrazione'
+        // o qualsiasi altro stato che richiede l'attenzione dell'utente.
+        // Per ora, ci concentriamo su 'Richiesta integrazione' come "sblocco".
+        if ($oldStatus !== $serviceRequest->status && $serviceRequest->user && $serviceRequest->user->email) {
+            $apiUrl = 'https://www.filleaoffice.it:8013/auth_mail/api_send_mail.php';
+            $client = new Client();
+
+            try {
+                $userMailable = new ServiceRequestStatusUpdateMail($serviceRequest);
+                $userSubject = $userMailable->envelope()->subject;
+                // Renderizza la vista Blade in una stringa HTML
+                $userBody = view($userMailable->content()->view, [
+                    'serviceRequest' => $userMailable->serviceRequest,
+                ])->render();
+
+                // Ricodifica il corpo dell'email in ISO-8859-1 per compatibilità con l'API esterna
+                $userBody = mb_convert_encoding($userBody, 'ISO-8859-1', 'UTF-8');
+
+                $responseUser = $client->post($apiUrl, [
+                    'form_params' => [
+                        'to' => $serviceRequest->user->email,
+                        'subject' => $userSubject,
+                        'message' => $userBody,
+                        'from' => "LazioAPP",
+                    ]
+                ]);
+
+                $resultUser = json_decode($responseUser->getBody()->getContents(), true);
+
+                if (!isset($resultUser['status']) || $resultUser['status'] !== 'success') {
+                    throw new \Exception('Errore nell\'invio dell\'email di notifica all\'utente: ' . ($resultUser['message'] ?? 'Errore sconosciuto dall\'API.'));
+                }
+            } catch (RequestException $e) {
+                $errorMessage = $e->getMessage();
+                if ($e->hasResponse()) {
+                    $errorMessage .= ' - Risposta API: ' . $e->getResponse()->getBody()->getContents();
+                }
+                Log::error('Errore Guzzle nell\'invio email di stato tramite API per SR ' . $serviceRequest->id . ': ' . $errorMessage);
+                return redirect()->back()->with('error', 'Richiesta aggiornata, ma l\'email di notifica all\'utente non è stata inviata a causa di un errore di comunicazione: ' . $errorMessage);
+            } catch (\Exception $e) {
+                Log::error('Errore logico nell\'invio email di stato tramite API per SR ' . $serviceRequest->id . ': ' . $e->getMessage());
+                return redirect()->back()->with('error', 'Richiesta aggiornata, ma l\'email di notifica all\'utente non è stata inviata a causa di un errore interno: ' . $e->getMessage());
+            }
+        }
+
+        return redirect()->route('admin.service-requests.show', $serviceRequest->id)
+                         ->with('success', 'Richiesta di servizio aggiornata con successo.');
+    }
+
+    /**
+     * Download an uploaded document for a service request.
+     *
+     * @param  \App\Models\ServiceRequest  $serviceRequest
+     * @param  string  $filePath
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
+     */
+    public function downloadDocument(ServiceRequest $serviceRequest, string $filePath)
+    {
+        // Ensure the file path is part of the service request's uploaded documents
+        $uploadedDocuments = $serviceRequest->uploaded_documents ?? [];
+        $foundDocument = null;
+
+        foreach ($uploadedDocuments as $doc) {
+            if ($doc['path'] === $filePath) {
+                $foundDocument = $doc;
+                break;
+            }
+        }
+
+        if (!$foundDocument) {
+            return redirect()->back()->with('error', 'Documento non trovato o non associato a questa richiesta.');
+        }
+
+        if (!Storage::disk('private')->exists($filePath)) {
+            return redirect()->back()->with('error', 'Il file non esiste nel sistema di archiviazione.');
+        }
+
+        return Storage::disk('private')->download($filePath, $foundDocument['original_name'] ?? basename($filePath));
     }
 }

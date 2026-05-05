@@ -38,6 +38,17 @@ Route::post('/servizi/send-service-request', [HomeController::class, 'sendServic
     ->middleware('auth')
     ->name('servizi.send-service-request');
 
+// Rotta per il re-invio della pratica da parte del lavoratore (dopo aver caricato i documenti)
+Route::post('/servizi/resubmit-request/{serviceRequest}', [HomeController::class, 'resubmitServiceRequest'])
+    ->middleware('auth')->name('servizi.resubmit-request');
+
+// Nuova rotta per l'upload di un singolo documento via AJAX
+Route::post('/servizi/upload-single-document/{serviceRequest}', [HomeController::class, 'uploadSingleDocument'])
+    ->middleware('auth')->name('servizi.upload-single-document');
+// Nuova rotta per l'eliminazione di un singolo documento via AJAX
+Route::delete('/servizi/delete-uploaded-document/{serviceRequest}', [HomeController::class, 'deleteUploadedDocument'])
+    ->middleware('auth')->name('servizi.delete-uploaded-document');
+
 // Admin Routes
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminLoginController::class, 'showLoginForm'])->name('login');
@@ -47,6 +58,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/service-requests/data', [ServiceRequestController::class, 'getServiceRequestsData'])->name('service-requests.data');
         Route::get('/service-requests/{serviceRequest}', [ServiceRequestController::class, 'show'])->name('service-requests.show');
+        Route::put('/service-requests/{serviceRequest}', [ServiceRequestController::class, 'update'])->name('service-requests.update'); // Nuova rotta per l'aggiornamento
+        // Nuova rotta per il download di un documento specifico per una richiesta di servizio
+        Route::get('/service-requests/{serviceRequest}/download-document/{filePath}', [ServiceRequestController::class, 'downloadDocument'])
+            ->where('filePath', '.*')->name('service-requests.download-document'); // Permette slash nel filePath
         Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
     });
 });

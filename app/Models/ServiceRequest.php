@@ -25,5 +25,6 @@ class ServiceRequest extends Model
 
     protected $casts = [
         'additional_data' => 'array',
+        'uploaded_documents' => 'array', // Aggiungi questa riga
     ];
 }
