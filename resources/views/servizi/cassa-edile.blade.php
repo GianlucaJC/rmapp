@@ -468,7 +468,7 @@
                 progressBar.textContent = '0%';
 
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', `/servizi/upload-single-document/${requestId}`, true);
+                xhr.open('POST', `{{ url('/servizi/upload-single-document') }}/${requestId}`, true);
                 xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
                 xhr.setRequestHeader('Accept', 'application/json');
 
@@ -517,7 +517,7 @@
             function handleDeleteDocument(requestId, filePath, button) {
                 Swal.fire({ title: 'Sei sicuro?', text: "Il file verrà eliminato definitivamente!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#c8102e', cancelButtonColor: '#6c757d', confirmButtonText: 'Sì, elimina!', cancelButtonText: 'Annulla' }).then((result) => {
                     if (result.isConfirmed) {
-                        fetch(`/servizi/delete-uploaded-document/${requestId}`, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify({ file_path: filePath }) })
+                        fetch(`{{ url('/servizi/delete-uploaded-document') }}/${requestId}`, { method: 'DELETE', headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify({ file_path: filePath }) })
                             .then(response => response.ok ? response.json() : response.json().then(err => { throw err; }))
                             .then(data => { Swal.fire({ icon: 'success', title: 'Eliminato!', text: data.message, confirmButtonColor: '#c8102e', timer: 1500 }); button.closest('.list-group-item').remove(); })
                             .catch(error => Swal.fire({ icon: 'error', title: 'Errore!', text: error.message || 'Si è verificato un errore durante l\'eliminazione.', confirmButtonColor: '#c8102e' }));
@@ -529,7 +529,7 @@
                 Swal.fire({ title: 'Confermi l\'invio?', text: "La pratica verrà inviata al funzionario per la revisione.", icon: 'question', showCancelButton: true, confirmButtonColor: '#c8102e', cancelButtonColor: '#6c757d', confirmButtonText: 'Sì, invia!', cancelButtonText: 'Annulla' }).then((result) => {
                     if (result.isConfirmed) {
                         Swal.fire({ title: 'Invio in corso...', text: 'Attendere prego', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
-                        fetch(`/servizi/resubmit-request/${requestId}`, { method: 'POST', headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' } })
+                        fetch(`{{ url('/servizi/resubmit-request') }}/${requestId}`, { method: 'POST', headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' } })
                             .then(response => { Swal.close(); return response.ok ? response.json() : response.json().then(err => { throw err; }); })
                             .then(data => { Swal.fire({ icon: 'success', title: 'Inviata!', text: data.message, confirmButtonColor: '#c8102e' }).then(() => { serviceModal.hide(); location.reload(); }); })
                             .catch(error => Swal.fire({ icon: 'error', title: 'Errore!', text: error.message || 'Si è verificato un errore.', confirmButtonColor: '#c8102e' }));
