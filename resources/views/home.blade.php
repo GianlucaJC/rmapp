@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'RmApp')
+@section('title', config('app.name', 'FILLEA CGIL'))
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="container">
