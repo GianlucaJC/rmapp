@@ -158,6 +158,23 @@
                             </div>
                         </div>
 
+                        {{-- Privacy Policy --}}
+                        <div class="row mb-3">
+                            <div class="col-md-6 offset-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input @error('privacy') is-invalid @enderror" type="checkbox" name="privacy" id="privacy" required>
+                                    <label class="form-check-label" for="privacy">
+                                        Dichiaro di aver letto e di accettare l'<a href="{{ url('/privacy-policy') }}" target="_blank">Informativa sulla Privacy</a>.
+                                    </label>
+                                    @error('privacy')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
                         {{-- Submit Button --}}
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-4">

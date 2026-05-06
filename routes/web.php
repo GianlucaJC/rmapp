@@ -28,6 +28,9 @@ Auth::routes();
 // Rotta per la dashboard utente dopo il login.
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
+// Rotta per la pagina della privacy policy
+Route::view('/privacy-policy', 'privacy-policy')->name('privacy.policy');
+
 // Rotte per le pagine dei servizi
 Route::get('/servizi', [HomeController::class, 'serviziIndex'])->name('servizi.index');
 Route::get('/servizi/cassa-edile', [HomeController::class, 'cassaEdile'])->name('servizi.cassa-edile');
