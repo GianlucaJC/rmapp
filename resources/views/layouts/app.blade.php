@@ -12,7 +12,7 @@
     <meta name="theme-color" content="#dc3545">
 
     <!-- PWA Manifest -->
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <link rel="manifest" href="{{ asset('manifest.json') }}?v={{ time() }}">
 
     <!-- iOS Icons -->
     <link rel="apple-touch-icon" href="{{ asset('images/icons/icon-192x192.png') }}">

@@ -1,7 +1,7 @@
 {
   "name": "FILLEA CGIL LazioAPP",
   "short_name": "LazioAPP",
-  "start_url": "/rmapp/",
+  "start_url": "/rmapp/public/home",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#dc3545",
