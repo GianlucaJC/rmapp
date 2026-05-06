@@ -270,7 +270,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: `/admin/service-requests/${serviceRequestId}/assign`,
+                            url: `{{ url('admin/service-requests') }}/${serviceRequestId}/assign`,
                             method: 'POST',
                             data: {
                                 _token: csrfToken,
