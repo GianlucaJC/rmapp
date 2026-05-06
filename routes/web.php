@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\Auth\LoginController as AdminLoginController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ServiceRequestController; // Import the new controller
+use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\HomeController; // Assicurati di importare il controller
 
 /*
@@ -51,6 +52,12 @@ Route::post('/servizi/upload-single-document/{serviceRequest}', [HomeController:
 // Nuova rotta per l'eliminazione di un singolo documento via AJAX
 Route::delete('/servizi/delete-uploaded-document/{serviceRequest}', [HomeController::class, 'deleteUploadedDocument'])
     ->middleware('auth')->name('servizi.delete-uploaded-document');
+
+// Rotte per la gestione delle iscrizioni alle notifiche push
+Route::middleware('auth')->group(function () {
+    Route::post('/push-subscriptions', [PushSubscriptionController::class, 'store'])->name('push.store');
+    Route::post('/push-subscriptions/delete', [PushSubscriptionController::class, 'destroy'])->name('push.destroy');
+});
 
 // Admin Routes
 Route::prefix('admin')->name('admin.')->group(function () {

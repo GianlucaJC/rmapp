@@ -4,8 +4,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Colore della barra degli indirizzi su mobile -->
-    <meta name="theme-color" content="#cc0000">
+    <!-- PWA & Mobile Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="LazioAPP">
+    <meta name="theme-color" content="#dc3545">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+
+    <!-- iOS Icons -->
+    <link rel="apple-touch-icon" href="{{ asset('images/icons/icon-192x192.png') }}">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -271,6 +281,176 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    console.log('Service Worker registrato con successo.');
+                }, function(err) {
+                    console.error('Registrazione del Service Worker fallita: ', err);
+                });
+            });
+        }
+    </script>
+
+    <!-- PWA Install Prompt Modal -->
+    <div class="modal fade" id="pwaInstallModal" tabindex="-1" aria-labelledby="pwaInstallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white" data-bs-theme="dark"> {{-- Aggiunto data-bs-theme="dark" per un pulsante di chiusura bianco --}}
+                    <h5 class="modal-title" id="pwaInstallModalLabel">Installa l'App FILLEA CGIL Lazio!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>Aggiungi la nostra applicazione alla schermata Home del tuo dispositivo per un accesso rapido e un'esperienza migliore!</p>
+                    <i class="bi bi-phone-fill fs-1 text-primary my-3"></i>
+                    <p class="text-muted">Non perdere le ultime novità e i servizi dedicati.</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="dismissPWAButton">No, grazie</button>
+                    <button type="button" class="btn btn-primary" id="installPWAButton">Installa Ora</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let deferredPrompt; // Variabile per memorizzare l'evento beforeinstallprompt
+
+        // Ascolta l'evento beforeinstallprompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Impedisce alla mini-infobar predefinita del browser di apparire
+            e.preventDefault();
+            // Memorizza l'evento in modo che possa essere attivato in seguito
+            deferredPrompt = e;
+            // Mostra il nostro prompt personalizzato dopo un ritardo, solo se non è stato precedentemente ignorato
+            if (localStorage.getItem('pwa_install_prompt_dismissed') !== 'true') {
+                setTimeout(() => {
+                    const installModal = new bootstrap.Modal(document.getElementById('pwaInstallModal'));
+                    installModal.show();
+                }, 5000); // Ritardo di 5 secondi
+            }
+        });
+
+        // Listener per il pulsante di installazione personalizzato
+        document.getElementById('installPWAButton').addEventListener('click', () => {
+            const installModal = bootstrap.Modal.getInstance(document.getElementById('pwaInstallModal'));
+            if (installModal) installModal.hide();
+
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'dismissed') {
+                        localStorage.setItem('pwa_install_prompt_dismissed', 'true'); // Memorizza che l'utente ha ignorato il prompt
+                    }
+                    deferredPrompt = null; // Pulisce l'evento memorizzato
+                });
+            }
+        });
+
+        // Listener per il pulsante di chiusura personalizzato
+        document.getElementById('dismissPWAButton').addEventListener('click', () => {
+            localStorage.setItem('pwa_install_prompt_dismissed', 'true'); // Memorizza che l'utente ha ignorato il prompt
+        });
+
+        // Opzionale: Ascolta l'evento `appinstalled` per sapere quando l'utente ha installato con successo la PWA
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA installata con successo!');
+            const installModal = bootstrap.Modal.getInstance(document.getElementById('pwaInstallModal'));
+            if (installModal) installModal.hide();
+            localStorage.removeItem('pwa_install_prompt_dismissed'); // Rimuove il flag di ignorato se l'app è stata installata
+        });
+    </script>
+
+    @auth
+    <script>
+        // Logica per le notifiche Push
+        const vapidPublicKey = '{{ config('webpush.vapid.public_key') }}';
+        const enablePushBtn = document.getElementById('enable-push-notifications');
+        const disablePushBtn = document.getElementById('disable-push-notifications');
+        const unsupportedMsg = document.getElementById('push-unsupported-message');
+
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+
+        function updateUI(isSubscribed) {
+            if (isSubscribed) {
+                enablePushBtn.style.display = 'none';
+                disablePushBtn.style.display = 'inline-block';
+            } else {
+                enablePushBtn.style.display = 'inline-block';
+                disablePushBtn.style.display = 'none';
+            }
+        }
+
+        async function checkSubscription() {
+            const registration = await navigator.serviceWorker.ready;
+            const subscription = await registration.pushManager.getSubscription();
+            updateUI(!!subscription);
+            return subscription;
+        }
+
+        async function subscribeUser() {
+            const registration = await navigator.serviceWorker.ready;
+            try {
+                const subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
+                });
+
+                // Invia la sottoscrizione al backend
+                await fetch('{{ route('push.store') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(subscription)
+                });
+                updateUI(true);
+                Swal.fire('Successo', 'Notifiche abilitate!', 'success');
+            } catch (err) {
+                console.error('Failed to subscribe the user: ', err);
+                Swal.fire('Errore', 'Impossibile abilitare le notifiche.', 'error');
+            }
+        }
+
+        async function unsubscribeUser() {
+            const subscription = await checkSubscription();
+            if (subscription) {
+                await subscription.unsubscribe();
+                // Invia la richiesta di cancellazione al backend
+                await fetch('{{ route('push.destroy') }}', {
+                    method: 'POST', // Usiamo POST con _method per il DELETE
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ endpoint: subscription.endpoint })
+                });
+                updateUI(false);
+                Swal.fire('Disabilitate', 'Le notifiche sono state disabilitate.', 'info');
+            }
+        }
+
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+            enablePushBtn.addEventListener('click', subscribeUser);
+            disablePushBtn.addEventListener('click', unsubscribeUser);
+            checkSubscription();
+        } else {
+            unsupportedMsg.style.display = 'block';
+        }
+    </script>
+    @endauth
 
     @stack('scripts')
 
