@@ -4,6 +4,8 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Session\TokenMismatchException; // Import the exception
+use Illuminate\Support\Facades\Redirect; // Import Redirect facade
 
 class Handler extends ExceptionHandler
 {
@@ -26,5 +28,33 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Throwable  $exception
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Throwable
+     */
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof TokenMismatchException) {
+            // Determine the appropriate redirect route based on the request path
+            if ($request->is('admin/*')) {
+                return Redirect::route('admin.login')->withErrors([
+                    'csrf_token' => 'La sessione amministrativa è scaduta o il token di sicurezza non è valido. Riprova.'
+                ]);
+            }
+
+            // For regular user requests
+            return Redirect::route('login')->withErrors([
+                'csrf_token' => 'La sessione è scaduta o il token di sicurezza non è valido. Riprova.'
+            ]);
+        }
+
+        return parent::render($request, $exception);
     }
 }
