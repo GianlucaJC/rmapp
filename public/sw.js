@@ -7,10 +7,10 @@ self.addEventListener('push', function (event) {
         const title = data.title || 'Nuova Notifica';
         const options = {
             body: data.body,
-            icon: data.icon || '/images/icons/icon-192x192.png', // Icona di default
-            badge: data.badge || '/images/icons/icon-192x192.png', // Badge per Android
+            icon: data.icon || '/rmapp/images/icons/icon-192x192.png', // Icona di default
+            badge: data.badge || '/rmapp/images/icons/icon-192x192.png', // Badge per Android
             data: {
-                url: data.url || '/' // URL da aprire al click
+                url: data.url || '/rmapp/' // URL da aprire al click (home page dell'app)
             }
         };
         event.waitUntil(self.registration.showNotification(title, options));
