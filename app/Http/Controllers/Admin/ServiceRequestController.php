@@ -12,6 +12,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Log; // Import Log facade
 use Illuminate\Support\Facades\Storage; // Import Storage facade
 use Illuminate\Support\Facades\Mail; // Import Mail facade
+use App\Notifications\ServiceRequestUpdated;
 
 class ServiceRequestController extends Controller
 {
@@ -96,48 +97,57 @@ class ServiceRequestController extends Controller
         $serviceRequest->admin_notes = $request->input('admin_notes');
         $serviceRequest->save();
 
-        // Invia notifica all'utente se lo stato cambia a 'Richiesta integrazione'
-        // o qualsiasi altro stato che richiede l'attenzione dell'utente.
-        // Per ora, ci concentriamo su 'Richiesta integrazione' come "sblocco".
-        if ($oldStatus !== $serviceRequest->status && $serviceRequest->user && $serviceRequest->user->email) {
-            $apiUrl = 'https://www.filleaoffice.it:8013/auth_mail/api_send_mail.php';
-            $client = new Client();
-
+        // Invia notifiche (email e push) se lo stato è cambiato e l'utente esiste
+        if ($oldStatus !== $serviceRequest->status && $serviceRequest->user) {
+            // Invia la notifica PUSH
             try {
-                $userMailable = new ServiceRequestStatusUpdateMail($serviceRequest);
-                $userSubject = $userMailable->envelope()->subject;
-                // Renderizza la vista Blade in una stringa HTML
-                $userBody = view($userMailable->content()->view, [
-                    'serviceRequest' => $userMailable->serviceRequest,
-                ])->render();
-
-                // Ricodifica il corpo dell'email in ISO-8859-1 per compatibilità con l'API esterna
-                $userBody = mb_convert_encoding($userBody, 'ISO-8859-1', 'UTF-8');
-
-                $responseUser = $client->post($apiUrl, [
-                    'form_params' => [
-                        'to' => $serviceRequest->user->email,
-                        'subject' => $userSubject,
-                        'message' => $userBody,
-                        'from' => "LazioAPP",
-                    ]
-                ]);
-
-                $resultUser = json_decode($responseUser->getBody()->getContents(), true);
-
-                if (!isset($resultUser['status']) || $resultUser['status'] !== 'success') {
-                    throw new \Exception('Errore nell\'invio dell\'email di notifica all\'utente: ' . ($resultUser['message'] ?? 'Errore sconosciuto dall\'API.'));
-                }
-            } catch (RequestException $e) {
-                $errorMessage = $e->getMessage();
-                if ($e->hasResponse()) {
-                    $errorMessage .= ' - Risposta API: ' . $e->getResponse()->getBody()->getContents();
-                }
-                Log::error('Errore Guzzle nell\'invio email di stato tramite API per SR ' . $serviceRequest->id . ': ' . $errorMessage);
-                return redirect()->back()->with('error', 'Richiesta aggiornata, ma l\'email di notifica all\'utente non è stata inviata a causa di un errore di comunicazione: ' . $errorMessage);
+                $serviceRequest->user->notify(new ServiceRequestUpdated($serviceRequest));
             } catch (\Exception $e) {
-                Log::error('Errore logico nell\'invio email di stato tramite API per SR ' . $serviceRequest->id . ': ' . $e->getMessage());
-                return redirect()->back()->with('error', 'Richiesta aggiornata, ma l\'email di notifica all\'utente non è stata inviata a causa di un errore interno: ' . $e->getMessage());
+                // Logga l'errore della notifica push ma non bloccare il flusso principale
+                Log::error('Errore nell\'invio della notifica push per SR ' . $serviceRequest->id . ': ' . $e->getMessage());
+            }
+
+            // Invia la notifica EMAIL se l'utente ha un indirizzo email
+            if ($serviceRequest->user->email) {
+                $apiUrl = 'https://www.filleaoffice.it:8013/auth_mail/api_send_mail.php';
+                $client = new Client();
+
+                try {
+                    $userMailable = new ServiceRequestStatusUpdateMail($serviceRequest);
+                    $userSubject = $userMailable->envelope()->subject;
+                    // Renderizza la vista Blade in una stringa HTML
+                    $userBody = view($userMailable->content()->view, [
+                        'serviceRequest' => $userMailable->serviceRequest,
+                    ])->render();
+
+                    // Ricodifica il corpo dell'email in ISO-8859-1 per compatibilità con l'API esterna
+                    $userBody = mb_convert_encoding($userBody, 'ISO-8859-1', 'UTF-8');
+
+                    $responseUser = $client->post($apiUrl, [
+                        'form_params' => [
+                            'to' => $serviceRequest->user->email,
+                            'subject' => $userSubject,
+                            'message' => $userBody,
+                            'from' => "LazioAPP",
+                        ]
+                    ]);
+
+                    $resultUser = json_decode($responseUser->getBody()->getContents(), true);
+
+                    if (!isset($resultUser['status']) || $resultUser['status'] !== 'success') {
+                        throw new \Exception('Errore nell\'invio dell\'email di notifica all\'utente: ' . ($resultUser['message'] ?? 'Errore sconosciuto dall\'API.'));
+                    }
+                } catch (RequestException $e) {
+                    $errorMessage = $e->getMessage();
+                    if ($e->hasResponse()) {
+                        $errorMessage .= ' - Risposta API: ' . $e->getResponse()->getBody()->getContents();
+                    }
+                    Log::error('Errore Guzzle nell\'invio email di stato tramite API per SR ' . $serviceRequest->id . ': ' . $errorMessage);
+                    return redirect()->back()->with('error', 'Richiesta aggiornata, ma l\'email di notifica all\'utente non è stata inviata a causa di un errore di comunicazione: ' . $errorMessage);
+                } catch (\Exception $e) {
+                    Log::error('Errore logico nell\'invio email di stato tramite API per SR ' . $serviceRequest->id . ': ' . $e->getMessage());
+                    return redirect()->back()->with('error', 'Richiesta aggiornata, ma l\'email di notifica all\'utente non è stata inviata a causa di un errore interno: ' . $e->getMessage());
+                }
             }
         }
 
