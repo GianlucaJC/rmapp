@@ -24,7 +24,13 @@ class ServiceRequestController extends Controller
     public function getServiceRequestsData(Request $request)
     {
         if ($request->ajax()) {
-            $data = ServiceRequest::with('user'); // Eager load the user relationship
+            $currentUser = session('admin_user');
+            $data = ServiceRequest::with('user');
+
+            // Se non è un superadmin, mostra solo le richieste assegnate a lui/lei
+            if ($currentUser && !$currentUser['superadmin']) {
+                $data->where('id_funzionario', $currentUser['id']);
+            }
 
             // Apply filters
             if ($request->filled('status')) {
@@ -32,6 +38,9 @@ class ServiceRequestController extends Controller
             }
             if ($request->filled('service_type')) {
                 $data->where('service_type', $request->service_type);
+            }
+            if ($request->filled('id_funzionario') && $currentUser && $currentUser['superadmin']) {
+                $data->where('id_funzionario', $request->id_funzionario);
             }
 
             try {
@@ -77,7 +86,7 @@ class ServiceRequestController extends Controller
     public function update(Request $request, ServiceRequest $serviceRequest)
     {
         $request->validate([
-            'status' => 'required|string|in:Inviata,Richiesta integrazione,Conclusa,Rifiutata', // Definisci gli stati consentiti
+            'status' => 'required|string|in:Inviata,Richiesta integrazione,In attesa documenti,Conclusa,Rifiutata',
             'admin_notes' => 'nullable|string',
         ]);
 
@@ -134,6 +143,40 @@ class ServiceRequestController extends Controller
 
         return redirect()->route('admin.service-requests.show', $serviceRequest->id)
                          ->with('success', 'Richiesta di servizio aggiornata con successo.');
+    }
+
+    /**
+     * Assign a service request to an admin. (Superadmin only)
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\ServiceRequest  $serviceRequest
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function assign(Request $request, ServiceRequest $serviceRequest)
+    {
+        // Solo i superadmin possono riassegnare
+        if (!session('admin_user.superadmin')) {
+            return response()->json(['success' => false, 'message' => 'Azione non autorizzata.'], 403);
+        }
+
+        $request->validate([
+            'id_funzionario' => 'nullable|numeric',
+        ]);
+
+        $funzionarioId = $request->input('id_funzionario');
+
+        // Opzionale: Controlla se l'ID del funzionario è valido rispetto alla lista statica
+        if ($funzionarioId) {
+            $admins = collect(config('admins.users', []));
+            if (!$admins->contains('id', $funzionarioId)) {
+                return response()->json(['success' => false, 'message' => 'Funzionario non valido.'], 422);
+            }
+        }
+
+        $serviceRequest->id_funzionario = $funzionarioId ?: null;
+        $serviceRequest->save();
+
+        return response()->json(['success' => true, 'message' => 'Pratica riassegnata con successo.']);
     }
 
     /**

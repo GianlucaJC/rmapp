@@ -59,6 +59,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/service-requests/data', [ServiceRequestController::class, 'getServiceRequestsData'])->name('service-requests.data');
         Route::get('/service-requests/{serviceRequest}', [ServiceRequestController::class, 'show'])->name('service-requests.show');
         Route::put('/service-requests/{serviceRequest}', [ServiceRequestController::class, 'update'])->name('service-requests.update'); // Nuova rotta per l'aggiornamento
+        Route::post('/service-requests/{serviceRequest}/assign', [ServiceRequestController::class, 'assign'])->name('service-requests.assign'); // Rotta per riassegnare
         // Nuova rotta per il download di un documento specifico per una richiesta di servizio
         Route::get('/service-requests/{serviceRequest}/download-document/{filePath}', [ServiceRequestController::class, 'downloadDocument'])
             ->where('filePath', '.*')->name('service-requests.download-document'); // Permette slash nel filePath

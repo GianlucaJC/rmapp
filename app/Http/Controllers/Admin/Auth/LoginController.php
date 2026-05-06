@@ -30,8 +30,23 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
-        if ($credentials['email'] === 'adminlazio@filleacgil.it' && $credentials['password'] === 'LazioAdmin!') {
+        $staticAdmins = config('admins.users', []);
+        $loggedInUser = null;
+        foreach ($staticAdmins as $admin) {
+            if ($credentials['email'] === $admin['email'] && $credentials['password'] === $admin['password']) {
+                $loggedInUser = $admin;
+                break;
+            }
+        }
+
+        if ($loggedInUser) {
             $request->session()->put('admin_logged_in', true);
+            $request->session()->put('admin_user', [
+                'id' => $loggedInUser['id'],
+                'email' => $loggedInUser['email'],
+                'superadmin' => $loggedInUser['superadmin'],
+                'name' => $loggedInUser['name'],
+            ]);
             $request->session()->regenerate();
 
             return redirect()->intended(route('admin.dashboard'));
@@ -51,6 +66,7 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         $request->session()->forget('admin_logged_in');
+        $request->session()->forget('admin_user');
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

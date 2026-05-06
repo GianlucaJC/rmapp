@@ -8,7 +8,12 @@
         <div class="col-md-12"> {{-- Changed to col-md-12 for wider content --}}
             <div class="card shadow-sm">
                 <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">{{ __('Dashboard Amministratore') }}</h4>
+                    <h4 class="mb-0">
+                        {{ __('Dashboard Amministratore') }}
+                        @if(session('admin_user.superadmin'))
+                            <span class="badge bg-warning text-dark ms-2">Super Admin</span>
+                        @endif
+                    </h4>
                     {{-- Il pulsante di logout è stato spostato qui per coerenza con la navbar --}}
                     <a href="{{ route('admin.logout') }}" class="btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
                     <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">@csrf</form>
@@ -20,18 +25,18 @@
 
                     {{-- Filtri Generici --}}
                     <div class="row mb-3">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="filterStatus" class="form-label">Filtra per Stato:</label>
                             <select class="form-select form-select-sm" id="filterStatus">
                                 <option value="">Tutti</option>
                                 <option value="Inviata">Inviata</option>
-                                <option value="In Lavorazione">In Lavorazione</option>
-                                <option value="Approvata">Approvata</option>
+                                <option value="Richiesta integrazione">Richiesta integrazione</option>
+                                <option value="In attesa documenti">In attesa documenti</option>
+                                <option value="Conclusa">Conclusa</option>
                                 <option value="Rifiutata">Rifiutata</option>
-                                <option value="Concluso">Concluso</option>
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label for="filterServiceType" class="form-label">Filtra per servizio:</label>
                             <select class="form-select form-select-sm" id="filterServiceType">
                                 <option value="">Tutti</option>
@@ -39,7 +44,20 @@
                                 <option value="Edilcassa">Edilcassa</option>
                             </select>
                         </div>
-                        <div class="col-md-4 d-flex align-items-end">
+                        @if(session('admin_user.superadmin'))
+                        <div class="col-md-3">
+                            <label for="filterFunzionario" class="form-label">Filtra per Funzionario:</label>
+                            <select class="form-select form-select-sm" id="filterFunzionario">
+                                <option value="">Tutti</option>
+                                @foreach(config('admins.users', []) as $admin)
+                                    @if(!$admin['superadmin'])
+                                        <option value="{{ $admin['id'] }}">{{ $admin['name'] }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        @endif
+                        <div class="col-md-3 d-flex align-items-end">
                             <button id="applyFilters" class="btn btn-primary btn-sm w-100">Applica Filtri</button>
                         </div>
                     </div>
@@ -54,6 +72,9 @@
                                     <th>Servizio</th>
                                     <th>Tipo</th>
                                     <th>Stato</th>
+                                    @if(session('admin_user.superadmin'))
+                                    <th>Funzionario Assegnato</th>
+                                    @endif
                                     <th>Data Richiesta</th>
                                     <th>Azioni</th>
                                 </tr>
@@ -104,9 +125,50 @@
     <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
 
     <script>
+        // Passa le variabili PHP a JavaScript
+        const isSuperAdmin = {{ session('admin_user.superadmin') ? 'true' : 'false' }};
+        const adminUsers = @json(config('admins.users', []));
+        const csrfToken = '{{ csrf_token() }}';
+
         $(document).ready(function() {
+            // Definisci la struttura delle colonne in anticipo
+            let columns = [
+                { data: 'id', name: 'id' },
+                { data: 'user_name', name: 'user.name' },
+                { data: 'service_name', name: 'service_name' },
+                { data: 'service_type', name: 'service_type' },
+                { data: 'status', name: 'status' },
+            ];
+
+            if (isSuperAdmin) {
+                columns.push({
+                    data: 'id_funzionario',
+                    name: 'id_funzionario',
+                    orderable: false,
+                    searchable: false,
+                    render: function(data, type, row) {
+                        let select = `<select class="form-select form-select-sm assignment-dropdown" data-id="${row.id}">`;
+                        select += `<option value="">Non assegnato</option>`;
+                        adminUsers.forEach(function(admin) {
+                            // Non mostrare i superadmin come opzione di assegnazione
+                            if (!admin.superadmin) {
+                                const selected = data == admin.id ? 'selected' : ''; // Usa '==' per confronto non stretto (string vs number)
+                                select += `<option value="${admin.id}" ${selected}>${admin.name}</option>`;
+                            }
+                        });
+                        select += `</select>`;
+                        return select;
+                    }
+                });
+            }
+
+            columns.push(
+                { data: 'created_at', name: 'created_at' },
+                { data: 'actions', name: 'actions', orderable: false, searchable: false }
+            );
+
             // Inizializza DataTable
-            $('#serviceRequestsTable').DataTable({
+            const dataTable = $('#serviceRequestsTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
@@ -114,22 +176,21 @@
                     data: function (d) {
                         d.status = $('#filterStatus').val();
                         d.service_type = $('#filterServiceType').val();
+                        if (isSuperAdmin) {
+                            d.id_funzionario = $('#filterFunzionario').val();
+                        }
                     }
                 },
-                columns: [
-                    { data: 'id', name: 'id' },
-                    { data: 'user_name', name: 'user.name' }, // 'user.name' per accedere alla relazione
-                    { data: 'service_name', name: 'service_name' },
-                    { data: 'service_type', name: 'service_type' },
-                    { data: 'status', name: 'status' },
-                    { data: 'created_at', name: 'created_at' },
-                    { data: 'actions', name: 'actions', orderable: false, searchable: false },
-                ],
+                columns: columns, // Passa l'array di colonne completo
                 columnDefs: [
                     {
                         targets: 1, // Colonna "Utente"
                         render: function(data, type, row) {
-                            return '<a href="#" class="user-details-link" data-user-id="' + row.user.id + '">' + data + '</a>';
+                            // Aggiunto controllo per evitare errori se l'utente è stato cancellato
+                            if (row.user) {
+                                return '<a href="#" class="user-details-link" data-user-id="' + row.user.id + '">' + data + '</a>';
+                            }
+                            return data; // Ritorna solo il nome (es. 'N/A') se l'utente non esiste
                         }
                     },
                     {
@@ -142,13 +203,20 @@
                     }
                 ],
                 language: {
-                    url: '{{ asset('js/datatables/i18n/Italian.json') }}'
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/Italian.json'
                 }
             });
 
             // Applica filtri al click del bottone
             $('#applyFilters').on('click', function() {
-                $('#serviceRequestsTable').DataTable().ajax.reload();
+                dataTable.ajax.reload();
+            });
+
+            // Gestione riassegnazione
+            $('#serviceRequestsTable').on('change', '.assignment-dropdown', function() {
+                const serviceRequestId = $(this).data('id');
+                const newAssigneeId = $(this).val();
+                reassignRequest(serviceRequestId, newAssigneeId);
             });
 
             // Handle click on user name to show modal
@@ -187,6 +255,33 @@
                 });
             });
 
+            function reassignRequest(serviceRequestId, funzionarioId) {
+                const admin = adminUsers.find(u => u.id == funzionarioId);
+                const adminName = admin ? admin.name : 'nessuno';
+                Swal.fire({
+                    title: 'Sei sicuro?',
+                    text: `Vuoi riassegnare questa pratica a ${adminName}?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sì, riassegna!',
+                    cancelButtonText: 'Annulla'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/admin/service-requests/${serviceRequestId}/assign`,
+                            method: 'POST',
+                            data: {
+                                _token: csrfToken,
+                                id_funzionario: funzionarioId
+                            },
+                            success: (response) => Swal.fire('Riassegnata!', response.message, 'success'),
+                            error: (xhr) => Swal.fire('Errore!', xhr.responseJSON.message || 'Si è verificato un errore.', 'error')
+                        });
+                    }
+                });
+            }
         });
     </script>
     <style>

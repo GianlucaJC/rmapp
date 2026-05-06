@@ -113,7 +113,7 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md shadow-sm @if(session('admin_user.superadmin')) navbar-dark bg-danger @else navbar-light bg-white @endif">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/home') }}">
                     {{-- SVG Logo FILLEA CGIL --}}
@@ -169,7 +169,10 @@
                         @if (session()->has('admin_logged_in') && session()->get('admin_logged_in'))
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.dashboard') }}" title="Dashboard Admin">
-                                    <i class="bi bi-speedometer2 fs-5"></i> Dashboard Admin
+                                    <i class="bi bi-speedometer2 fs-5"></i> Dashboard
+                                    @if(session('admin_user.superadmin'))
+                                        <span class="badge bg-warning text-dark ms-1">Super Admin</span>
+                                    @endif
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -177,6 +180,13 @@
                                     <i class="bi bi-people fs-5"></i> Gestione Utenti
                                 </a>
                             </li>
+                            @if(session('admin_user.superadmin'))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" title="Area Superadmin"> {{-- Link temporaneo --}}
+                                        <i class="bi bi-shield-lock-fill fs-5"></i> Area Superadmin
+                                    </a>
+                                </li>
+                            @endif
                             <li class="nav-item border-start ms-2 ps-2">
                                 <a class="nav-link" href="{{ route('admin.logout') }}" title="Logout Admin"
                                    onclick="event.preventDefault(); document.getElementById('admin-logout-form').submit();">
