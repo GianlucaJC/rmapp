@@ -283,7 +283,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        if ('serviceWorker' in navigator) {
+        if ('serviceWorker' in navigator) { // Questo blocco di registrazione del Service Worker è corretto e va mantenuto
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('{{ asset('sw.js') }}').then(function(registration) {
                     console.log('Service Worker registrato con successo.');
@@ -294,6 +294,7 @@
         }
     </script>
 
+    {{-- Il modal e lo script JavaScript per il prompt di installazione PWA --}}
     <!-- PWA Install Prompt Modal -->
     <div class="modal fade" id="pwaInstallModal" tabindex="-1" aria-labelledby="pwaInstallModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -315,76 +316,7 @@
         </div>
     </div>
 
-    <script>
-        let deferredPrompt; // Variabile per memorizzare l'evento beforeinstallprompt
-
-        // Ascolta l'evento beforeinstallprompt
-        window.addEventListener('beforeinstallprompt', (e) => {
-            // Impedisce alla mini-infobar predefinita del browser di apparire
-            e.preventDefault();
-            // Memorizza l'evento in modo che possa essere attivato in seguito
-            deferredPrompt = e;
-            // Mostra il nostro prompt personalizzato dopo un ritardo, solo se non è stato precedentemente ignorato
-            if (localStorage.getItem('pwa_install_prompt_dismissed') !== 'true') {
-                setTimeout(() => {
-                    const installModal = new bootstrap.Modal(document.getElementById('pwaInstallModal'));
-                    installModal.show();
-                }, 5000); // Ritardo di 5 secondi
-            }
-        });
-
-        // Listener per il pulsante di installazione personalizzato
-        document.getElementById('installPWAButton').addEventListener('click', () => {
-            const installModal = bootstrap.Modal.getInstance(document.getElementById('pwaInstallModal'));
-            if (installModal) installModal.hide();
-
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'dismissed') {
-                        localStorage.setItem('pwa_install_prompt_dismissed', 'true'); // Memorizza che l'utente ha ignorato il prompt
-                    }
-                    deferredPrompt = null; // Pulisce l'evento memorizzato
-                });
-            }
-        });
-
-        // Listener per il pulsante di chiusura personalizzato
-        document.getElementById('dismissPWAButton').addEventListener('click', () => {
-            localStorage.setItem('pwa_install_prompt_dismissed', 'true'); // Memorizza che l'utente ha ignorato il prompt
-        });
-
-        // Opzionale: Ascolta l'evento `appinstalled` per sapere quando l'utente ha installato con successo la PWA
-        window.addEventListener('appinstalled', () => {
-            console.log('PWA installata con successo!');
-            const installModal = bootstrap.Modal.getInstance(document.getElementById('pwaInstallModal'));
-            if (installModal) installModal.hide();
-            localStorage.removeItem('pwa_install_prompt_dismissed'); // Rimuove il flag di ignorato se l'app è stata installata
-        });
-    </script>
-
-    <!-- PWA Install Prompt Modal -->
-    <div class="modal fade" id="pwaInstallModal" tabindex="-1" aria-labelledby="pwaInstallModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white" data-bs-theme="dark"> {{-- Aggiunto data-bs-theme="dark" per un pulsante di chiusura bianco --}}
-                    <h5 class="modal-title" id="pwaInstallModalLabel">Installa l'App FILLEA CGIL Lazio!</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <p>Aggiungi la nostra applicazione alla schermata Home del tuo dispositivo per un accesso rapido e un'esperienza migliore!</p>
-                    <i class="bi bi-phone-fill fs-1 text-primary my-3"></i>
-                    <p class="text-muted">Non perdere le ultime novità e i servizi dedicati.</p>
-                </div>
-                <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="dismissPWAButton">No, grazie</button>
-                    <button type="button" class="btn btn-primary" id="installPWAButton">Installa Ora</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
+    <script> {{-- Questo è il blocco di script che contiene la logica per il prompt di installazione PWA --}}
         let deferredPrompt; // Variabile per memorizzare l'evento beforeinstallprompt
 
         // Ascolta l'evento beforeinstallprompt
