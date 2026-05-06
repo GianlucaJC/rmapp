@@ -7,42 +7,28 @@
     <div class="row justify-content-center">
         {{-- Sezione visibile solo agli utenti autenticati per le loro richieste di servizio --}}
         @auth
-            <div class="col-md-12 mb-5">
+            <div class="col-md-12 mb-5"> {{-- La card delle richieste di servizio --}}
                 <div class="card">
-                    <div class="card-header">{{ __('Le tue richieste di servizio') }}</div>
-                    <div class="card-body">
-                        @if (session('status'))
-                            <div class="alert alert-success" role="alert">
-                                {{ session('status') }}
-                            </div>
+                    {{-- Header della card, cliccabile per espandere/comprimere --}}
+                    <div class="card-header d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#serviceRequestsCollapse" aria-expanded="false" aria-controls="serviceRequestsCollapse">
+                        <h5 class="mb-0">{{ __('Le tue richieste di servizio') }}</h5>
+                        @if (!$serviceRequests->isEmpty())
+                            <span class="badge bg-primary rounded-pill">{{ $serviceRequests->count() }}</span>
                         @endif
-                        @if (session('success'))
-                            <div class="alert alert-success" role="alert">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-                        @if (session('error'))
-                            <div class="alert alert-danger" role="alert">
-                                {{ session('error') }}
-                            </div>
-                        @endif
+                    </div>
 
-                        {{-- Sezione Notifiche Push --}}
-                        <div class="alert alert-light border" role="alert">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="alert-heading">Rimani aggiornato!</h6>
-                                    <p class="mb-0">Abilita le notifiche push per ricevere aggiornamenti in tempo reale sullo stato delle tue pratiche.</p>
+                    {{-- Contenuto della card, inizialmente nascosto --}}
+                    <div id="serviceRequestsCollapse" class="collapse">
+                        <div class="card-body">
+                            @if (session('status'))
+                                <div class="alert alert-success" role="alert">
+                                    {{ session('status') }}
                                 </div>
-                                <button class="btn btn-primary" id="enable-push-notifications" style="display: none;">Abilita Notifiche</button>
-                                <button class="btn btn-danger" id="disable-push-notifications" style="display: none;">Disabilita Notifiche</button>
-                                <p id="push-unsupported-message" class="text-muted mb-0" style="display: none;">Le notifiche push non sono supportate su questo browser.</p>
-                            </div>
-                        </div>
-
-                        @if ($serviceRequests->isEmpty())
-                            <p>Non hai richieste di servizio attive.</p>
-                        @else
+                            @endif
+    
+                            @if ($serviceRequests->isEmpty())
+                                <p>Non hai richieste di servizio attive.</p>
+                            @else
                             <div class="list-group">
                                 @foreach ($serviceRequests as $request)
                                     <div class="list-group-item list-group-item-action flex-column align-items-start mb-3">
@@ -61,6 +47,7 @@
                                 @endforeach
                             </div>
                         @endif
+                        </div>
                     </div>
                 </div>
             </div>

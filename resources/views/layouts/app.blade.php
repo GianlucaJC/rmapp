@@ -241,6 +241,14 @@
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                         @csrf
                                     </form>
+
+                                    {{-- Opzioni Notifiche Push --}}
+                                    <div class="dropdown-divider"></div>
+                                    <h6 class="dropdown-header">Notifiche Push</h6>
+                                    <a class="dropdown-item" href="#" id="enable-push-notifications" style="display: none;">Abilita Notifiche</a>
+                                    <a class="dropdown-item" href="#" id="disable-push-notifications" style="display: none;">Disabilita Notifiche</a>
+                                    <span class="dropdown-item-text text-muted" id="push-unsupported-message" style="display: none;">Notifiche non supportate</span>
+
                                 </div>
                             </li>
                             @endguest
