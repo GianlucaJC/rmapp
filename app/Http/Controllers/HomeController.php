@@ -231,23 +231,13 @@ class HomeController extends Controller
         }
         // --- Fine gestione dati e file ---
 
-        // Trova il primo admin non-superadmin a cui assegnare la richiesta
-        $admins = config('admins.users', []);
-        $defaultAssignee = null;
-        foreach ($admins as $admin) {
-            if (!$admin['superadmin']) {
-                $defaultAssignee = $admin['id'];
-                break;
-            }
-        }
-
         $serviceRequest = ServiceRequest::create([
             'user_id' => $user->id,
             'service_type' => $serviceType,
             'service_name' => $serviceTitle,
             'service_description' => $serviceDescription,
             'status' => 'Inviata',
-            'id_funzionario' => $defaultAssignee,
+            'id_funzionario' => $user->id_funzionario,
             'additional_data' => count($additionalData) > 0 ? $additionalData : null,
         ]);
 

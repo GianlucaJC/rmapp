@@ -15,6 +15,7 @@ class ServiceRequest extends Model
         'service_name',
         'service_description',
         'status',
+        'id_funzionario',
         'additional_data',
     ];
 

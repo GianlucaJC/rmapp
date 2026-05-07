@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Password;
 
 class RegisterController extends Controller
@@ -58,6 +60,7 @@ class RegisterController extends Controller
             'job_title' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()->symbols()],
+            'privacy' => ['accepted'],
         ]);
     }
 
@@ -69,6 +72,30 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $id_funzionario = 1; // Valore di default (Fabio Damiani)
+
+        try {
+            // Esempio di query sulla seconda connessione DB per trovare il funzionario.
+            // Adatta 'mysql_other', 'mappatura_utenti_funzionari', 'cf_utente' e 'id_funzionario_ref'
+            // in base alla tua configurazione e struttura del DB.
+            $codiceFiscale = strtoupper($data['codice_fiscale']);
+
+            $mapping = DB::connection('mysql_other')
+                ->table('mappatura_utenti_funzionari')
+                ->where('cf_utente', $codiceFiscale)
+                ->first();
+
+            if ($mapping) {
+                $id_funzionario = $mapping->id_funzionario_ref;
+            }
+
+        } catch (\Exception $e) {
+            // È una buona pratica loggare l'errore se la connessione al secondo DB fallisce,
+            // senza però bloccare la registrazione dell'utente.
+            Log::error('Errore durante la connessione al DB secondario per assegnazione funzionario: ' . $e->getMessage());
+            // La registrazione procederà con id_funzionario = null.
+        }
+
         return User::create([
             'name' => $data['name'],
             'last_name' => $data['last_name'],
@@ -78,6 +105,7 @@ class RegisterController extends Controller
             'job_title' => $data['job_title'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'id_funzionario' => $id_funzionario,
         ]);
     }
 }

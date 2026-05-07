@@ -242,13 +242,13 @@
                                         @csrf
                                     </form>
 
-                                    {{-- Opzioni Notifiche Push --}}
-                                    <div class="dropdown-divider"></div>
+                                    {{-- START: Sezione Notifiche Push (temporaneamente disabilitata) --}}
+                                    {{-- <div class="dropdown-divider"></div>
                                     <h6 class="dropdown-header">Notifiche Push</h6>
                                     <a class="dropdown-item" href="#" id="enable-push-notifications" style="display: none;">Abilita Notifiche</a>
                                     <a class="dropdown-item" href="#" id="disable-push-notifications" style="display: none;">Disabilita Notifiche</a>
-                                    <span class="dropdown-item-text text-muted" id="push-unsupported-message" style="display: none;">Notifiche non supportate</span>
-
+                                    <span class="dropdown-item-text text-muted" id="push-unsupported-message" style="display: none;">Notifiche non supportate</span> --}}
+                                    {{-- END: Sezione Notifiche Push (temporaneamente disabilitata) --}}
                                 </div>
                             </li>
                             @endguest
@@ -372,7 +372,7 @@
         });
     </script>
 
-    @auth
+{{--    @auth --}} {{-- START: Blocco JavaScript Notifiche Push (temporaneamente disabilitato) --}}
     <script>
         // Logica per le notifiche Push
         const vapidPublicKey = '{{ config('webpush.vapid.public_key') }}';
@@ -459,7 +459,7 @@
             unsupportedMsg.style.display = 'block';
         }
     </script>
-    @endauth
+{{--    @endauth --}} {{-- END: Blocco JavaScript Notifiche Push (temporaneamente disabilitato) --}}
 
     @stack('scripts')
 
