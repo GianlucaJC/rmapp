@@ -31,7 +31,7 @@ class TestPushNotification extends Command
         $identifier = $this->argument('user_id_or_email');
         $serviceRequestId = $this->argument('service_request_id');
 
-        $user = User::where('id', $identifier)->orWhere('email', $identifier)->first();
+        $user = User::with('webPushSubscriptions')->where('id', $identifier)->orWhere('email', $identifier)->first();
 
         if (!$user) {
             $this->error("User with ID or email '{$identifier}' not found.");
