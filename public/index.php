@@ -14,7 +14,7 @@ define('LARAVEL_START', microtime(true));
 | often necessary in Windows environments like XAMPP.
 |
 */
-putenv('OPENSSL_CONF=C:/xampp/apache/conf/openssl.cnf');
+putenv('OPENSSL_CONF=C:/apache24/conf/openssl.cnf');
 
 /*
 |--------------------------------------------------------------------------
