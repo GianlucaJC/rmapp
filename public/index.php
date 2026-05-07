@@ -7,6 +7,17 @@ define('LARAVEL_START', microtime(true));
 
 /*
 |--------------------------------------------------------------------------
+| Fix OpenSSL Configuration Path
+|--------------------------------------------------------------------------
+|
+| Forcing the correct path for the OpenSSL configuration file. This is
+| often necessary in Windows environments like XAMPP.
+|
+*/
+putenv('OPENSSL_CONF=C:/xampp/apache/conf/openssl.cnf');
+
+/*
+|--------------------------------------------------------------------------
 | Check If The Application Is Under Maintenance
 |--------------------------------------------------------------------------
 |
