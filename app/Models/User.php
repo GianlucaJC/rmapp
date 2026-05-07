@@ -6,9 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use NotificationChannels\WebPush\PushSubscription; // Importa il modello PushSubscription (corretto)
-use Illuminate\Database\Eloquent\Relations\HasMany; // Spostato sotto per coerenza, ma non strettamente necessario
+use Laravel\Sanctum\HasApiTokens; // Mantieni questo
+use NotificationChannels\WebPush\PushSubscription; // Questo import non è strettamente necessario se usi solo la relazione del trait, ma è innocuo.
 use NotificationChannels\WebPush\HasPushSubscriptions;
 
 
@@ -50,12 +49,4 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
-    /**
-     * Get the push subscriptions for the user.
-     */
-    public function webPushSubscriptions(): HasMany
-    {
-        return $this->hasMany(PushSubscription::class); // Usa PushSubscription::class
-    }
 }

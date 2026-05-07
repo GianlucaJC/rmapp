@@ -31,14 +31,14 @@ class TestPushNotification extends Command
         $identifier = $this->argument('user_id_or_email');
         $serviceRequestId = $this->argument('service_request_id');
 
-        $user = User::with('webPushSubscriptions')->where('id', $identifier)->orWhere('email', $identifier)->first();
+        $user = User::with('pushSubscriptions')->where('id', $identifier)->orWhere('email', $identifier)->first();
 
         if (!$user) {
             $this->error("User with ID or email '{$identifier}' not found.");
             return Command::FAILURE;
         }
 
-        if ($user->webPushSubscriptions->isEmpty()) {
+        if ($user->pushSubscriptions->isEmpty()) {
             $this->info("User '{$user->email}' has no push subscriptions. Make sure the user has enabled push notifications in the browser.");
             return Command::SUCCESS;
         }
