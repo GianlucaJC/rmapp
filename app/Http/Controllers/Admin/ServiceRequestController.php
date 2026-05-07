@@ -98,13 +98,29 @@ class ServiceRequestController extends Controller
         $serviceRequest->save();
 
         // Invia notifiche (email e push) se lo stato è cambiato e l'utente esiste
+        $whatsappLink = null;
         if ($oldStatus !== $serviceRequest->status && $serviceRequest->user) {
-            // Invia la notifica PUSH
-            try {
-                $serviceRequest->user->notify(new ServiceRequestUpdated($serviceRequest));
-            } catch (\Exception $e) {
-                // Logga l'errore della notifica push ma non bloccare il flusso principale
-                Log::error('Errore nell\'invio della notifica push per SR ' . $serviceRequest->id . ': ' . $e->getMessage(), ['exception' => $e]);
+            // Sostituzione della notifica PUSH con link WhatsApp
+            // Se lo stato è "Richiesta integrazione" e l'utente ha un numero di telefono, genera il link
+            if ($serviceRequest->status === 'Richiesta integrazione' && $serviceRequest->user->phone_number) {
+                // Pulisce il numero di telefono da caratteri non numerici
+                $phoneNumber = preg_replace('/\D/', '', $serviceRequest->user->phone_number);
+
+                // Aggiunge il prefisso internazionale italiano se mancante
+                if (strlen($phoneNumber) === 10) { // Es. 3331234567
+                    $phoneNumber = '39' . $phoneNumber;
+                } elseif (str_starts_with($phoneNumber, '0039')) {
+                    $phoneNumber = substr($phoneNumber, 2);
+                }
+
+                // Prepara il messaggio
+                $message = "Gentile {$serviceRequest->user->name}, la sua pratica '{$serviceRequest->service_name}' richiede un'integrazione di documenti. La preghiamo di accedere al portale per caricare i file mancanti.";
+
+                // Codifica il messaggio per l'URL
+                $encodedMessage = urlencode($message);
+
+                // Crea il link per WhatsApp
+                $whatsappLink = "https://wa.me/{$phoneNumber}?text={$encodedMessage}";
             }
 
             // Invia la notifica EMAIL se l'utente ha un indirizzo email
@@ -151,8 +167,14 @@ class ServiceRequestController extends Controller
             }
         }
 
-        return redirect()->route('admin.service-requests.show', $serviceRequest->id)
+        $redirect = redirect()->route('admin.service-requests.show', $serviceRequest->id)
                          ->with('success', 'Richiesta di servizio aggiornata con successo.');
+
+        if ($whatsappLink) {
+            $redirect->with('whatsapp_link', $whatsappLink);
+        }
+
+        return $redirect;
     }
 
     /**
