@@ -104,7 +104,7 @@ class ServiceRequestController extends Controller
                 $serviceRequest->user->notify(new ServiceRequestUpdated($serviceRequest));
             } catch (\Exception $e) {
                 // Logga l'errore della notifica push ma non bloccare il flusso principale
-                Log::error('Errore nell\'invio della notifica push per SR ' . $serviceRequest->id . ': ' . $e->getMessage());
+                Log::error('Errore nell\'invio della notifica push per SR ' . $serviceRequest->id . ': ' . $e->getMessage(), ['exception' => $e]);
             }
 
             // Invia la notifica EMAIL se l'utente ha un indirizzo email
