@@ -16,6 +16,15 @@
             {{ session('success') }}
         </div>
     @endif
+    {{-- Blocco per visualizzare il link WhatsApp --}}
+    @if (session('whatsapp_link'))
+        <div class="alert alert-info mt-3">
+            <p class="mb-2"><strong>Azione richiesta:</strong> Invia una notifica al lavoratore tramite WhatsApp.</p>
+            <a href="{{ session('whatsapp_link') }}" target="_blank" class="btn btn-success">
+                <i class="bi bi-whatsapp"></i> Invia notifica WhatsApp
+            </a>
+        </div>
+    @endif
     @if(session('error'))
         <div class="alert alert-danger" role="alert">
             {{ session('error') }}
