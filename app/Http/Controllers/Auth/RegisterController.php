@@ -85,6 +85,7 @@ class RegisterController extends Controller
             $codiceFiscale = strtoupper($data['codice_fiscale']);
 
             $mapping = DB::connection('mysql_other')
+                ->select('denom')
                 ->table('anagrafe.t4_lazi_a')
                 ->where('codfisc', $codiceFiscale)
                 ->first();

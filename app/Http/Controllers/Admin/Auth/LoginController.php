@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -33,7 +34,7 @@ class LoginController extends Controller
         $staticAdmins = config('admins.users', []);
         $loggedInUser = null;
         foreach ($staticAdmins as $admin) {
-            if ($credentials['email'] === $admin['email'] && $credentials['password'] === $admin['password']) {
+            if ($credentials['email'] === $admin['email'] && Hash::check($credentials['password'], $admin['password'])) {
                 $loggedInUser = $admin;
                 break;
             }
