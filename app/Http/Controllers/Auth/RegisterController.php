@@ -75,20 +75,53 @@ class RegisterController extends Controller
         $id_funzionario = 1; // Valore di default (Fabio Damiani)
 
         try {
-            // Esempio di query sulla seconda connessione DB per trovare il funzionario.
-            // Adatta 'mysql_other', 'mappatura_utenti_funzionari', 'cf_utente' e 'id_funzionario_ref'
-            // in base alla tua configurazione e struttura del DB.
+        /*
+            - cercare prima l'azienda (dedotta dal nominativo) nel db rm_office/azzonamenti_custom:
+            - se c'è deduco la zona e prendo il primo utente di zona dal db frt/utenti_zona
+            - se non c'è prendo la zona tramite la regola base (vedi helper in c:\wamp\www\roma\model\helper.php) alla function select_zone()
+            (in base al primo carattere dell'azienda)
+        */
+
             $codiceFiscale = strtoupper($data['codice_fiscale']);
 
             $mapping = DB::connection('mysql_other')
-                ->table('mappatura_utenti_funzionari')
-                ->where('cf_utente', $codiceFiscale)
+                ->table('anagrafe.t4_lazi_a')
+                ->where('codfisc', $codiceFiscale)
                 ->first();
-
+            
+            $azienda="";$cf_azienda="";
             if ($mapping) {
-                $id_funzionario = $mapping->id_funzionario_ref;
+                //$id_funzionario = $mapping->id_funzionario_ref;
+                $azienda = $mapping->denom;
+                $cf_azienda = $mapping->c2;
             }
 
+            $id_zona=0;
+
+            if (strlen($cf_azienda)!=0) {
+                $mapping = DB::connection('mysql_other')
+                    ->table('rm_office.azzonamenti_custom')
+                    ->where('id_fiscale', $cf_azienda)
+                    ->first();
+                if ($mapping) {
+                    $id_zona = $mapping->zona;
+                }
+                            
+            } else {
+            $c=strtoupper(substr($azienda,0,1));
+                if ($c<="C") $id_zona=1;
+                if ($c>="D" && $c<="F") $id_zona=5;
+                if ($c>="G" && $c<="M") $id_zona=3;
+                if ($c>="N" && $c<="Z") $id_zona=7;
+            }
+
+            //id_funzionario da array statico admin da config/admins.php
+            $id_funzionario=1; //Fabio
+            if ($id_zona==1) $id_funzionario=10;
+            if ($id_zona==3) $id_funzionario=11;
+            if ($id_zona==5) $id_funzionario=12;
+            if ($id_zona==7) $id_funzionario=13;
+            
         } catch (\Exception $e) {
             // È una buona pratica loggare l'errore se la connessione al secondo DB fallisce,
             // senza però bloccare la registrazione dell'utente.
