@@ -35,7 +35,9 @@ class LoginController extends Controller
         Log::info('Tentativo di login admin per email: ' . $credentials['email']);
 
         $staticAdmins = config('admins.users', []);
+        Log::info('Utenti admin caricati dal file di configurazione:', $staticAdmins);
         $loggedInUser = null;
+
         foreach ($staticAdmins as $admin) {
             Log::info('Controllo utente admin dal file di configurazione: ' . $admin['email']);
 
