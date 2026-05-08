@@ -72,80 +72,78 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $id_funzionario = 1; // Valore di default (Fabio Damiani)
-
         try {
-        /*
-            - cercare prima l'azienda (dedotta dal nominativo) nel db rm_office/azzonamenti_custom:
-            - se c'è deduco la zona e prendo il primo utente di zona dal db frt/utenti_zona
-            - se non c'è prendo la zona tramite la regola base (vedi helper in c:\wamp\www\roma\model\helper.php) alla function select_zone()
-            (in base al primo carattere dell'azienda)
-        */
+            Log::info('Inizio processo di creazione utente per: ' . ($data['email'] ?? 'N/A'));
+            $id_funzionario = 1; // Valore di default (Fabio Damiani)
 
+            // --- Logica per determinare il funzionario ---
             $codiceFiscale = strtoupper($data['codice_fiscale']);
 
             $mapping = DB::connection('mysql_other')
                 ->table('anagrafe.t4_lazi_a')
-                ->select('denom','c2')
+                ->select('denom', 'c2')
                 ->where('codfisc', $codiceFiscale)
                 ->first();
-            
-            $azienda="";$cf_azienda="";
+
+            $azienda = "";
+            $cf_azienda = "";
             if ($mapping) {
-                //$id_funzionario = $mapping->id_funzionario_ref;
                 $azienda = $mapping->denom;
                 $cf_azienda = $mapping->c2;
             }
 
-            $id_zona=0;
+            $id_zona = 0;
 
-            if (strlen($cf_azienda)!=0) {
-                $mapping = DB::connection('mysql_other')
+            if (strlen($cf_azienda) != 0) {
+                $mappingZone = DB::connection('mysql_other')
                     ->table('rm_office.azzonamenti_custom')
                     ->select('zona')
                     ->where('id_fiscale', $cf_azienda)
                     ->first();
-                if ($mapping) {
-                    $id_zona = $mapping->zona;
+                if ($mappingZone) {
+                    $id_zona = $mappingZone->zona;
                 }
-                            
-            } 
-            // If no specific zone was found from azzonamenti_custom, determine it based on company name
+            }
+
             if ($id_zona === 0) {
                 Log::info('Nessuna zona specifica trovata per CF azienda, calcolo zona da nome azienda: ' . $azienda);
-                $c=strtoupper(substr($azienda,0,1));
-                if ($c<="C") $id_zona=1;
-                if ($c>="D" && $c<="F") $id_zona=5;
-                if ($c>="G" && $c<="M") $id_zona=3;
-                if ($c>="N" && $c<="Z") $id_zona=7;
+                $c = strtoupper(substr($azienda, 0, 1));
+                if ($c <= "C") $id_zona = 1;
+                elseif ($c >= "D" && $c <= "F") $id_zona = 5;
+                elseif ($c >= "G" && $c <= "M") $id_zona = 3;
+                elseif ($c >= "N" && $c <= "Z") $id_zona = 7;
             }
             Log::info('Zona determinata: ' . $id_zona);
 
-            //id_funzionario da array statico admin da config/admins.php
-            $id_funzionario=1; //Fabio
-            if ($id_zona==1) $id_funzionario=10;
-            if ($id_zona==3) $id_funzionario=11;
-            if ($id_zona==5) $id_funzionario=12;
-            if ($id_zona==7) $id_funzionario=13;
-            
-            Log::info('Funzionario assegnato (id_funzionario): ' . $id_funzionario);
-        } catch (\Exception $e) {
-            Log::error('Errore durante l\'assegnazione del funzionario per la registrazione utente. Verrà usato il default. Errore: ' . $e->getMessage(), [
-                'exception' => $e,
-                'codice_fiscale' => $data['codice_fiscale'] ?? 'N/A']);
-            // La registrazione procederà con id_funzionario = null.
-        }
+            if ($id_zona == 1) $id_funzionario = 10;
+            elseif ($id_zona == 3) $id_funzionario = 11;
+            elseif ($id_zona == 5) $id_funzionario = 12;
+            elseif ($id_zona == 7) $id_funzionario = 13;
 
-        return User::create([
-            'name' => $data['name'],
-            'last_name' => $data['last_name'],
-            'codice_fiscale' => strtoupper($data['codice_fiscale']),
-            'phone_number' => $data['phone_number'],
-            'contract_type' => $data['contract_type'],
-            'job_title' => $data['job_title'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'id_funzionario' => $id_funzionario,
-        ]);
+            Log::info('Funzionario assegnato (id_funzionario): ' . $id_funzionario);
+            // --- Fine logica funzionario ---
+
+            return User::create([
+                'name' => $data['name'],
+                'last_name' => $data['last_name'],
+                'codice_fiscale' => strtoupper($data['codice_fiscale']),
+                'phone_number' => $data['phone_number'],
+                'contract_type' => $data['contract_type'],
+                'job_title' => $data['job_title'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+                'id_funzionario' => $id_funzionario,
+            ]);
+
+        } catch (\Throwable $e) { // Cattura sia Exception che Error (per PHP 7+)
+            Log::error('ERRORE CRITICO DURANTE LA REGISTRAZIONE: ' . $e->getMessage(), [
+                'exception' => $e,
+                'input_data' => collect($data)->except(['password', 'password_confirmation'])->all()
+            ]);
+
+            // Interrompe la registrazione e mostra un errore 500.
+            // Questo è meglio di un fallimento silenzioso.
+            abort(500, 'Impossibile completare la registrazione a causa di un errore interno. L\'amministratore è stato notificato.');
+        }
     }
 }
