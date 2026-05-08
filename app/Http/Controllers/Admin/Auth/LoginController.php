@@ -34,7 +34,15 @@ class LoginController extends Controller
         $staticAdmins = config('admins.users', []);
         $loggedInUser = null;
         foreach ($staticAdmins as $admin) {
-            if ($credentials['email'] === $admin['email'] && Hash::check($credentials['password'], $admin['password'])) {
+            $passwordInConfig = $admin['password'];
+
+            // Check if the password from config is a valid hash. If not, perform a simple string comparison.
+            // This allows the superadmin to log in with the plain-text password from the config.
+            $passwordMatches = Hash::info($passwordInConfig)['algoName'] !== 'unknown'
+                ? Hash::check($credentials['password'], $passwordInConfig)
+                : $credentials['password'] === $passwordInConfig;
+
+            if ($credentials['email'] === $admin['email'] && $passwordMatches) {
                 $loggedInUser = $admin;
                 break;
             }
