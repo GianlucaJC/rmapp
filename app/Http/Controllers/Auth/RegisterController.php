@@ -110,7 +110,7 @@ class RegisterController extends Controller
                 }
                             
             } 
-            if ($id_zona==0) {
+            if (isnull($zona) || $id_zona==0 || strlen($zona)==0) {
                 $c=strtoupper(substr($azienda,0,1));
                 if ($c<="C") $id_zona=1;
                 if ($c>="D" && $c<="F") $id_zona=5;
