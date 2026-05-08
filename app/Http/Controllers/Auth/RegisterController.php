@@ -110,13 +110,16 @@ class RegisterController extends Controller
                 }
                             
             } 
-            if (isnull($zona) || $id_zona==0 || strlen($zona)==0) {
+            // If no specific zone was found from azzonamenti_custom, determine it based on company name
+            if ($id_zona === 0) {
+                Log::info('Nessuna zona specifica trovata per CF azienda, calcolo zona da nome azienda: ' . $azienda);
                 $c=strtoupper(substr($azienda,0,1));
                 if ($c<="C") $id_zona=1;
                 if ($c>="D" && $c<="F") $id_zona=5;
                 if ($c>="G" && $c<="M") $id_zona=3;
                 if ($c>="N" && $c<="Z") $id_zona=7;
             }
+            Log::info('Zona determinata: ' . $id_zona);
 
             //id_funzionario da array statico admin da config/admins.php
             $id_funzionario=1; //Fabio
@@ -125,10 +128,11 @@ class RegisterController extends Controller
             if ($id_zona==5) $id_funzionario=12;
             if ($id_zona==7) $id_funzionario=13;
             
+            Log::info('Funzionario assegnato (id_funzionario): ' . $id_funzionario);
         } catch (\Exception $e) {
-            // È una buona pratica loggare l'errore se la connessione al secondo DB fallisce,
-            // senza però bloccare la registrazione dell'utente.
-            Log::error('Errore durante la connessione al DB secondario per assegnazione funzionario: ' . $e->getMessage());
+            Log::error('Errore durante l\'assegnazione del funzionario per la registrazione utente. Verrà usato il default. Errore: ' . $e->getMessage(), [
+                'exception' => $e,
+                'codice_fiscale' => $data['codice_fiscale'] ?? 'N/A']);
             // La registrazione procederà con id_funzionario = null.
         }
 
