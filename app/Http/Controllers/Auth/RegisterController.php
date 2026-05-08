@@ -86,7 +86,7 @@ class RegisterController extends Controller
 
             $mapping = DB::connection('mysql_other')
                 ->table('anagrafe.t4_lazi_a')
-                ->select('denom')
+                ->select('denom','c2')
                 ->where('codfisc', $codiceFiscale)
                 ->first();
             
