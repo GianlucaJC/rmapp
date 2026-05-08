@@ -109,8 +109,9 @@ class RegisterController extends Controller
                     $id_zona = $mapping->zona;
                 }
                             
-            } else {
-            $c=strtoupper(substr($azienda,0,1));
+            } 
+            if ($id_zona==0) {
+                $c=strtoupper(substr($azienda,0,1));
                 if ($c<="C") $id_zona=1;
                 if ($c>="D" && $c<="F") $id_zona=5;
                 if ($c>="G" && $c<="M") $id_zona=3;
