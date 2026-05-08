@@ -28,6 +28,7 @@ class User extends Authenticatable
         'job_title',
         'email',
         'password',
+        'id_funzionario'
     ];
 
     /**
