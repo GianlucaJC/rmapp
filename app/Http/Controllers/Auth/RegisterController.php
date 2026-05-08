@@ -85,8 +85,8 @@ class RegisterController extends Controller
             $codiceFiscale = strtoupper($data['codice_fiscale']);
 
             $mapping = DB::connection('mysql_other')
-                ->select('denom')
                 ->table('anagrafe.t4_lazi_a')
+                ->select('denom')
                 ->where('codfisc', $codiceFiscale)
                 ->first();
             
@@ -102,6 +102,7 @@ class RegisterController extends Controller
             if (strlen($cf_azienda)!=0) {
                 $mapping = DB::connection('mysql_other')
                     ->table('rm_office.azzonamenti_custom')
+                    ->select('zona')
                     ->where('id_fiscale', $cf_azienda)
                     ->first();
                 if ($mapping) {
