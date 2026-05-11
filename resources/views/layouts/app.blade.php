@@ -277,7 +277,7 @@
         <main class="py-4">
             <div class="container">
                 <div class="text-center mb-4">
-                    <img src="{{ asset('images/logo_roma.png') }}" alt="Logo Roma" style="height: 80px; background-color: rgba(255, 255, 255, 0.4); border-radius: 8px; padding: 5px;">
+                    <img src="{{ asset('images/logo_roma.png') }}" alt="Logo Roma" style="height: 130px; background-color: rgba(255, 255, 255, 0.4); border-radius: 8px; padding: 5px;">
                 </div>
             </div>
             @yield('content')
