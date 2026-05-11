@@ -10,6 +10,7 @@ use App\Mail\ServiceRequestAdminMail;
 use App\Mail\ServiceRequestUserMail;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
@@ -34,6 +35,21 @@ class HomeController extends Controller
             $serviceRequests = ServiceRequest::where('user_id', $user->id)
                                             ->orderBy('updated_at', 'desc')
                                             ->get();
+
+            // Aggiunge un URL di dettaglio a ogni richiesta per il reindirizzamento
+            foreach ($serviceRequests as $request) {
+                $routeName = '';
+                if ($request->service_type === 'Cassa Edile') {
+                    $routeName = 'servizi.cassa-edile';
+                } elseif ($request->service_type === 'Edilcassa') {
+                    $routeName = 'servizi.edilcassa';
+                }
+
+                if ($routeName && !empty($request->service_name)) {
+                    $fragment = Str::slug($request->service_name);
+                    $request->detail_url = route($routeName) . '#' . $fragment;
+                }
+            }
         }
 
         return view('home', compact('serviceRequests'));
@@ -88,6 +104,12 @@ class HomeController extends Controller
     {
         $prestazioniCassaEdile = $this->cassaEdileData();
 
+        // Aggiunge uno 'slug' per l'ID HTML a ogni prestazione per permettere l'ancoraggio
+        foreach ($prestazioniCassaEdile as &$prestazione) {
+            $prestazione['slug'] = Str::slug($prestazione['nome']);
+        }
+        unset($prestazione); // Rompe il riferimento dell'ultima iterazione
+
         // Check for existing service requests for the authenticated user
         if (auth()->check()) {
             $user = auth()->user();
@@ -137,6 +159,12 @@ class HomeController extends Controller
     public function edilcassa(): View
     {
         $prestazioniEdilcassa = $this->edilcassaData();
+
+        // Aggiunge uno 'slug' per l'ID HTML a ogni prestazione per permettere l'ancoraggio
+        foreach ($prestazioniEdilcassa as &$prestazione) {
+            $prestazione['slug'] = Str::slug($prestazione['nome']);
+        }
+        unset($prestazione); // Rompe il riferimento dell'ultima iterazione
 
         // Check for existing service requests for the authenticated user
         if (auth()->check()) {

@@ -31,7 +31,7 @@
                             @else
                             <div class="list-group">
                                 @foreach ($serviceRequests as $request)
-                                    <div class="list-group-item list-group-item-action flex-column align-items-start mb-3">
+                                    <a href="{{ $request->detail_url ?? '#' }}" class="list-group-item list-group-item-action flex-column align-items-start mb-3 text-dark text-decoration-none">
                                         <div class="d-flex w-100 justify-content-between">
                                             <h5 class="mb-1">{{ $request->service_name }} ({{ $request->service_type }})</h5>
                                             <small class="text-muted">{{ $request->updated_at->format('d/m/Y H:i') }}</small>
@@ -43,7 +43,7 @@
                                                 <p class="mb-0">{!! nl2br(e($request->admin_notes)) !!}</p>
                                             </div>
                                         @endif
-                                    </div>
+                                    </a>
                                 @endforeach
                             </div>
                         @endif

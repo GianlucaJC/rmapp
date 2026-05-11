@@ -452,11 +452,15 @@
         }
 
         if ('serviceWorker' in navigator && 'PushManager' in window) {
-            enablePushBtn.addEventListener('click', subscribeUser);
-            disablePushBtn.addEventListener('click', unsubscribeUser);
-            checkSubscription();
+            if (enablePushBtn && disablePushBtn) {
+                enablePushBtn.addEventListener('click', subscribeUser);
+                disablePushBtn.addEventListener('click', unsubscribeUser);
+                checkSubscription();
+            }
         } else {
-            unsupportedMsg.style.display = 'block';
+            if (unsupportedMsg) {
+                unsupportedMsg.style.display = 'block';
+            }
         }
     </script>
 {{--    @endauth --}} {{-- END: Blocco JavaScript Notifiche Push (temporaneamente disabilitato) --}}
@@ -518,6 +522,38 @@
                     triggerGoogleTranslate(lang);
                 });
             });
+
+            // Gestisce l'apertura automatica di una modale se l'URL contiene un hash
+            if (window.location.hash) {
+                // Un piccolo ritardo per dare tempo alla pagina di renderizzare e allo scroll di completarsi
+                setTimeout(() => {
+                    try {
+                        console.log(`[AutoModal] Rilevato hash: ${window.location.hash}`);
+                        const elementId = window.location.hash.substring(1);
+                        const containerElement = document.getElementById(elementId);
+
+                        if (!containerElement) {
+                            console.error(`[AutoModal] ERRORE: Elemento contenitore con ID '${elementId}' non trovato.`);
+                            return;
+                        }
+                        console.log(`[AutoModal] Trovato elemento contenitore:`, containerElement);
+
+                        // Trova il pulsante "Dettagli" all'interno del contenitore
+                        const detailButton = containerElement.querySelector('.btn-show-guide');
+
+                        if (detailButton) {
+                            console.log(`[AutoModal] Trovato pulsante 'Dettagli'. Simulo il click...`, detailButton);
+                            detailButton.click();
+                            console.log(`[AutoModal] Click simulato. La modale dovrebbe aprirsi.`);
+                        } else {
+                            console.error(`[AutoModal] ERRORE: Pulsante '.btn-show-guide' non trovato all'interno di #${elementId}.`);
+                        }
+
+                    } catch (e) {
+                        console.error("[AutoModal] ERRORE CRITICO nel tentativo di aprire la modale dall'hash dell'URL:", e);
+                    }
+                }, 500);
+            }
         });
     </script>
     <!-- Script di Google Translate, caricato alla fine -->
