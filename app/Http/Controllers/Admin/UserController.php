@@ -38,7 +38,22 @@ class UserController extends Controller
                 ->addIndexColumn()
                 ->addColumn('actions', function(User $user) {
                     $editUrl = route('admin.users.edit', $user->id);
-                    return '<a href="'.$editUrl.'" class="btn btn-info btn-sm me-1"><i class="bi bi-pencil"></i> Modifica</a>';
+                    $actions = '<a href="'.$editUrl.'" class="btn btn-info btn-sm me-1"><i class="bi bi-pencil"></i> Modifica</a>';
+
+                    if ($user->phone_number) {
+                        $phoneNumber = preg_replace('/\D/', '', $user->phone_number);
+                        if (strlen($phoneNumber) === 10) {
+                            $phoneNumber = '39' . $phoneNumber;
+                        } elseif (str_starts_with($phoneNumber, '0039')) {
+                            $phoneNumber = substr($phoneNumber, 2);
+                        }
+                        $message = "Gentile {$user->name}, la contattiamo dagli uffici FILLEA CGIL.";
+                        $encodedMessage = urlencode($message);
+                        $whatsappUrl = "https://wa.me/{$phoneNumber}?text={$encodedMessage}";
+                        $actions .= ' <a href="'.$whatsappUrl.'" target="_blank" class="btn btn-success btn-sm ms-1" title="Invia messaggio WhatsApp"><i class="bi bi-whatsapp"></i></a>';
+                    }
+
+                    return $actions;
                 })
                 ->rawColumns(['actions'])
                 ->make(true);

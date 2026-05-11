@@ -35,23 +35,15 @@ class LoginController extends Controller
         Log::info('Tentativo di login admin per email: ' . $credentials['email']);
 
         $staticAdmins = config('admins.users', []);
-        Log::info('Utenti admin caricati dal file di configurazione:', $staticAdmins);
+        Log::info('Utenti admin caricati dal file di configurazione:', ['count' => count($staticAdmins)]);
         $loggedInUser = null;
 
         foreach ($staticAdmins as $admin) {
             Log::info('Controllo utente admin dal file di configurazione: ' . $admin['email']);
 
             $passwordInConfig = $admin['password'];
-
-            // Check if the password from config is a valid hash. If not, perform a simple string comparison.
-            // This allows the superadmin to log in with the plain-text password from the config.
-            $isHashed = Hash::info($passwordInConfig)['algoName'] !== 'unknown';
-            Log::info("La password per {$admin['email']} è " . ($isHashed ? 'hashata.' : 'in chiaro.'));
-
-            $passwordMatches = $isHashed
-                ? Hash::check($credentials['password'], $passwordInConfig)
-                : $credentials['password'] === $passwordInConfig;
-
+            $passwordMatches = Hash::check($credentials['password'], $passwordInConfig);
+            
             Log::info("Risultato controllo per {$admin['email']}: [Email Match: " . ($credentials['email'] === $admin['email'] ? 'sì' : 'no') . "] - [Password Match: " . ($passwordMatches ? 'sì' : 'no') . "]");
 
             if ($credentials['email'] === $admin['email'] && $passwordMatches) {

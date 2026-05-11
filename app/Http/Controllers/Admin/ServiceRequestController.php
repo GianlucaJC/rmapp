@@ -55,7 +55,22 @@ class ServiceRequestController extends Controller
                     })
                     ->addColumn('actions', function(ServiceRequest $serviceRequest) {
                         $detailUrl = route('admin.service-requests.show', $serviceRequest->id);
-                        return '<a href="'.$detailUrl.'" class="btn btn-info btn-sm me-1"><i class="bi bi-eye"></i> Dettagli</a>';
+                        $actions = '<a href="'.$detailUrl.'" class="btn btn-info btn-sm me-1"><i class="bi bi-eye"></i> Dettagli</a>';
+
+                        if ($serviceRequest->user && $serviceRequest->user->phone_number) {
+                            $phoneNumber = preg_replace('/\D/', '', $serviceRequest->user->phone_number);
+                            if (strlen($phoneNumber) === 10) {
+                                $phoneNumber = '39' . $phoneNumber;
+                            } elseif (str_starts_with($phoneNumber, '0039')) {
+                                $phoneNumber = substr($phoneNumber, 2);
+                            }
+                            $message = "Gentile {$serviceRequest->user->name}, la contattiamo in merito alla sua pratica '{$serviceRequest->service_name}'.";
+                            $encodedMessage = urlencode($message);
+                            $whatsappUrl = "https://wa.me/{$phoneNumber}?text={$encodedMessage}";
+                            $actions .= ' <a href="'.$whatsappUrl.'" target="_blank" class="btn btn-success btn-sm" title="Invia messaggio WhatsApp"><i class="bi bi-whatsapp"></i></a>';
+                        }
+
+                        return $actions;
                     })
                     ->rawColumns(['actions'])
                     ->make(true);
