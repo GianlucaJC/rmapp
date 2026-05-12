@@ -31,7 +31,8 @@
                                     @if($funzionario->telefono)
                                         <p class="card-text mb-1">
                                             <a href="tel:{{ $funzionario->telefono }}" class="text-decoration-none text-dark">
-                                                <i class="bi bi-telephone-fill text-success me-2"></i>{{ $funzionario->telefono }}
+                                                <i class="bi bi-telephone-fill text-success me-2"></i>{{ $funzionario->telefono }}<br>
+                                                <small class="d-inline d-sm-none text-muted fst-italic">(Tocca per chiamare)</small>
                                             </a>
                                         </p>
                                     @endif
@@ -41,7 +42,8 @@
                                     @if($funzionario->mail)
                                         <p class="card-text mb-0">
                                             <a href="mailto:{{ $funzionario->mail }}" class="text-decoration-none text-dark text-break">
-                                                <i class="bi bi-envelope-fill text-primary me-2"></i>{{ $funzionario->mail }}
+                                                <i class="bi bi-envelope-fill text-primary me-2"></i>{{ $funzionario->mail }}<br>
+                                                <small class="d-inline d-sm-none text-muted fst-italic">(Tocca per inviare email)</small>
                                             </a>
                                         </p>
                                     @endif
