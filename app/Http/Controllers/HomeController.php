@@ -10,6 +10,7 @@ use App\Mail\ServiceRequestAdminMail;
 use App\Mail\ServiceRequestUserMail;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class HomeController extends Controller
@@ -491,5 +492,21 @@ class HomeController extends Controller
         $serviceRequest->save();
 
         return response()->json(['message' => 'Documento eliminato con successo.']);
+    }
+
+    /**
+     * Mostra la pagina dei contatti.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function contatti(): View
+    {
+        $funzionari = DB::connection('mysql_other')
+                        ->table('bdf.dirigenti')
+                        ->where('id_regione', 8)
+                        ->select('incarico', 'nominativo', 'telefono', 'mail')
+                        ->get();
+
+        return view('contatti.index', compact('funzionari'));
     }
 }

@@ -184,32 +184,32 @@
                     <ul class="navbar-nav ms-auto align-items-center">
                         {{-- Check if Admin is logged in --}}
                         @if (session()->has('admin_logged_in') && session()->get('admin_logged_in'))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.dashboard') }}" title="Dashboard Admin">
-                                    <i class="bi bi-speedometer2 fs-5"></i> Dashboard
+                            <li class="nav-item dropdown">
+                                <a id="adminNavbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="bi bi-person-check-fill"></i> {{ session('admin_user.name') }}
                                     @if(session('admin_user.superadmin'))
                                         <span class="badge bg-warning text-dark ms-1">Super Admin</span>
                                     @endif
                                 </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('admin.users.index') }}" title="Gestione Utenti">
-                                    <i class="bi bi-people fs-5"></i> Gestione Utenti
-                                </a>
-                            </li>
-                            @if(session('admin_user.superadmin'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#" title="Area Superadmin"> {{-- Link temporaneo --}}
-                                        <i class="bi bi-shield-lock-fill fs-5"></i> Area Superadmin
+
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="adminNavbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('admin.dashboard') }}">
+                                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
                                     </a>
-                                </li>
-                            @endif
-                            <li class="nav-item border-start ms-2 ps-2">
-                                <a class="nav-link" href="{{ route('admin.logout') }}" title="Logout Admin"
-                                   onclick="event.preventDefault(); document.getElementById('admin-logout-form').submit();">
-                                    <i class="bi bi-box-arrow-right fs-5"></i>
-                                </a>
-                                <form id="admin-logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">@csrf</form>
+                                    <a class="dropdown-item" href="{{ route('admin.users.index') }}">
+                                        <i class="bi bi-people me-2"></i>Gestione Utenti
+                                    </a>
+                                    @if(session('admin_user.superadmin'))
+                                        <a class="dropdown-item" href="#"> {{-- Link temporaneo --}}
+                                            <i class="bi bi-shield-lock-fill me-2"></i>Area Superadmin
+                                        </a>
+                                    @endif
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{{ route('admin.logout') }}" onclick="event.preventDefault(); document.getElementById('admin-logout-form').submit();">
+                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                    </a>
+                                    <form id="admin-logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">@csrf</form>
+                                </div>
                             </li>
                         @else
                             {{-- Admin is NOT logged in, check for regular user --}}

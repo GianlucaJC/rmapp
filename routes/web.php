@@ -59,6 +59,9 @@ Route::get('/servizi', [HomeController::class, 'serviziIndex'])->name('servizi.i
 Route::get('/servizi/cassa-edile', [HomeController::class, 'cassaEdile'])->name('servizi.cassa-edile');
 Route::get('/servizi/edilcassa', [HomeController::class, 'edilcassa'])->name('servizi.edilcassa');
 
+// Rotta per la pagina dei contatti
+Route::get('/contatti', [HomeController::class, 'contatti'])->name('contatti.index');
+
 // Nuova rotta per l'invio delle richieste di servizio (richiede autenticazione)
 Route::post('/servizi/send-service-request', [HomeController::class, 'sendServiceRequest'])
     ->middleware('auth')

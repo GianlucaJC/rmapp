@@ -131,7 +131,7 @@
 
                 <!-- Sezione CONTATTI (Giallo) -->
                 <div class="col-md-6 col-lg-4">
-                    <a href="#" class="feature-box">
+                    <a href="{{ route('contatti.index') }}" class="feature-box">
                         <div class="card bg-warning text-dark h-100">
                             <div class="card-body text-center">
                                 <i class="bi bi-telephone-fill fs-1 mb-3"></i>
