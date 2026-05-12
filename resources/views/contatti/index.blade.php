@@ -34,6 +34,7 @@
                                             <a href="tel:{{ $funzionario->telefono }}" class="text-decoration-none text-dark">{{ $funzionario->telefono }}</a>
                                         </p>
                                     @endif
+                                    <br><hr>
                                     @if($funzionario->mail)
                                         <p class="card-text mb-0">
                                             <i class="bi bi-envelope-fill text-secondary me-2"></i>
