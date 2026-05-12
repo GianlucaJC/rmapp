@@ -30,15 +30,19 @@
                                 <div class="mt-auto pt-3">
                                     @if($funzionario->telefono)
                                         <p class="card-text mb-1">
-                                            <i class="bi bi-telephone-fill text-secondary me-2"></i>
-                                            <a href="tel:{{ $funzionario->telefono }}" class="text-decoration-none text-dark">{{ $funzionario->telefono }}</a>
+                                            <a href="tel:{{ $funzionario->telefono }}" class="text-decoration-none text-dark">
+                                                <i class="bi bi-telephone-fill text-success me-2"></i>{{ $funzionario->telefono }}
+                                            </a>
                                         </p>
                                     @endif
-                                    <br><hr>
+                                    @if($funzionario->telefono && $funzionario->mail)
+                                        <hr class="my-2">
+                                    @endif
                                     @if($funzionario->mail)
                                         <p class="card-text mb-0">
-                                            <i class="bi bi-envelope-fill text-secondary me-2"></i>
-                                            <a href="mailto:{{ $funzionario->mail }}" class="text-decoration-none text-dark text-break">{{ $funzionario->mail }}</a>
+                                            <a href="mailto:{{ $funzionario->mail }}" class="text-decoration-none text-dark text-break">
+                                                <i class="bi bi-envelope-fill text-primary me-2"></i>{{ $funzionario->mail }}
+                                            </a>
                                         </p>
                                     @endif
                                 </div>
