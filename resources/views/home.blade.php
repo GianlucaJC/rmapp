@@ -5,7 +5,6 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="container">
     <div class="row justify-content-center">
-        {{-- Sezione visibile solo agli utenti autenticati per le loro richieste di servizio --}}
         @auth
             <div class="col-md-12 mb-5"> {{-- La card delle richieste di servizio --}}
                 <div class="card">
@@ -19,30 +18,34 @@
 
                     {{-- Contenuto della card, inizialmente nascosto --}}
                     <div id="serviceRequestsCollapse" class="collapse">
+                        {{-- Sezione visibile solo agli utenti autenticati per le loro richieste di servizio --}}
                         <div class="card-body">
                             @if (session('status'))
                                 <div class="alert alert-success" role="alert">
                                     {{ session('status') }}
                                 </div>
                             @endif
-    
                             @if ($serviceRequests->isEmpty())
                                 <p>Non hai richieste di servizio attive.</p>
                             @else
+                                <p class="text-muted text-center mb-2 small"><em>Clicca su una richiesta per visualizzarne i dettagli.</em></p>
                             <div class="list-group">
                                 @foreach ($serviceRequests as $request)
-                                    <a href="{{ $request->detail_url ?? '#' }}" class="list-group-item list-group-item-action flex-column align-items-start mb-3 text-dark text-decoration-none">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <h5 class="mb-1">{{ $request->service_name }} ({{ $request->service_type }})</h5>
-                                            <small class="text-muted">{{ $request->updated_at->format('d/m/Y H:i') }}</small>
-                                        </div>
-                                        <p class="mb-1">Stato: <strong>{{ $request->status }}</strong></p>
-                                        @if ($request->admin_notes)
-                                            <div class="alert alert-info mt-2" role="alert">
-                                                <strong>Note del funzionario:</strong>
-                                                <p class="mb-0">{!! nl2br(e($request->admin_notes)) !!}</p>
+                                    <a href="{{ $request->detail_url ?? '#' }}" class="list-group-item list-group-item-action flex-column align-items-start mb-3 text-dark text-decoration-none position-relative">
+                                        <div class="pe-4">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h5 class="mb-1">{{ $request->service_name }} ({{ $request->service_type }})</h5>
+                                                <small class="text-muted flex-shrink-0 ps-2">{{ $request->updated_at->format('d/m/Y H:i') }}</small>
                                             </div>
-                                        @endif
+                                            <p class="mb-1">Stato: <strong>{{ $request->status }}</strong></p>
+                                            @if ($request->admin_notes)
+                                                <div class="alert alert-info mt-2" role="alert">
+                                                    <strong>Note del funzionario:</strong>
+                                                    <p class="mb-0">{!! nl2br(e($request->admin_notes)) !!}</p>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <i class="bi bi-chevron-right position-absolute top-50 end-0 translate-middle-y me-3 text-secondary fs-4"></i>
                                     </a>
                                 @endforeach
                             </div>
