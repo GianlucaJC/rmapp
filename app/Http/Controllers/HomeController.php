@@ -501,12 +501,37 @@ class HomeController extends Controller
      */
     public function contatti(): View
     {
+        // Definisce le zone e il loro ordine di visualizzazione
+        $zoneOrdinamento = [
+            108 => 'Roma Sud',
+            153 => 'Roma Est (Rieti)',
+            165 => 'Roma Nord (Viterbo)',
+            164 => 'Roma Centro Ovest',
+            163 => 'Frosinone-Latina',
+        ];
+
+        // Recupera i funzionari, ordinandoli alfabeticamente per nominativo
         $funzionari = DB::connection('mysql_other')
                         ->table('bdf.dirigenti')
-                        ->where('id_regione', 8)
-                        ->select('incarico', 'nominativo', 'telefono', 'mail')
+                        ->join('bdf.province', 'bdf.dirigenti.id_prov', '=', 'bdf.province.id')
+                        ->join('bdf.regioni', 'bdf.province.id_regione', '=', 'bdf.regioni.id')
+                        ->where('bdf.regioni.id', 8)
+                        ->whereIn('bdf.dirigenti.id_prov', array_keys($zoneOrdinamento))
+                        ->select('bdf.dirigenti.incarico', 'bdf.dirigenti.nominativo', 'bdf.dirigenti.telefono', 'bdf.dirigenti.mail', 'bdf.dirigenti.id_prov')
+                        ->orderBy('bdf.dirigenti.nominativo', 'asc')
                         ->get();
 
-        return view('contatti.index', compact('funzionari'));
+        // Raggruppa i funzionari per provincia
+        $funzionariGrouped = $funzionari->groupBy('id_prov');
+
+        // Crea la struttura dati finale per la vista, rispettando l'ordine delle zone
+        $funzionariPerZona = [];
+        foreach ($zoneOrdinamento as $id_prov => $nomeZona) {
+            if ($funzionariGrouped->has($id_prov)) {
+                $funzionariPerZona[$nomeZona] = $funzionariGrouped->get($id_prov);
+            }
+        }
+
+        return view('contatti.index', compact('funzionariPerZona'));
     }
 }
