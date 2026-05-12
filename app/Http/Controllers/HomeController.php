@@ -503,7 +503,7 @@ class HomeController extends Controller
     {
         // Definisce le zone e il loro ordine di visualizzazione
         $zoneOrdinamento = [
-            108 => 'Roma Sud',
+            141 => 'Roma Sud',
             153 => 'Roma Est (Rieti)',
             165 => 'Roma Nord (Viterbo)',
             164 => 'Roma Centro Ovest',
