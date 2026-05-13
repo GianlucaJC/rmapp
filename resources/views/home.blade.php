@@ -9,15 +9,15 @@
             <div class="col-md-12 mb-4"> {{-- Sezione News --}}
                 <div class="card">
                     {{-- Header della card, cliccabile per espandere/comprimere --}}
-                    <div class="card-header d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#newsCollapse" aria-expanded="true" aria-controls="newsCollapse">
+                    <div class="card-header d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#newsCollapse" aria-expanded="false" aria-controls="newsCollapse">
                         <h5 class="mb-0"><i class="bi bi-newspaper me-2"></i>{{ __('News e Aggiornamenti') }}</h5>
                         @if (isset($newsItems) && !$newsItems->isEmpty())
                             <span class="badge bg-danger rounded-pill">{{ $newsItems->count() }}</span>
                         @endif
                     </div>
 
-                    {{-- Contenuto della card, inizialmente visibile --}}
-                    <div id="newsCollapse" class="collapse show">
+                    {{-- Contenuto della card, inizialmente nascosto --}}
+                    <div id="newsCollapse" class="collapse">
                         <div class="card-body">
                             @forelse ($newsItems ?? [] as $news)
                                 <div class="news-item mb-4 pb-3 @if(!$loop->last) border-bottom @endif">
