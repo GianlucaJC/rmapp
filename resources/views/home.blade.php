@@ -136,8 +136,8 @@
 
                 <!-- Sezione SERVIZI CGIL (Rosso) -->
                 <div class="col-md-6 col-lg-4">
-                    <a href="#" class="feature-box">
-                        <div class="card bg-danger text-white h-100">
+                    <a href="#" class="feature-box" data-bs-toggle="modal" data-bs-target="#serviziCgilModal">
+                        <div class="card bg-danger text-white h-100" style="cursor: pointer;">
                             <div class="card-body text-center">
                                 <i class="bi bi-shield-check fs-1 mb-3"></i>
                                 <h5 class="card-title">SERVIZI CGIL</h5>
@@ -257,6 +257,60 @@
                     <div class="text-center mt-3">
                         <p class="mb-2">Per maggiori informazioni o assistenza:</p>
                         <a href="{{ route('contatti.index') }}" class="btn btn-success"><i class="bi bi-telephone-fill me-1"></i> Contattaci per info</a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale Servizi CGIL -->
+    <div class="modal fade" id="serviziCgilModal" tabindex="-1" aria-labelledby="serviziCgilModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="serviziCgilModalLabel"><i class="bi bi-shield-check me-2"></i>Servizi CGIL</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- CAAF CGIL -->
+                    <h4 class="text-danger mb-3">CAAF CGIL - ASSISTENZA FISCALE</h4>
+                    <p>Il CAAF offre alle persone fisiche: assistenza alla compilazione annuale della dichiarazione dei redditi (modello 730 o modello REDDITI) o delle dichiarazioni correttive e/o integrative; assistenza in caso di comunicazioni di irregolarità, avvisi di accertamento o di liquidazione, cartelle esattoriali calcolo delle imposte comunali sugli immobili e servizi (IMU/TASI); assistenza ai titolari di partiva IVA che non si avvalgono di dipendenti; compilazione e trasmissione dei modelli reddituali finalizzati all’ottenimento di prestazioni sociali legate al reddito (modelli RED-INPS); compilazione dei modelli dichiarativi relativi a indennità di frequenza, pensione o assegno sociale; compilazione della dichiarazione sostitutiva unica (DSU) al fine di ottenere l’ISEE ordinario, Minorenni, Socio sanitario, Socio sanitario residenziale o Universitario; compilazione della domanda di assegno maternità o assegno ai nucleo con tre figli minori, di esenzione o riduzione delle tariffe comunali; assistenza alla compilazione della dichiarazione di successione e delle volture catastali; assistenza negli adempimenti previsti dal contratto di lavoro per assistenti familiari.</p>
+                    <div class="text-center mt-3">
+                        <a href="{{ route('contatti.index') }}" class="btn btn-outline-danger"><i class="bi bi-telephone-fill me-1"></i> CONTATTACI PER ASSISTENZA FISCALE</a>
+                    </div>
+                    <hr class="my-4">
+
+                    <!-- PATRONATO INCA CGIL -->
+                    <h4 class="text-danger mb-3">PATRONATO INCA CGIL</h4>
+                    <p>INCA CGIL è il Patronato promosso dalla CGIL che assiste e tutela lavoratrici e lavoratori, pensionate e pensionati, cittadine e cittadini in Italia e all'estero, rendendo esigibili i loro diritti. Grazie a una straordinaria rete di prossimità, con circa 900 sedi in Italia e all’estero, le sindacaliste ed i sindacalisti della tutela individuale di INCA CGIL ti accompagnano nelle pratiche che riguardano:</p>
+                    <ul>
+                        <li>pensioni e previdenza</li>
+                        <li>disoccupazione e sostegno al reddito</li>
+                        <li>danni da lavoro (infortuni e malattie professionali)</li>
+                        <li>genitorialità</li>
+                        <li>malattia</li>
+                        <li>disabilità</li>
+                        <li>migranti in Italia</li>
+                        <li>italiane e italiani all’estero</li>
+                    </ul>
+                    <p>L’INCA CGIL è da sempre il primo patronato in Italia e all’estero per volume di attività: ogni anno assiste oltre 5 milioni di persone in Italia e più di 600.000 connazionali residenti all’estero.</p>
+                    <div class="text-center mt-3">
+                        <a href="{{ route('contatti.index') }}" class="btn btn-outline-danger"><i class="bi bi-telephone-fill me-1"></i> CONTATTACI PER IL PATRONATO INCA</a>
+                    </div>
+                    <hr class="my-4">
+
+                    <!-- UFF. VERTENZE CGIL FILLEA -->
+                    <h4 class="text-danger mb-3">UFF. VERTENZE CGIL FILLEA</h4>
+                    <p>La CGIL offre ai propri associati una serie di tutele collettive ed individuali, riguardanti lo svolgimento del rapporto di lavoro subordinato o atipico (collaborazioni, lavoro in somministrazione, associati in partecipazione). L’obiettivo che la CGIL intende perseguire è fornire al lavoratore e alla lavoratrice informazione adeguata e trasparente delle regole che determinano il rapporto che si instaura tra CGIL, Ufficio vertenze e legale di riferimento. Per specifiche norme di legge il servizio è rivolto esclusivamente agli iscritti alla CGIL. Qualora un lavoratore non sia iscritto ma intenda utilizzare questo servizio deve regolarizzare la propria posizione iscrivendosi prima dell’apertura della pratica.</p>
+                    <p>Nell’ambito delle tutela vertenziale e legale, la CGIL si avvale del lavoro svolto attraverso interventi di propri funzionari esperti e di avvocati. I servizi offerti dai nostri Ufficio vertenze e legale riguardano licenziamenti individuali, contestazioni – provvedimenti disciplinari, lavoro nero e irregolare, controllo contratto, busta paga e Tfr, recupero crediti da lavoro, trasferimenti individuali, modifica mansioni, fallimenti e procedure concorsuali, consulenza legale, infortuni, mobbing e integrità psico-fisica.</p>
+                    <div class="text-center mt-4 p-3 bg-light rounded">
+                        <h6 class="fw-bold">CHIAMACI O SCRIVICI</h6>
+                        <a href="tel:0646206631" class="btn btn-outline-success me-2 my-1"><i class="bi bi-telephone-fill me-1"></i> 06 46206631</a>
+                        <a href="tel:0646206689" class="btn btn-outline-success me-2 my-1"><i class="bi bi-telephone-fill me-1"></i> 06 46206689</a>
+                        <a href="mailto:uffvertfilleacgilrmlz@pec.it" class="btn btn-outline-primary my-1"><i class="bi bi-envelope-fill me-1"></i> uffvertfilleacgilrmlz@pec.it</a>
                     </div>
                 </div>
                 <div class="modal-footer">
