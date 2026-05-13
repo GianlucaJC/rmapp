@@ -27,25 +27,16 @@
                                 {{-- per ora disattivato  --}}
                                 <!--<h6 class="card-subtitle mb-2 text-muted">{{ $funzionario->incarico }}</h6>
                                 !-->
-                                <div class="mt-auto pt-3">
+                                <div class="mt-auto pt-3 d-grid gap-2">
                                     @if($funzionario->telefono)
-                                        <p class="card-text mb-1">
-                                            <a href="tel:{{ $funzionario->telefono }}" class="text-decoration-none text-dark">
-                                                <i class="bi bi-telephone-fill text-success me-2"></i>{{ $funzionario->telefono }}<br>
-                                                <small class="d-inline d-sm-none text-muted fst-italic">(Tocca per chiamare)</small>
-                                            </a>
-                                        </p>
-                                    @endif
-                                    @if($funzionario->telefono && $funzionario->mail)
-                                        <hr class="my-2">
+                                        <a href="tel:{{ $funzionario->telefono }}" class="btn btn-outline-success">
+                                            <i class="bi bi-telephone-fill me-2"></i>{{ $funzionario->telefono }}
+                                        </a>
                                     @endif
                                     @if($funzionario->mail)
-                                        <p class="card-text mb-0">
-                                            <a href="mailto:{{ $funzionario->mail }}" class="text-decoration-none text-dark text-break">
-                                                <i class="bi bi-envelope-fill text-primary me-2"></i>{{ $funzionario->mail }}<br>
-                                                <small class="d-inline d-sm-none text-muted fst-italic">(Tocca per inviare email)</small>
-                                            </a>
-                                        </p>
+                                        <a href="mailto:{{ $funzionario->mail }}" class="btn btn-outline-primary text-break">
+                                            <i class="bi bi-envelope-fill me-2"></i>{{ $funzionario->mail }}
+                                        </a>
                                     @endif
                                 </div>
                             </div>
