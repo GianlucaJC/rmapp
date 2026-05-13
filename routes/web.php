@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Auth\LoginController as AdminLoginController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ServiceRequestController; // Import the new controller
+use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -105,5 +106,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/users/{user}/edit', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
         Route::get('/users/{user}/details-modal', [App\Http\Controllers\Admin\UserController::class, 'getUserDetails'])->name('users.details-modal');
         Route::put('/users/{user}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
+
+        // Rotte per la gestione delle News (solo superadmin)
+        Route::resource('news', NewsController::class)->except(['show']);
     });
 });

@@ -200,8 +200,8 @@
                                         <i class="bi bi-people me-2"></i>Gestione Utenti
                                     </a>
                                     @if(session('admin_user.superadmin'))
-                                        <a class="dropdown-item" href="#"> {{-- Link temporaneo --}}
-                                            <i class="bi bi-shield-lock-fill me-2"></i>Area Superadmin
+                                        <a class="dropdown-item" href="{{ route('admin.news.index') }}">
+                                            <i class="bi bi-newspaper me-2"></i>Gestione News
                                         </a>
                                     @endif
                                     <div class="dropdown-divider"></div>
