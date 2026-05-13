@@ -110,8 +110,8 @@
 
                 <!-- Sezione PRESTAZIONI SANEDIL (Rosa) -->
                 <div class="col-md-6 col-lg-4">
-                    <a href="#" class="feature-box">
-                        <div class="card bg-pink text-white h-100">
+                    <a href="#" class="feature-box" data-bs-toggle="modal" data-bs-target="#sanedilModal">
+                        <div class="card bg-pink text-white h-100" style="cursor: pointer;">
                             <div class="card-body text-center">
                                 <i class="bi bi-heart-pulse fs-1 mb-3"></i>
                                 <h5 class="card-title">PRESTAZIONI SANEDIL</h5>
@@ -184,6 +184,41 @@
                 </div>
                 <div class="col-md-4">
                     <a href="https://www.filleacgilromalazio.it/documenti/" class="btn btn-light w-100 py-3 fw-bold">CONTRATTI E TABELLE PAGA</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale Prestazioni Sanedil -->
+    <div class="modal fade" id="sanedilModal" tabindex="-1" aria-labelledby="sanedilModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-pink text-white">
+                    <h5 class="modal-title" id="sanedilModalLabel"><i class="bi bi-heart-pulse me-2"></i>Prestazioni Sanedil</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Per conoscere nel dettaglio le prestazioni offerte, consulta la guida ufficiale del fondo sanitario.</p>
+
+                    <div class="text-center my-3">
+                        <a href="https://www.fondosanedil.it/wp-content/uploads/2025/12/Sanedil-Guida-al-Piano-Sanitario-UniSalute-2026.pdf" target="_blank" class="btn btn-primary">
+                            <i class="bi bi-file-earmark-pdf-fill me-2"></i>
+                            Sanedil-Guida-al-Piano-Sanitario-UniSalute-2026.pdf
+                        </a>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        Per le prestazioni del piano sanitario vedi pag 4-5.
+                    </div>
+                    <hr>
+                    <div class="text-center mt-3">
+                        <p class="mb-2">Per maggiori informazioni o assistenza:</p>
+                        <a href="{{ route('contatti.index') }}" class="btn btn-success"><i class="bi bi-telephone-fill me-1"></i> Contattaci per info</a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
                 </div>
             </div>
         </div>
