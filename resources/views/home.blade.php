@@ -149,8 +149,8 @@
                 
                 <!-- Sezione HAI PERSO IL LAVORO? (Rosso) -->
                 <div class="col-md-6 col-lg-4">
-                    <a href="#" class="feature-box">
-                        <div class="card bg-danger text-white h-100">
+                    <a href="#" class="feature-box" data-bs-toggle="modal" data-bs-target="#uvlModal">
+                        <div class="card bg-danger text-white h-100" style="cursor: pointer;">
                             <div class="card-body text-center">
                                 <i class="bi bi-question-circle fs-1 mb-3"></i>
                                 <h5 class="card-title">HAI PERSO IL LAVORO?</h5>
@@ -184,6 +184,48 @@
                 </div>
                 <div class="col-md-4">
                     <a href="#" class="btn btn-light w-100 py-3 fw-bold">NEWS E INIZIATIVE</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale UVL - Hai perso il lavoro? -->
+    <div class="modal fade" id="uvlModal" tabindex="-1" aria-labelledby="uvlModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="uvlModalLabel"><i class="bi bi-question-circle me-2"></i>Hai perso il lavoro?</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="lead">L’<strong>Ufficio Vertenze Legali (UVL)</strong> della Fillea Cgil ti fornisce informazioni e assistenza su:</p>
+                    <ul>
+                        <li>Dimissioni telematiche e risoluzioni consensuali del rapporto di lavoro;</li>
+                        <li>Verifica buste paga e TFR;</li>
+                        <li>Verifica corretto inquadramento contrattuale;</li>
+                        <li>Verifica versamenti Cassa Edile ed Edilcassa;</li>
+                        <li>Consulenza legale e contrattuale.</li>
+                    </ul>
+                    <hr>
+                    <p class="lead">Ti assiste, anche in sede legale, per ogni tipo di vertenza:</p>
+                    <ul>
+                        <li>Impugnativa risoluzione del rapporto di lavoro, mancata assunzione e messa a disposizione energie lavorative;</li>
+                        <li>Gestione contestazioni disciplinari;</li>
+                        <li>Lavoro nero;</li>
+                        <li>Lavoro autonomo e parasubordinato;</li>
+                        <li>Recupero stipendi arretrati;</li>
+                        <li>Recupero mancati versamenti al fondo di previdenza complementare.</li>
+                    </ul>
+                    <hr>
+                    <div class="text-center mt-4 p-3 bg-light rounded">
+                        <h6 class="fw-bold">CHIAMACI O SCRIVICI</h6>
+                        <a href="tel:0646206631" class="btn btn-outline-success me-2 my-1"><i class="bi bi-telephone-fill me-1"></i> 06 46206631</a>
+                        <a href="tel:0646206689" class="btn btn-outline-success me-2 my-1"><i class="bi bi-telephone-fill me-1"></i> 06 46206689</a>
+                        <a href="mailto:uffvertfilleacgilrmlz@pec.it" class="btn btn-outline-primary my-1"><i class="bi bi-envelope-fill me-1"></i> uffvertfilleacgilrmlz@pec.it</a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
                 </div>
             </div>
         </div>
