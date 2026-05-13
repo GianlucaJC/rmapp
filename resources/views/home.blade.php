@@ -180,10 +180,10 @@
                     <a href="#" class="btn btn-light w-100 py-3 fw-bold">FILLEA SUL TERRITORIO</a>
                 </div>
                 <div class="col-md-4">
-                    <a href="http://www.costruire.net" target="_blank" class="btn btn-light w-100 py-3 fw-bold">COSTRUIRE.NET</a>
+                    <a href="http://www.costruire.net" class="btn btn-light w-100 py-3 fw-bold">COSTRUIRE.NET</a>
                 </div>
                 <div class="col-md-4">
-                    <a href="#" class="btn btn-light w-100 py-3 fw-bold">NEWS E INIZIATIVE</a>
+                    <a href="https://www.filleacgilromalazio.it/documenti/" class="btn btn-light w-100 py-3 fw-bold">CONTRATTI E TABELLE PAGA</a>
                 </div>
             </div>
         </div>
