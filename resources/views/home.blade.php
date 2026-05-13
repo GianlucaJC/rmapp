@@ -123,8 +123,8 @@
 
                 <!-- Sezione FONDI PENSIONISTICI (Blu) -->
                 <div class="col-md-6 col-lg-4">
-                    <a href="#" class="feature-box">
-                        <div class="card bg-primary text-white h-100">
+                    <a href="#" class="feature-box" data-bs-toggle="modal" data-bs-target="#fondiPensionisticiModal">
+                        <div class="card bg-primary text-white h-100" style="cursor: pointer;">
                             <div class="card-body text-center">
                                 <i class="bi bi-piggy-bank fs-1 mb-3"></i>
                                 <h5 class="card-title">FONDI PENSIONISTICI</h5>
@@ -184,6 +184,48 @@
                 </div>
                 <div class="col-md-4">
                     <a href="https://www.filleacgilromalazio.it/documenti/" class="btn btn-light w-100 py-3 fw-bold">CONTRATTI E TABELLE PAGA</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale Fondi Pensionistici -->
+    <div class="modal fade" id="fondiPensionisticiModal" tabindex="-1" aria-labelledby="fondiPensionisticiModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="fondiPensionisticiModalLabel"><i class="bi bi-piggy-bank me-2"></i>Fondi Pensionistici</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="text-primary mb-3">Cos'è Prevedi</h4>
+                    <p>Ogni lavoratore edile soggetto al <strong>Contratto nazionale Edili-industria</strong> o <strong>Edili-artigianato</strong> riceve, dal suo datore di lavoro, un accantonamento mensile gratuito nel Fondo Prevedi, per alimentare una liquidazione integrativa a favore del lavoratore.</p>
+                    <p>Questo accantonamento gratuito si chiama "contributo contrattuale".</p>
+                    <p>Il lavoratore, inoltre, può ricevere dall'azienda l'1% in più della retribuzione mensile, in aggiunta al contributo contrattuale, per aumentare la sua posizione previdenziale integrativa nel Fondo Prevedi: per ricevere dal datore di lavoro questo contributo aggiuntivo dall'azienda il lavoratore deve inviare a Prevedi il <strong>modulo di integrazione/variazione contributiva</strong>, barrando la lettera A. modulo di integrazione contributiva.</p>
+                    <p>Le contribuzioni versate a Prevedi vengono dedotte dalle imposte sui redditi fino a <strong>5.164,57 euro annui</strong>, con conseguente risparmio fiscale per il lavoratore.</p>
+                    <p>Il funzionamento del Fondo Prevedi è regolato dal D.Lgs. n. 252 del 5 dicembre 2005 ("Disciplina delle forme pensionistiche complementari") ed è sottoposto al controllo della <strong>Commissione di Vigilanza sui Fondi Pensione (COVIP)</strong>.</p>
+                    <div class="text-center mt-3">
+                        <a href="{{ route('contatti.index') }}" class="btn btn-outline-primary"><i class="bi bi-telephone-fill me-1"></i> Contattaci per info</a>
+                    </div>
+                    <hr class="my-4">
+
+                    <h4 class="text-primary mb-3">FONDAPI</h4>
+                    <p>Il fondo per i lavoratori delle piccole e medie imprese.</p>
+                    <p>Da oltre vent'anni <strong>Fondapi</strong> è il Fondo Pensione Complementare negoziale di categoria destinato ai lavoratori e alle piccole-medie imprese; ente non-profit pensato per offrirti una sicurezza economica nel futuro.</p>
+                    <div class="text-center mt-3">
+                        <a href="{{ route('contatti.index') }}" class="btn btn-outline-primary"><i class="bi bi-telephone-fill me-1"></i> Contattaci per info</a>
+                    </div>
+                    <hr class="my-4">
+
+                    <h4 class="text-primary mb-3">PREVIDENZA COOPERATIVA</h4>
+                    <p>Siamo il fondo pensione delle lavoratrici e dei lavoratori delle cooperative e, attraverso i nostri servizi, tutti i soci e i dipendenti di ogni livello possono realizzare concretamente il proprio diritto costituzionale alla previdenza complementare.</p>
+                    <p>Forniamo un fondamentale servizio di welfare contrattuale alle cooperative e sostegno economico ai dipendenti, ai soci e alle loro famiglie, riuscendo a offrire loro condizioni agevolate, grazie alla forza negoziale della nostra unione.</p>
+                    <div class="text-center mt-3">
+                        <a href="{{ route('contatti.index') }}" class="btn btn-outline-primary"><i class="bi bi-telephone-fill me-1"></i> Contattaci per info</a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
                 </div>
             </div>
         </div>
