@@ -208,7 +208,7 @@
                             <div id="prevediCollapse" class="accordion-collapse collapse" data-bs-parent="#fondiPensionisticiAccordion">
                                 <div class="accordion-body p-0">
                                     <hr>
-                                    <h4 class="text-primary mb-3">Prevedi</h4>
+                                    <h4 class="text-primary mb-3">PREVEDI</h4>
                                     <p>Ogni lavoratore edile soggetto al <strong>Contratto nazionale Edili-industria</strong> o <strong>Edili-artigianato</strong> riceve, dal suo datore di lavoro, un accantonamento mensile gratuito nel Fondo Prevedi, per alimentare una liquidazione integrativa a favore del lavoratore.</p>
                                     <p>Questo accantonamento gratuito si chiama "contributo contrattuale".</p>
                                     <p>Il lavoratore, inoltre, può ricevere dall'azienda l'1% in più della retribuzione mensile, in aggiunta al contributo contrattuale, per aumentare la sua posizione previdenziale integrativa nel Fondo Prevedi: per ricevere dal datore di lavoro questo contributo aggiuntivo dall'azienda il lavoratore deve inviare a Prevedi il <strong>modulo di integrazione/variazione contributiva</strong>, barrando la lettera A. modulo di integrazione contributiva.</p>
