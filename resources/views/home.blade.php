@@ -6,6 +6,37 @@
 <div class="container">
     <div class="row justify-content-center">
         @auth
+            <div class="col-md-12 mb-4"> {{-- Sezione News --}}
+                <div class="card">
+                    {{-- Header della card, cliccabile per espandere/comprimere --}}
+                    <div class="card-header d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#newsCollapse" aria-expanded="true" aria-controls="newsCollapse">
+                        <h5 class="mb-0"><i class="bi bi-newspaper me-2"></i>{{ __('News e Aggiornamenti') }}</h5>
+                        @if (isset($newsItems) && !$newsItems->isEmpty())
+                            <span class="badge bg-danger rounded-pill">{{ $newsItems->count() }}</span>
+                        @endif
+                    </div>
+
+                    {{-- Contenuto della card, inizialmente visibile --}}
+                    <div id="newsCollapse" class="collapse show">
+                        <div class="card-body">
+                            @forelse ($newsItems ?? [] as $news)
+                                <div class="news-item mb-4 pb-3 @if(!$loop->last) border-bottom @endif">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1 fw-bold">{{ $news->title }}</h6>
+                                        <small class="text-muted flex-shrink-0 ps-2">{{ $news->created_at->format('d/m/Y') }}</small>
+                                    </div>
+                                    <div class="news-content mt-2 small">
+                                        {!! $news->content !!}
+                                    </div>
+                                </div>
+                            @empty
+                                <p class="text-center text-muted mb-0">Non ci sono news al momento.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-md-12 mb-5"> {{-- La card delle richieste di servizio --}}
                 <div class="card">
                     {{-- Header della card, cliccabile per espandere/comprimere --}}

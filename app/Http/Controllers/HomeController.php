@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
 use App\Models\ServiceRequest; // Import the ServiceRequest model
+use App\Models\News;
 use GuzzleHttp\Exception\RequestException;
 use App\Mail\ServiceRequestWorkerResubmittedMail; // Import the new Mailable
 use App\Mail\ServiceRequestAdminMail;
@@ -12,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -31,6 +33,8 @@ class HomeController extends Controller
         // Per ora, questa funzione restituisce semplicemente la vista 'home'.
         // Se l'utente è autenticato, recupera le sue richieste di servizio.
         $serviceRequests = collect(); // Inizializza come collezione vuota
+        $newsItems = collect(); // Inizializza come collezione vuota
+
         if (auth()->check()) {
             $user = auth()->user();
             $serviceRequests = ServiceRequest::where('user_id', $user->id)
@@ -51,9 +55,23 @@ class HomeController extends Controller
                     $request->detail_url = route($routeName) . '#' . $fragment;
                 }
             }
+
+            // Recupera le news attive da mostrare nella dashboard
+            $today = Carbon::today();
+            $newsItems = News::where('is_suspended', false)
+                ->where(function ($query) use ($today) {
+                    $query->whereNull('start_date')
+                          ->orWhere('start_date', '<=', $today);
+                })
+                ->where(function ($query) use ($today) {
+                    $query->whereNull('end_date')
+                          ->orWhere('end_date', '>=', $today);
+                })
+                ->orderBy('created_at', 'desc')
+                ->get();
         }
 
-        return view('home', compact('serviceRequests'));
+        return view('home', compact('serviceRequests', 'newsItems'));
     }
 
     /**
