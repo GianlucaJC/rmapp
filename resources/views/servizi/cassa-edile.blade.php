@@ -74,7 +74,10 @@
                   </div>
                   <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-                    <a href="#" id="modalProceedBtn" class="btn btn-success">Procedi con la presentazione</a>
+                    <div>
+                        <a href="#" id="modalProceedBtn" class="btn btn-success">Procedi con la presentazione</a>
+                        <button type="button" id="modalResubmitBtn" class="btn btn-success d-none">Invia pratica aggiornata</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -100,6 +103,7 @@
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
             const serviceModalActiveRequestInfoEl = document.getElementById('serviceModalActiveRequestInfo');
             const modalProceedBtn = document.getElementById('modalProceedBtn');
+            const modalResubmitBtn = document.getElementById('modalResubmitBtn');
 
             // Funzione per aggiornare lo stato e gli attributi data del pulsante "Procedi"
             function updateProceedButton(serviceTitle, serviceDescription, serviceType, currentStatus, requestId = null) {
@@ -144,12 +148,13 @@
                     modalTitleEl.innerHTML = serviceTitle;
                     modalDescriptionEl.innerHTML = serviceDescription;
 
-                    // Pulisce i contenitori
+                    // Pulisce i contenitori e nasconde i bottoni del footer
                     modalDocsContainerEl.innerHTML = '';
                     serviceModalActiveRequestInfoEl.innerHTML = '';
+                    modalProceedBtn.style.display = 'none';
+                    modalResubmitBtn.classList.add('d-none');
 
                     // Gestione della logica per richieste attive vs nuove richieste
-                    modalDocsContainerEl.innerHTML = ''; // Pulisce il contenuto precedente
                     if (requiredDocs.length > 0) {
                         let docsHtml = '<h6 class="text-muted">Documentazione/Dati Richiesti</h6>';
                         requiredDocs.forEach(group => {
@@ -229,12 +234,9 @@
                                     <div class="form-text" id="single-upload-feedback-modal-${activeRequestData.id}"></div>
                                 </form>
 
-                                <!-- Bottone di invio finale -->
-                                <div class="d-grid gap-2 mt-3">
-                                    <button type="button" class="btn btn-success resubmit-request-btn" data-request-id="${activeRequestData.id}">Invia pratica aggiornata</button>
-                                </div>
                             `;
-                            modalProceedBtn.style.display = 'none'; // Nasconde il bottone "Procedi" standard
+                            modalResubmitBtn.classList.remove('d-none');
+                            modalResubmitBtn.dataset.requestId = activeRequestData.id;
                         } else {
                             modalProceedBtn.style.display = 'block'; // Mostra il bottone "Procedi" standard
                         }
@@ -268,7 +270,7 @@
                             modalDocsContainerEl.style.display = 'none';
                         }
                         serviceModalActiveRequestInfoEl.style.display = 'none';
-                        modalProceedBtn.style.display = 'block'; // Mostra il bottone "Procedi" standard
+                        modalProceedBtn.style.display = 'block';
                     }
 
                     updateProceedButton(serviceTitle, serviceDescription, serviceType, currentStatus, activeRequestData ? activeRequestData.id : null);
@@ -423,7 +425,6 @@
             // --- Event Delegation for dynamic content ---
             serviceModalEl.addEventListener('click', function(e) {
                 const deleteBtn = e.target.closest('.delete-document-btn');
-                const resubmitBtn = e.target.closest('.resubmit-request-btn');
 
                 if (deleteBtn) {
                     e.preventDefault();
@@ -431,14 +432,29 @@
                     const filePath = deleteBtn.dataset.filePath;
                     handleDeleteDocument(requestId, filePath, deleteBtn);
                 }
-
-                if (resubmitBtn) {
-                    e.preventDefault();
-                    const requestId = resubmitBtn.dataset.requestId;
-                    handleResubmitRequest(requestId);
-                }
             });
 
+            modalResubmitBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const requestId = this.dataset.requestId;
+
+                const form = document.getElementById(`singleUploadFormModal-${requestId}`);
+                if (form) {
+                    const fileInput = form.querySelector('input[type="file"]');
+                    if (fileInput && fileInput.files.length > 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'File non caricato',
+                            text: 'Hai selezionato un file ma non lo hai ancora caricato. Clicca su "Carica" prima di inviare la pratica.',
+                            confirmButtonColor: '#c8102e'
+                        });
+                        return;
+                    }
+                }
+
+                handleResubmitRequest(requestId);
+            });
+            
             serviceModalEl.addEventListener('submit', function(e) {
                 if (e.target.matches('.single-upload-form-modal')) {
                     e.preventDefault();
