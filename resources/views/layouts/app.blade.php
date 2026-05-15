@@ -61,6 +61,18 @@
             background-color: #e83e8c; /* Esempio di colore rosa */
         }
 
+        /*
+         Stili per rendere il footer delle modali "sticky" in fondo.
+         Questo assicura che i pulsanti di azione (Chiudi, Procedi, etc.) siano sempre visibili
+         anche quando il contenuto della modale è molto lungo e richiede lo scroll.
+        */
+        .modal-content {
+            max-height: 85vh; /* Limita l'altezza della modale per evitare che esca dallo schermo */
+        }
+        .modal-body {
+            overflow-y: auto; /* Abilita lo scroll verticale solo per il corpo della modale */
+        }
+
         body {
             /* Colore di fallback e base per l'overlay */
             background-color: #c8102e; /* Un rosso CGIL/FILLEA */
@@ -284,7 +296,9 @@
         <main class="py-4">
             <div class="container">
                 <div class="text-center mb-4">
-                    <img src="{{ asset('images/logo_roma.png') }}" alt="Logo Roma" style="height: 130px; background-color: rgba(255, 255, 255, 0.4); border-radius: 8px; padding: 5px;">
+                    <a href="{{ route('home') }}">
+                        <img src="{{ asset('images/logo_roma.png') }}" alt="Logo Roma" style="height: 130px; background-color: rgba(255, 255, 255, 0.4); border-radius: 8px; padding: 5px;">
+                    </a>
                 </div>
             </div>
             @yield('content')
