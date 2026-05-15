@@ -68,6 +68,16 @@ Route::post('/servizi/send-service-request', [HomeController::class, 'sendServic
     ->middleware('auth')
     ->name('servizi.send-service-request');
 
+// Nuova rotta per l'invio della busta paga
+Route::post('/servizi/send-busta-paga', [HomeController::class, 'sendBustaPaga'])
+    ->middleware('auth')
+    ->name('servizi.send-busta-paga');
+
+// Nuova rotta per la richiesta iniziale di analisi busta paga (senza file)
+Route::post('/servizi/request-busta-paga-analysis', [HomeController::class, 'requestBustaPagaAnalysis'])
+    ->middleware('auth')
+    ->name('servizi.request-busta-paga-analysis');
+
 // Rotta per il re-invio della pratica da parte del lavoratore (dopo aver caricato i documenti)
 Route::post('/servizi/resubmit-request/{serviceRequest}', [HomeController::class, 'resubmitServiceRequest'])
     ->middleware('auth')->name('servizi.resubmit-request');

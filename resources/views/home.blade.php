@@ -177,11 +177,14 @@
 
             <!-- Altri link principali -->
             <div class="row justify-content-center mt-5 gy-3">
-                <div class="col-md-6">
-                    <a href="http://www.costruire.net" class="btn btn-light w-100 py-3 fw-bold">COSTRUIRE.NET</a>
+                <div class="col-md-4">
+                    <a href="http://www.costruire.net" target="_blank" class="btn btn-light w-100 py-3 fw-bold">COSTRUIRE.NET</a>
                 </div>
-                <div class="col-md-6">
-                    <a href="https://www.costruire.net/?page_id=830" class="btn btn-light w-100 py-3 fw-bold">CONTRATTI E TABELLE PAGA</a>
+                <div class="col-md-4">
+                    <a href="https://www.costruire.net/?page_id=830" target="_blank" class="btn btn-light w-100 py-3 fw-bold">CONTRATTI E TABELLE PAGA</a>
+                </div>
+                <div class="col-md-4">
+                    <a href="#" class="btn btn-info w-100 py-3 fw-bold text-white" data-bs-toggle="modal" data-bs-target="#uvlModal" data-source="busta-paga">INVIACI LA TUA BUSTA PAGA</a>
                 </div>
             </div>
         </div>
@@ -384,6 +387,73 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    {{-- Sezione per l'upload della busta paga, visibile solo se si clicca sul bottone apposito --}}
+                    <div id="bustaPagaUploadSection" style="display: none;">
+                        <h4 class="text-center text-info">Analisi Busta Paga</h4>
+
+                        @guest
+                            <div class="alert alert-warning text-center">
+                                <i class="bi bi-lock-fill me-2"></i>
+                                Per inviare la tua busta paga, devi prima <a href="{{ route('login') }}">accedere</a> o <a href="{{ route('register') }}">registrarti</a>.
+                                <br><br>
+                                In alternativa, contatta i nostri uffici per ricevere assistenza.
+                            </div>
+                        @endguest
+
+                        @auth
+                            @php
+                                // Cerca una richiesta specifica per 'Analisi Busta Paga'
+                                $bustaPagaRequest = $serviceRequests->firstWhere('service_name', 'Analisi Busta Paga');
+                            @endphp
+
+                            @if ($bustaPagaRequest && $bustaPagaRequest->status === 'Richiesta integrazione')
+                                {{-- L'utente è autorizzato a caricare, mostra il form attivo --}}
+                                <p class="text-center">Usa questo modulo per inviarci la tua busta paga per un'analisi. Un nostro funzionario la esaminerà e ti contatterà al più presto.</p>
+                                <form id="bustaPagaForm" enctype="multipart/form-data">
+                                    <div class="mb-3">
+                                        <label for="bustaPagaFile" class="form-label">Carica la tua busta paga (PDF, JPG, PNG - max 5MB)</label>
+                                        <input class="form-control" type="file" id="bustaPagaFile" name="busta_paga_file" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="bustaPagaNotes" class="form-label">Note aggiuntive (opzionale)</label>
+                                        <textarea class="form-control" id="bustaPagaNotes" name="notes" rows="3" placeholder="Scrivi qui eventuali dubbi o domande sulla tua busta paga..."></textarea>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">Invia per analisi</button>
+                                    </div>
+                                </form>
+                            @elseif ($bustaPagaRequest)
+                                {{-- Esiste già una richiesta ma non è in stato di integrazione, quindi mostra lo stato --}}
+                                <div class="alert alert-info text-center">
+                                    <p class="mb-1">Hai già una richiesta di "Analisi Busta Paga" in corso.</p>
+                                    <p class="mb-1">Stato attuale: <strong>{{ $bustaPagaRequest->status }}</strong></p>
+                                    <small class="text-muted">Ultimo aggiornamento: {{ $bustaPagaRequest->updated_at->format('d/m/Y H:i') }}</small>
+                                    @if ($bustaPagaRequest->admin_notes)
+                                        <div class="alert alert-light mt-2 text-start">
+                                            <strong>Note del funzionario:</strong>
+                                            <p class="mb-0">{!! nl2br(e($bustaPagaRequest->admin_notes)) !!}</p>
+                                        </div>
+                                    @endif
+                                </div>
+                            @else
+                                {{-- Nessuna richiesta esistente, l'utente deve contattare l'admin. Mostra il form disabilitato. --}}
+                                <form id="requestBustaPagaForm">
+                                    <div class="alert alert-info text-center">
+                                        <p>Non hai una richiesta di analisi busta paga attiva.</p>
+                                        <p>Clicca il pulsante qui sotto per inviare una richiesta di analisi. Un funzionario la prenderà in carico e abiliterà l'upload dei documenti necessari.</p>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-send-check me-2"></i>
+                                            Richiedi analisi busta paga
+                                        </button>
+                                    </div>
+                                </form>
+                            @endif
+                        @endauth
+                        <hr class="my-4">
+                    </div>
+
                     <p class="lead">L’<strong>Ufficio Vertenze Legali (UVL)</strong> della Fillea Cgil ti fornisce informazioni e assistenza su:</p>
                     <ul>
                         <li>Dimissioni telematiche e risoluzioni consensuali del rapporto di lavoro;</li>
@@ -440,7 +510,7 @@
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {        
+    document.addEventListener('DOMContentLoaded', function() {
         function showModal(title, message) {
             const modal = new bootstrap.Modal(document.getElementById('responseModal'));
             document.getElementById('responseModalLabel').textContent = title;
@@ -477,6 +547,155 @@
                 });
             });
         }
+
+        // Logica per la modale UVL e l'upload della busta paga
+        const uvlModalEl = document.getElementById('uvlModal');
+        if (uvlModalEl) {
+            const bustaPagaUploadSection = document.getElementById('bustaPagaUploadSection');
+
+            uvlModalEl.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                if (button && button.dataset.source === 'busta-paga') {
+                    bustaPagaUploadSection.style.display = 'block';
+                }
+            });
+
+            uvlModalEl.addEventListener('hidden.bs.modal', function (event) {
+                bustaPagaUploadSection.style.display = 'none';
+                const bustaPagaForm = document.getElementById('bustaPagaForm');
+                if (bustaPagaForm) {
+                    bustaPagaForm.reset();
+                }
+            });
+        }
+
+        @auth
+        const bustaPagaForm = document.getElementById('bustaPagaForm');
+        if (bustaPagaForm) {
+            bustaPagaForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+                const fileInput = document.getElementById('bustaPagaFile');
+
+                if (fileInput.files.length === 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'File Mancante',
+                        text: 'Per favore, seleziona un file da caricare.',
+                        confirmButtonColor: '#c8102e'
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Invio in corso...',
+                    text: 'Attendere prego',
+                    allowOutsideClick: false,
+                    didOpen: () => { Swal.showLoading() }
+                });
+
+                fetch('{{ route("servizi.send-busta-paga") }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json',
+                    },
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw err; });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    Swal.close();
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Inviata!',
+                            text: data.message,
+                            confirmButtonColor: '#c8102e'
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Errore!',
+                            html: data.message || 'Si è verificato un errore.',
+                            confirmButtonColor: '#c8102e'
+                        });
+                    }
+                })
+                .catch(error => {
+                    Swal.close();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Errore!',
+                        html: error.message || 'Si è verificato un problema di comunicazione.',
+                        confirmButtonColor: '#c8102e'
+                    });
+                });
+            });
+        }
+
+        // Gestione per la richiesta iniziale di analisi busta paga (senza file)
+        const requestBustaPagaForm = document.getElementById('requestBustaPagaForm');
+        if(requestBustaPagaForm) {
+            requestBustaPagaForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Confermi la richiesta?',
+                    text: "Stai per inviare una richiesta per l'analisi della busta paga. Un funzionario la esaminerà e abiliterà l'upload.",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#c8102e',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sì, invia richiesta!',
+                    cancelButtonText: 'Annulla'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Invio in corso...',
+                            text: 'Attendere prego',
+                            allowOutsideClick: false,
+                            didOpen: () => { Swal.showLoading() }
+                        });
+
+                        fetch('{{ route("servizi.request-busta-paga-analysis") }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                'Accept': 'application/json',
+                            }
+                        })
+                        .then(response => response.ok ? response.json() : response.json().then(err => { throw err; }))
+                        .then(data => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Richiesta Inviata!',
+                                text: data.message,
+                                confirmButtonColor: '#c8102e'
+                            }).then(() => {
+                                location.reload();
+                            });
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Errore!',
+                                html: error.message || 'Si è verificato un problema durante l\'invio della richiesta.',
+                                confirmButtonColor: '#c8102e'
+                            });
+                        });
+                    }
+                });
+            });
+        }
+        @endauth
     });
 </script>
 @endpush

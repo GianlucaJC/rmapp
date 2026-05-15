@@ -74,7 +74,7 @@
                   </div>
                   <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-                    <a href="#" id="modalProceedBtn" class="btn btn-success">Procedi con la presentazione</a>
+                    <a href="#" id="modalProceedBtn" class="btn btn-success">Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica</a>
                   </div>
                 </div>
               </div>

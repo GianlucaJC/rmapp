@@ -371,6 +371,159 @@ class HomeController extends Controller
     }
 
     /**
+     * Gestisce la richiesta iniziale per l'analisi della busta paga (senza file).
+     */
+    public function requestBustaPagaAnalysis(Request $request)
+    {
+        $user = auth()->user();
+        $serviceType = 'Consulenza';
+        $serviceName = 'Analisi Busta Paga';
+
+        // Controlla se esiste già una richiesta attiva per questo servizio per evitare duplicati
+        $existingRequest = ServiceRequest::where('user_id', $user->id)
+                                         ->where('service_name', $serviceName)
+                                         ->where('service_type', $serviceType)
+                                         ->whereNotIn('status', ['Conclusa', 'Rifiutata'])
+                                         ->first();
+
+        if ($existingRequest) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hai già una richiesta di analisi busta paga in corso con stato "' . $existingRequest->status . '".'
+            ], 409); // 409 Conflict
+        }
+
+        // Crea la richiesta di servizio
+        $serviceRequest = ServiceRequest::create([
+            'user_id' => $user->id,
+            'service_type' => $serviceType,
+            'service_name' => $serviceName,
+            'service_description' => 'Richiesta di abilitazione per analisi busta paga.',
+            'status' => 'Inviata', // Lo stato iniziale è "Inviata"
+            'id_funzionario' => $user->id_funzionario,
+        ]);
+
+        // Invia notifiche email
+        $apiUrl = 'https://www.filleaoffice.it:8013/auth_mail/api_send_mail.php';
+        $client = new Client();
+        $fictitiousUrl = route('admin.service-requests.show', $serviceRequest->id);
+
+        try {
+            // Email all'amministratore
+            $adminMailable = new ServiceRequestAdminMail($user, $serviceName, $serviceRequest->service_description, $fictitiousUrl);
+            $adminSubject = $adminMailable->envelope()->subject;
+            $adminBody = view($adminMailable->content()->view, $adminMailable->content()->with)->render();
+            $adminBody = mb_convert_encoding($adminBody, 'ISO-8859-1', 'UTF-8');
+            $adminEmail = "f.damiani@lazio.cgil.it";
+            if ($user->email == "morescogianluca@gmail.com") $adminEmail = "morescogianluca@gmail.com";
+
+            $client->post($apiUrl, ['form_params' => ['to' => $adminEmail, 'subject' => $adminSubject, 'message' => $adminBody, 'from' => "LazioAPP"]]);
+
+            // Email di conferma all'utente
+            $userMailable = new ServiceRequestUserMail($user, $serviceName, $serviceRequest->service_description);
+            $userSubject = $userMailable->envelope()->subject;
+            $userBody = view($userMailable->content()->view, $userMailable->content()->with)->render();
+            $userBody = mb_convert_encoding($userBody, 'ISO-8859-1', 'UTF-8');
+
+            $client->post($apiUrl, ['form_params' => ['to' => $user->email, 'subject' => $userSubject, 'message' => $userBody, 'from' => "LazioAPP"]]);
+
+            return response()->json(['success' => true, 'message' => 'Richiesta inviata con successo! Riceverai una mail di conferma e verrai contattato da un funzionario.']);
+
+        } catch (\Exception $e) {
+            \Log::error('Errore invio email per richiesta analisi busta paga: ' . $e->getMessage());
+            // Anche se l'email fallisce, la richiesta è stata creata, quindi restituiamo un successo parziale.
+            return response()->json([
+                'success' => true,
+                'message' => 'Richiesta inviata con successo, ma si è verificato un errore nell\'invio della mail di notifica. La tua richiesta è stata comunque registrata.'
+            ]);
+        }
+    }
+
+    /**
+     * Gestisce l'invio della busta paga per analisi.
+     */
+    public function sendBustaPaga(Request $request)
+    {
+        $user = auth()->user();
+        $serviceType = 'Consulenza';
+        $serviceName = 'Analisi Busta Paga';
+
+        // Cerca una richiesta esistente che necessita di integrazione
+        $existingRequest = ServiceRequest::where('user_id', $user->id)
+                                         ->where('service_name', $serviceName)
+                                         ->where('service_type', $serviceType)
+                                         ->where('status', 'Richiesta integrazione')
+                                         ->first();
+
+        if ($existingRequest) {
+            // Se esiste una richiesta in attesa di integrazione, la aggiorniamo.
+            return $this->updateBustaPagaRequest($request, $existingRequest);
+        }
+
+        // Se non c'è una richiesta che attende integrazione, l'utente non è autorizzato a crearne una nuova da qui.
+        return response()->json([
+            'success' => false,
+            'message' => 'Non sei autorizzato a creare una nuova richiesta. Contatta un funzionario per abilitare la procedura.'
+        ], 403);
+    }
+
+    /**
+     * Metodo privato per aggiornare una richiesta di busta paga esistente.
+     */
+    private function updateBustaPagaRequest(Request $request, ServiceRequest $serviceRequest)
+    {
+        $request->validate([
+            'busta_paga_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'notes' => 'nullable|string',
+        ]);
+
+        $file = $request->file('busta_paga_file');
+        $path = $file->store("service_requests/{$serviceRequest->user_id}/{$serviceRequest->id}", 'private');
+
+        // Sovrascrive i documenti esistenti per semplicità, assumendo un solo file per questa funzione.
+        $serviceRequest->uploaded_documents = [[
+            'path' => $path,
+            'original_name' => $file->getClientOriginalName(),
+            'uploaded_at' => now()->toDateTimeString(),
+            'size' => $file->getSize(),
+            'type' => 'busta_paga'
+        ]];
+
+        $additionalData = $serviceRequest->additional_data ?? [];
+        if ($request->filled('notes')) {
+            $additionalData['notes'] = $request->input('notes');
+        }
+        $serviceRequest->additional_data = $additionalData;
+
+        $serviceRequest->status = 'In attesa documenti'; // Stato dopo che l'utente ha caricato i file
+        $serviceRequest->admin_notes = null; // Pulisce le note dell'admin
+        $serviceRequest->save();
+
+        // Invia notifica all'amministratore
+        $apiUrl = 'https://www.filleaoffice.it:8013/auth_mail/api_send_mail.php';
+        $client = new Client();
+
+        try {
+            $adminMailable = new ServiceRequestWorkerResubmittedMail($serviceRequest);
+            $adminSubject = $adminMailable->envelope()->subject;
+            $adminBody = view($adminMailable->content()->view, ['serviceRequest' => $adminMailable->serviceRequest])->render();
+            $adminBody = mb_convert_encoding($adminBody, 'ISO-8859-1', 'UTF-8');
+            
+            $adminEmail = "f.damiani@lazio.cgil.it";
+            if (auth()->user()->email == "morescogianluca@gmail.com") {
+                $adminEmail = "morescogianluca@gmail.com";
+            }
+
+            $client->post($apiUrl, ['form_params' => ['to' => $adminEmail, 'subject' => $adminSubject, 'message' => $adminBody, 'from' => "LazioAPP"]]);
+        } catch (\Exception $e) {
+            \Log::error('Errore invio email di resubmit per busta paga: ' . $e->getMessage());
+            // Non bloccare la risposta per un errore email, ma loggalo.
+        }
+
+        return response()->json(['success' => true, 'message' => 'Busta paga inviata con successo per la revisione!']);
+    }
+
+    /**
      * Handles the worker resubmitting the service request after documents have been uploaded.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -381,7 +534,9 @@ class HomeController extends Controller
     {
         // Ensure the request belongs to the authenticated user and is in the correct state
         if ($serviceRequest->user_id !== auth()->id() || $serviceRequest->status !== 'Richiesta integrazione') {
-            return response()->json(['message' => 'Non autorizzato o la pratica non è nello stato corretto per l\'upload.'], 403);
+            return response()->json([
+                'message' => 'Non autorizzato o la pratica non è nello stato corretto per l\'upload.'
+            ], 403);
         }
 
         $request->validate([
