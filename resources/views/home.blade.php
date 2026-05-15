@@ -178,8 +178,52 @@
             <!-- Altri link principali -->
             <div class="row justify-content-center mt-5 gy-3">
                 <div class="col-md-4">
-                    <a href="#" class="btn btn-info w-100 py-3 fw-bold text-white" data-bs-toggle="modal" data-bs-target="#uvlModal" data-source="busta-paga">INVIACI LA TUA BUSTA PAGA</a>
-                </div>            
+                    @auth
+                        @php
+                            // Cerca una richiesta di "Analisi Busta Paga" per l'utente loggato.
+                            $bustaPagaRequest = $serviceRequests->firstWhere('service_name', 'Analisi Busta Paga');
+                        @endphp
+
+                        @if ($bustaPagaRequest)
+                            @php
+                                // Imposta classe e testo del badge in base allo stato della richiesta.
+                                $statusClass = 'bg-secondary'; // default
+                                $statusText = $bustaPagaRequest->status;
+
+                                switch ($bustaPagaRequest->status) {
+                                    case 'Richiesta integrazione':
+                                        $statusClass = 'bg-warning text-dark';
+                                        $statusText = 'Azione richiesta';
+                                        break;
+                                    case 'Inviata':
+                                        $statusClass = 'bg-info';
+                                        break;
+                                    case 'In attesa documenti':
+                                        $statusClass = 'bg-primary';
+                                        $statusText = 'In revisione';
+                                        break;
+                                    case 'Conclusa':
+                                        $statusClass = 'bg-success';
+                                        break;
+                                    case 'Rifiutata':
+                                        $statusClass = 'bg-danger';
+                                        break;
+                                }
+                            @endphp
+                            {{-- Pulsante con stato per utente loggato con richiesta esistente --}}
+                            <a href="#" class="btn btn-light w-100 py-3 fw-bold position-relative" data-bs-toggle="modal" data-bs-target="#uvlModal" data-source="busta-paga">
+                                ANALISI BUSTA PAGA
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill {{ $statusClass }}">{{ $statusText }}</span>
+                            </a>
+                        @else
+                            {{-- Pulsante di default per utente loggato senza richiesta --}}
+                            <a href="#" class="btn btn-info w-100 py-3 fw-bold text-white" data-bs-toggle="modal" data-bs-target="#uvlModal" data-source="busta-paga">INVIACI LA TUA BUSTA PAGA</a>
+                        @endif
+                    @else
+                        {{-- Pulsante di default per utente non loggato --}}
+                        <a href="#" class="btn btn-info w-100 py-3 fw-bold text-white" data-bs-toggle="modal" data-bs-target="#uvlModal" data-source="busta-paga">INVIACI LA TUA BUSTA PAGA</a>
+                    @endauth
+                </div>
                 <div class="col-md-4">
                     <a href="http://www.costruire.net" target="_blank" class="btn btn-light w-100 py-3 fw-bold">COSTRUIRE.NET</a>
                 </div>
