@@ -178,13 +178,13 @@
             <!-- Altri link principali -->
             <div class="row justify-content-center mt-5 gy-3">
                 <div class="col-md-4">
+                    <a href="#" class="btn btn-info w-100 py-3 fw-bold text-white" data-bs-toggle="modal" data-bs-target="#uvlModal" data-source="busta-paga">INVIACI LA TUA BUSTA PAGA</a>
+                </div>            
+                <div class="col-md-4">
                     <a href="http://www.costruire.net" target="_blank" class="btn btn-light w-100 py-3 fw-bold">COSTRUIRE.NET</a>
                 </div>
                 <div class="col-md-4">
                     <a href="https://www.costruire.net/?page_id=830" target="_blank" class="btn btn-light w-100 py-3 fw-bold">CONTRATTI E TABELLE PAGA</a>
-                </div>
-                <div class="col-md-4">
-                    <a href="#" class="btn btn-info w-100 py-3 fw-bold text-white" data-bs-toggle="modal" data-bs-target="#uvlModal" data-source="busta-paga">INVIACI LA TUA BUSTA PAGA</a>
                 </div>
             </div>
         </div>
