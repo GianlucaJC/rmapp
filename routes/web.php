@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\Auth\LoginController as AdminLoginController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ServiceRequestController; // Import the new controller
 use App\Http\Controllers\Admin\NewsController;
+use App\Http\Controllers\Admin\UtilityController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -23,6 +24,13 @@ use App\Http\Controllers\HomeController; // Assicurati di importare il controlle
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+// !!! PER SCOPI DI SVILUPPO - DA RIMUOVERE IN PRODUZIONE !!!
+// Rotta per generare hash di password.
+// Accedi tramite /generate-hash/la-tua-password-qui
+Route::get('/generate-hash/{password}', [UtilityController::class, 'generateHash'])
+    ->where('password', '.*'); // Permette caratteri speciali nella password
+
 
 // Rotta per la welcome page pubblica, non richiede login
 Route::get('/', function () {
