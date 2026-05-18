@@ -50,9 +50,27 @@ class RegisterController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
-    public function showRegistrationForm(Request $request) {
-        $show_account_type_choice = $request->query('from') === 'contracts';
-        return view('auth.register', compact('show_account_type_choice'));
+    public function showRegistrationForm(Request $request)
+    {
+        // Se si proviene dal link speciale "contratti"
+        if ($request->query('from') === 'contracts') {
+            // Step 1: Se il tipo di account non è ancora stato scelto, mostra la pagina di scelta.
+            if (!$request->has('type')) {
+                return view('auth.register-step1');
+            }
+
+            // Step 2: Se il tipo è stato scelto, mostra il form di registrazione completo.
+            $account_type = $request->query('type');
+            if (!in_array($account_type, ['worker', 'consultant'])) {
+                // Se il tipo non è valido, reindirizza al primo step.
+                return redirect()->route('register', ['from' => 'contracts']);
+            }
+
+            return view('auth.register', ['account_type' => $account_type]);
+        }
+
+        // Flusso di registrazione standard (default a 'worker')
+        return view('auth.register', ['account_type' => 'worker']);
     }
 
     /**
@@ -73,9 +91,8 @@ class RegisterController extends Controller
             'privacy' => ['accepted'],
         ];
 
-        if (request()->query('from') === 'contracts') {
-            $rules['account_type'] = ['required', 'string', 'in:worker,consultant'];
-        }
+        // Il tipo di account è sempre richiesto nel form di registrazione.
+        $rules['account_type'] = ['required', 'string', 'in:worker,consultant'];
 
         $isConsultant = isset($data['account_type']) && $data['account_type'] === 'consultant';
         if (!$isConsultant) {
