@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ServiceRequest extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -17,6 +18,8 @@ class ServiceRequest extends Model
         'status',
         'id_funzionario',
         'additional_data',
+        'admin_notes',
+        'uploaded_documents',
     ];
 
     public function user()

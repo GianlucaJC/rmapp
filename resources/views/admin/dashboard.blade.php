@@ -14,9 +14,13 @@
                             <span class="badge bg-warning text-dark ms-2">Super Admin</span>
                         @endif
                     </h4>
-                    {{-- Il pulsante di logout è stato spostato qui per coerenza con la navbar --}}
-                    <a href="{{ route('admin.logout') }}" class="btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
-                    <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">@csrf</form>
+                    <div>
+                        <a href="{{ route('admin.service-requests.trash') }}" class="btn btn-secondary btn-sm me-2">
+                            <i class="bi bi-trash"></i> Cestino
+                        </a>
+                        <a href="{{ route('admin.logout') }}" class="btn btn-danger btn-sm" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">@csrf</form>
+                    </div>
                 </div>
                 
 
@@ -121,6 +125,7 @@
 @push('scripts')
     {{-- Includi le librerie DataTables --}}
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
 
@@ -203,7 +208,7 @@
                     }
                 ],
                 language: {
-                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/Italian.json'
+                    url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/Italian.json'
                 }
             });
 
@@ -254,6 +259,29 @@
                     }
                 });
             });
+
+            // Gestione cancellazione con SweetAlert
+            $('#serviceRequestsTable').on('submit', 'form.delete-form', function(e) {
+                e.preventDefault();
+                var form = this;
+                var message = $(form).data('message') || 'Sei sicuro di voler procedere?';
+
+                Swal.fire({
+                    title: 'Conferma operazione',
+                    text: message,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sì, procedi!',
+                    cancelButtonText: 'Annulla'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+
 
             function reassignRequest(serviceRequestId, funzionarioId) {
                 const admin = adminUsers.find(u => u.id == funzionarioId);

@@ -111,7 +111,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('admin')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/service-requests/data', [ServiceRequestController::class, 'getServiceRequestsData'])->name('service-requests.data');
+        Route::get('/service-requests/trash', [ServiceRequestController::class, 'trash'])->name('service-requests.trash');
+        Route::get('/service-requests/trash/data', [ServiceRequestController::class, 'getTrashedData'])->name('service-requests.trash.data');
+        Route::put('/service-requests/trash/{id}/restore', [ServiceRequestController::class, 'restore'])->name('service-requests.restore');
+        Route::delete('/service-requests/trash/{id}/force-delete', [ServiceRequestController::class, 'forceDelete'])->name('service-requests.force-delete');
         Route::get('/service-requests/{serviceRequest}', [ServiceRequestController::class, 'show'])->name('service-requests.show');
+        Route::delete('/service-requests/{serviceRequest}', [ServiceRequestController::class, 'destroy'])->name('service-requests.destroy');
         Route::put('/service-requests/{serviceRequest}', [ServiceRequestController::class, 'update'])->name('service-requests.update'); // Nuova rotta per l'aggiornamento
         Route::post('/service-requests/{serviceRequest}/assign', [ServiceRequestController::class, 'assign'])->name('service-requests.assign'); // Rotta per riassegnare
         // Nuova rotta per il download di un documento specifico per una richiesta di servizio

@@ -69,7 +69,15 @@ class ServiceRequestController extends Controller
                             $whatsappUrl = "https://wa.me/{$phoneNumber}?text={$encodedMessage}";
                             $actions .= ' <a href="'.$whatsappUrl.'" target="_blank" class="btn btn-success btn-sm" title="Invia messaggio WhatsApp"><i class="bi bi-whatsapp"></i></a>';
                         }
-
+                        
+                        $deleteUrl = route('admin.service-requests.destroy', $serviceRequest->id);
+                        $actions .= ' <form action="'. $deleteUrl .'" method="POST" class="d-inline delete-form" data-message="Sei sicuro di voler spostare questa richiesta nel cestino?">
+                                        '.csrf_field().'
+                                        '.method_field("DELETE").'
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Sposta nel cestino">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                      </form>';
                         return $actions;
                     })
                     ->rawColumns(['actions'])
@@ -92,6 +100,19 @@ class ServiceRequestController extends Controller
         return view('admin.service_requests.show', compact('serviceRequest'));
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\ServiceRequest  $serviceRequest
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy(ServiceRequest $serviceRequest)
+    {
+
+        $serviceRequest->delete();
+
+        return redirect()->route('admin.dashboard')->with('success', 'Richiesta spostata nel cestino.');
+    }
     /**
      * Update the status and admin notes of a service request.
      *
@@ -255,5 +276,116 @@ class ServiceRequestController extends Controller
         }
 
         return Storage::disk('private')->download($filePath, $foundDocument['original_name'] ?? basename($filePath));
+    }
+
+    /**
+     * Show the trash page for service requests.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function trash()
+    {
+        return view('admin.service_requests.trash');
+    }
+
+    /**
+     * Process DataTables AJAX requests for trashed service requests.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getTrashedData(Request $request)
+    {
+        if ($request->ajax()) {
+            $currentUser = session('admin_user');
+            $data = ServiceRequest::onlyTrashed()->with('user');
+
+            if ($currentUser && !$currentUser['superadmin']) {
+                $data->where('id_funzionario', $currentUser['id']);
+            }
+
+            try {
+                return DataTables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('user_name', function(ServiceRequest $serviceRequest) {
+                        return $serviceRequest->user ? ($serviceRequest->user->name . ' ' . $serviceRequest->user->last_name) : 'N/A';
+                    })
+                    ->addColumn('deleted_at', function(ServiceRequest $serviceRequest) {
+                        return $serviceRequest->deleted_at ? $serviceRequest->deleted_at->format('d/m/Y H:i') : 'N/A';
+                    })
+                    ->addColumn('actions', function(ServiceRequest $serviceRequest) {
+                        $restoreUrl = route('admin.service-requests.restore', $serviceRequest->id);
+                        $forceDeleteUrl = route('admin.service-requests.force-delete', $serviceRequest->id);
+
+                        $restoreBtn = '<form action="'. $restoreUrl .'" method="POST" class="d-inline">
+                                        '.csrf_field().'
+                                        '.method_field("PUT").'
+                                        <button type="submit" class="btn btn-success btn-sm me-1" title="Ripristina">
+                                            <i class="bi bi-arrow-counterclockwise"></i>
+                                        </button>
+                                      </form>';
+
+                        $deleteBtn = '<form action="'. $forceDeleteUrl .'" method="POST" class="d-inline delete-form" data-message="Sei sicuro di voler eliminare definitivamente questa richiesta? L\'azione non è reversibile.">
+                                        '.csrf_field().'
+                                        '.method_field("DELETE").'
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Elimina Definitivamente">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                      </form>';
+                        return $restoreBtn . $deleteBtn;
+                    })
+                    ->rawColumns(['actions'])
+                    ->make(true);
+            } catch (\Exception $e) {
+                \Log::error('DataTables AJAX Error (Trashed): ' . $e->getMessage(), ['exception' => $e]);
+                return response()->json(['error' => 'Si è verificato un errore interno durante il recupero dei dati. Controlla i log del server per i dettagli.'], 500);
+            }
+        }
+    }
+
+    /**
+     * Restore a soft-deleted service request.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function restore($id)
+    {
+        $serviceRequest = ServiceRequest::withTrashed()->findOrFail($id);
+
+        $currentUser = session('admin_user');
+        if ($currentUser && !$currentUser['superadmin'] && $serviceRequest->id_funzionario != $currentUser['id']) {
+            return redirect()->route('admin.service-requests.trash')->with('error', 'Azione non autorizzata.');
+        }
+
+        $serviceRequest->restore();
+
+        return redirect()->route('admin.service-requests.trash')->with('success', 'Richiesta ripristinata con successo.');
+    }
+
+    /**
+     * Permanently delete a service request.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function forceDelete($id)
+    {
+    
+        $serviceRequest = ServiceRequest::withTrashed()->findOrFail($id);
+
+        $currentUser = session('admin_user');
+        if ($currentUser && !$currentUser['superadmin'] && $serviceRequest->id_funzionario != $currentUser['id']) {
+            return redirect()->route('admin.service-requests.trash')->with('error', 'Azione non autorizzata.');
+        }
+
+        // Delete associated files from storage
+        if ($serviceRequest->user_id && $serviceRequest->id) {
+            Storage::disk('private')->deleteDirectory("service_requests/{$serviceRequest->user_id}/{$serviceRequest->id}");
+        }
+
+        $serviceRequest->forceDelete();
+
+        return redirect()->route('admin.service-requests.trash')->with('success', 'Richiesta eliminata definitivamente.');
     }
 }
