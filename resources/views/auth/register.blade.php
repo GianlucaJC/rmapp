@@ -8,8 +8,27 @@
                 <div class="card-header"><h1>{{ __('Registrati') }}</h1></div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
+                    <form method="POST" action="{{ route('register') }}{{ $show_account_type_choice ?? false ? '?from=contracts' : '' }}">
                         @csrf
+
+                        @if ($show_account_type_choice ?? false)
+                            <div class="row mb-3">
+                                <label for="account_type" class="col-md-4 col-form-label text-md-end">Tipo di Account</label>
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                                        <select id="account_type" class="form-select @error('account_type') is-invalid @enderror" name="account_type" required>
+                                            <option value="" disabled selected>Scegli il tipo di account...</option>
+                                            <option value="worker" {{ old('account_type') == 'worker' ? 'selected' : '' }}>Lavoratore</option>
+                                            <option value="consultant" {{ old('account_type') == 'consultant' ? 'selected' : '' }}>Consulente / Azienda</option>
+                                        </select>
+                                        @error('account_type')
+                                            <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
 
                         {{-- Nome --}}
                         <div class="row mb-3">
@@ -75,42 +94,44 @@
                             </div>
                         </div>
 
-                        {{-- Contratto di Inquadramento --}}
-                        <div class="row mb-3">
-                            <label for="contract_type" class="col-md-4 col-form-label text-md-end">{{ __('Contratto di Inquadramento') }}</label>
-                            <div class="col-md-6">
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-file-earmark-text"></i></span>
-                                    <select id="contract_type" class="form-select @error('contract_type') is-invalid @enderror" name="contract_type" required>
-                                        <option value="">Seleziona un contratto</option>
-                                        <option value="edilizia" {{ old('contract_type') == 'edilizia' ? 'selected' : '' }}>Edilizia: Costruzioni, manutenzione, restauro.</option>
-                                        <option value="legno_arredo" {{ old('contract_type') == 'legno_arredo' ? 'selected' : '' }}>Legno e Arredo: Produzione mobili, lavorazione legno.</option>
-                                        <option value="cemento_calce_gesso" {{ old('contract_type') == 'cemento_calce_gesso' ? 'selected' : '' }}>Cemento, Calce e Gesso: Produzione materiali cementizi.</option>
-                                        <option value="lapidei_escavazione_sabbia" {{ old('contract_type') == 'lapidei_escavazione_sabbia' ? 'selected' : '' }}>Lapidei ed Escavazione Sabbia: Estrazione marmi, sabbia.</option>
-                                        <option value="laterizi_manufatti" {{ old('contract_type') == 'laterizi_manufatti' ? 'selected' : '' }}>Laterizi e Manufatti: Produzione mattoni, tegole, manufatti.</option>
-                                        <option value="restauro_beni_culturali" {{ old('contract_type') == 'restauro_beni_culturali' ? 'selected' : '' }}>Restauro e Beni Culturali: Tutela e restauro beni vincolati.</option>
-                                    </select>
-                                    @error('contract_type')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                        <div id="worker-fields">
+                            {{-- Contratto di Inquadramento --}}
+                            <div class="row mb-3">
+                                <label for="contract_type" class="col-md-4 col-form-label text-md-end">{{ __('Contratto di Inquadramento') }}</label>
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-file-earmark-text"></i></span>
+                                        <select id="contract_type" class="form-select @error('contract_type') is-invalid @enderror" name="contract_type" required>
+                                            <option value="">Seleziona un contratto</option>
+                                            <option value="edilizia" {{ old('contract_type') == 'edilizia' ? 'selected' : '' }}>Edilizia: Costruzioni, manutenzione, restauro.</option>
+                                            <option value="legno_arredo" {{ old('contract_type') == 'legno_arredo' ? 'selected' : '' }}>Legno e Arredo: Produzione mobili, lavorazione legno.</option>
+                                            <option value="cemento_calce_gesso" {{ old('contract_type') == 'cemento_calce_gesso' ? 'selected' : '' }}>Cemento, Calce e Gesso: Produzione materiali cementizi.</option>
+                                            <option value="lapidei_escavazione_sabbia" {{ old('contract_type') == 'lapidei_escavazione_sabbia' ? 'selected' : '' }}>Lapidei ed Escavazione Sabbia: Estrazione marmi, sabbia.</option>
+                                            <option value="laterizi_manufatti" {{ old('contract_type') == 'laterizi_manufatti' ? 'selected' : '' }}>Laterizi e Manufatti: Produzione mattoni, tegole, manufatti.</option>
+                                            <option value="restauro_beni_culturali" {{ old('contract_type') == 'restauro_beni_culturali' ? 'selected' : '' }}>Restauro e Beni Culturali: Tutela e restauro beni vincolati.</option>
+                                        </select>
+                                        @error('contract_type')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {{-- Mansione Lavorativa --}}
-                        <div class="row mb-3">
-                            <label for="job_title" class="col-md-4 col-form-label text-md-end">{{ __('Mansione Lavorativa') }}</label>
-                            <div class="col-md-6">
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
-                                    <input id="job_title" type="text" class="form-control @error('job_title') is-invalid @enderror" name="job_title" value="{{ old('job_title') }}" required autocomplete="organization-title" placeholder="Es. Muratore, Carpentiere">
-                                    @error('job_title')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                            {{-- Mansione Lavorativa --}}
+                            <div class="row mb-3">
+                                <label for="job_title" class="col-md-4 col-form-label text-md-end">{{ __('Mansione Lavorativa') }}</label>
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
+                                        <input id="job_title" type="text" class="form-control @error('job_title') is-invalid @enderror" name="job_title" value="{{ old('job_title') }}" required autocomplete="organization-title" placeholder="Es. Muratore, Carpentiere">
+                                        @error('job_title')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -193,3 +214,31 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const accountTypeSelect = document.getElementById('account_type');
+    const workerFields = document.getElementById('worker-fields');
+    const contractTypeInput = document.getElementById('contract_type');
+    const jobTitleInput = document.getElementById('job_title');
+
+    function toggleWorkerFields() {
+        // This logic runs only if the dropdown exists
+        if (accountTypeSelect && workerFields) {
+            const isConsultant = accountTypeSelect.value === 'consultant';
+            workerFields.style.display = isConsultant ? 'none' : 'block';
+            // Toggle the 'required' attribute for client-side validation
+            contractTypeInput.required = !isConsultant;
+            jobTitleInput.required = !isConsultant;
+        }
+    }
+
+    if (accountTypeSelect) {
+        accountTypeSelect.addEventListener('change', toggleWorkerFields);
+        // Initial check on page load to set the correct state
+        toggleWorkerFields();
+    }
+});
+</script>
+@endpush

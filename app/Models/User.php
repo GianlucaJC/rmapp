@@ -28,7 +28,8 @@ class User extends Authenticatable
         'job_title',
         'email',
         'password',
-        'id_funzionario'
+        'id_funzionario',
+        'is_consultant',
     ];
 
     /**
@@ -49,5 +50,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_consultant' => 'boolean',
     ];
 }

@@ -225,10 +225,10 @@
                     @endauth
                 </div>
                 <div class="col-md-4">
-                    <a href="http://www.costruire.net" target="_blank" class="btn btn-light w-100 py-3 fw-bold">COSTRUIRE.NET</a>
+                    <a href="https://www.costruire.net" target="_blank" class="btn btn-light w-100 py-3 fw-bold">COSTRUIRE.NET</a>
                 </div>
                 <div class="col-md-4">
-                    <a href="https://www.costruire.net/?page_id=830" target="_blank" class="btn btn-light w-100 py-3 fw-bold">CONTRATTI E TABELLE PAGA</a>
+                    <a href="#" id="contracts-link" class="btn btn-light w-100 py-3 fw-bold">CONTRATTI E TABELLE PAGA</a>
                 </div>
             </div>
         </div>
@@ -445,54 +445,61 @@
                         @endguest
 
                         @auth
-                            @php
-                                // Cerca una richiesta specifica per 'Analisi Busta Paga'
-                                $bustaPagaRequest = $serviceRequests->firstWhere('service_name', 'Analisi Busta Paga');
-                            @endphp
-
-                            @if ($bustaPagaRequest && $bustaPagaRequest->status === 'Richiesta integrazione')
-                                {{-- L'utente è autorizzato a caricare, mostra il form attivo --}}
-                                <p class="text-center">Usa questo modulo per inviarci la tua busta paga per un'analisi. Un nostro funzionario la esaminerà e ti contatterà al più presto.</p>
-                                <form id="bustaPagaForm" enctype="multipart/form-data">
-                                    <div class="mb-3">
-                                        <label for="bustaPagaFile" class="form-label">Carica la tua busta paga (PDF, JPG, PNG - max 5MB)</label>
-                                        <input class="form-control" type="file" id="bustaPagaFile" name="busta_paga_file" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="bustaPagaNotes" class="form-label">Note aggiuntive (opzionale)</label>
-                                        <textarea class="form-control" id="bustaPagaNotes" name="notes" rows="3" placeholder="Scrivi qui eventuali dubbi o domande sulla tua busta paga..."></textarea>
-                                    </div>
-                                    <div class="d-grid">
-                                        <button type="submit" class="btn btn-primary">Invia per analisi</button>
-                                    </div>
-                                </form>
-                            @elseif ($bustaPagaRequest)
-                                {{-- Esiste già una richiesta ma non è in stato di integrazione, quindi mostra lo stato --}}
+                            @if(auth()->user()->is_consultant)
                                 <div class="alert alert-info text-center">
-                                    <p class="mb-1">Hai già una richiesta di "Analisi Busta Paga" in corso.</p>
-                                    <p class="mb-1">Stato attuale: <strong>{{ $bustaPagaRequest->status }}</strong></p>
-                                    <small class="text-muted">Ultimo aggiornamento: {{ $bustaPagaRequest->updated_at->format('d/m/Y H:i') }}</small>
-                                    @if ($bustaPagaRequest->admin_notes)
-                                        <div class="alert alert-light mt-2 text-start">
-                                            <strong>Note del funzionario:</strong>
-                                            <p class="mb-0">{!! nl2br(e($bustaPagaRequest->admin_notes)) !!}</p>
-                                        </div>
-                                    @endif
+                                    <i class="bi bi-info-circle-fill me-2"></i>
+                                    Come consulente, puoi visualizzare le informazioni ma non puoi inviare richieste di analisi.
                                 </div>
                             @else
-                                {{-- Nessuna richiesta esistente, l'utente deve contattare l'admin. Mostra il form disabilitato. --}}
-                                <form id="requestBustaPagaForm">
+                                @php
+                                    // Cerca una richiesta specifica per 'Analisi Busta Paga'
+                                    $bustaPagaRequest = $serviceRequests->firstWhere('service_name', 'Analisi Busta Paga');
+                                @endphp
+
+                                @if ($bustaPagaRequest && $bustaPagaRequest->status === 'Richiesta integrazione')
+                                    {{-- L'utente è autorizzato a caricare, mostra il form attivo --}}
+                                    <p class="text-center">Usa questo modulo per inviarci la tua busta paga per un'analisi. Un nostro funzionario la esaminerà e ti contatterà al più presto.</p>
+                                    <form id="bustaPagaForm" enctype="multipart/form-data">
+                                        <div class="mb-3">
+                                            <label for="bustaPagaFile" class="form-label">Carica la tua busta paga (PDF, JPG, PNG - max 5MB)</label>
+                                            <input class="form-control" type="file" id="bustaPagaFile" name="busta_paga_file" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="bustaPagaNotes" class="form-label">Note aggiuntive (opzionale)</label>
+                                            <textarea class="form-control" id="bustaPagaNotes" name="notes" rows="3" placeholder="Scrivi qui eventuali dubbi o domande sulla tua busta paga..."></textarea>
+                                        </div>
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-primary">Invia per analisi</button>
+                                        </div>
+                                    </form>
+                                @elseif ($bustaPagaRequest)
+                                    {{-- Esiste già una richiesta ma non è in stato di integrazione, quindi mostra lo stato --}}
                                     <div class="alert alert-info text-center">
-                                        <p>Non hai una richiesta di analisi busta paga attiva.</p>
-                                        <p>Clicca il pulsante qui sotto per inviare una richiesta di analisi. Un funzionario la prenderà in carico e abiliterà l'upload dei documenti necessari.</p>
+                                        <p class="mb-1">Hai già una richiesta di "Analisi Busta Paga" in corso.</p>
+                                        <p class="mb-1">Stato attuale: <strong>{{ $bustaPagaRequest->status }}</strong></p>
+                                        <small class="text-muted">Ultimo aggiornamento: {{ $bustaPagaRequest->updated_at->format('d/m/Y H:i') }}</small>
+                                        @if ($bustaPagaRequest->admin_notes)
+                                            <div class="alert alert-light mt-2 text-start">
+                                                <strong>Note del funzionario:</strong>
+                                                <p class="mb-0">{!! nl2br(e($bustaPagaRequest->admin_notes)) !!}</p>
+                                            </div>
+                                        @endif
                                     </div>
-                                    <div class="d-grid">
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="bi bi-send-check me-2"></i>
-                                            Richiedi analisi busta paga
-                                        </button>
-                                    </div>
-                                </form>
+                                @else
+                                    {{-- Nessuna richiesta esistente, l'utente deve contattare l'admin. Mostra il form disabilitato. --}}
+                                    <form id="requestBustaPagaForm">
+                                        <div class="alert alert-info text-center">
+                                            <p>Non hai una richiesta di analisi busta paga attiva.</p>
+                                            <p>Clicca il pulsante qui sotto per inviare una richiesta di analisi. Un funzionario la prenderà in carico e abiliterà l'upload dei documenti necessari.</p>
+                                        </div>
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-send-check me-2"></i>
+                                                Richiedi analisi busta paga
+                                            </button>
+                                        </div>
+                                    </form>
+                                @endif
                             @endif
                         @endauth
                         <hr class="my-4">
@@ -740,6 +747,42 @@
             });
         }
         @endauth
+
+        // Gestione click su "Contratti e Tabelle Paga"
+        const contractsLink = document.getElementById('contracts-link');
+        if (contractsLink) {
+            contractsLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                const contractsUrl = 'https://www.costruire.net/?page_id=830';
+
+                @guest
+                    Swal.fire({
+                        title: 'Accesso Richiesto',
+                        text: "Per accedere a questa sezione è necessario essere registrati come Consulente/Azienda.",
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonText: 'Accedi',
+                        cancelButtonText: 'Registrati',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '{{ route('login') }}';
+                        } else if (result.dismiss === Swal.DismissReason.cancel) {
+                            window.location.href = '{{ route('register') }}?from=contracts';
+                        }
+                    });
+                @endguest
+
+                @auth
+                    const isConsultant = {{ auth()->user()->is_consultant ? 'true' : 'false' }};
+                    if (isConsultant) {
+                        window.open(contractsUrl, '_blank');
+                    } else {
+                        Swal.fire({ title: 'Accesso non consentito', text: 'Questa sezione è riservata ai soli Consulenti/Aziende.', icon: 'warning', confirmButtonColor: '#c8102e' });
+                    }
+                @endauth
+            });
+        }
     });
 </script>
 @endpush

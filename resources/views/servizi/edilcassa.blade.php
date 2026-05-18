@@ -107,6 +107,13 @@
 
             // Funzione per aggiornare lo stato e gli attributi data del pulsante "Procedi"
             function updateProceedButton(serviceTitle, serviceDescription, serviceType, currentStatus, requestId = null) {
+                @auth
+                    if ({{ auth()->user()->is_consultant ? 'true' : 'false' }}) {
+                        modalProceedBtn.style.display = 'none';
+                        return;
+                    }
+                @endauth
+
                 modalProceedBtn.dataset.serviceTitle = serviceTitle; // Corretto
                 modalProceedBtn.dataset.serviceDescription = serviceDescription; // Corretto
                 modalProceedBtn.dataset.serviceType = serviceType; // Corretto
@@ -237,6 +244,11 @@
                             `;
                             modalResubmitBtn.classList.remove('d-none');
                             modalResubmitBtn.dataset.requestId = activeRequestData.id;
+                            @auth
+                                if ({{ auth()->user()->is_consultant ? 'true' : 'false' }}) {
+                                    modalResubmitBtn.classList.add('d-none');
+                                }
+                            @endauth
                         } else {
                             modalProceedBtn.style.display = 'block'; // Mostra il bottone "Procedi" standard
                         }
@@ -290,6 +302,20 @@
                 });
                 return; // Stop execution for guests
                 @endguest
+
+                @auth
+                    const isConsultant = {{ auth()->user()->is_consultant ? 'true' : 'false' }};
+                    if (isConsultant) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Azione non consentita',
+                            text: 'Come consulente, puoi visualizzare i dettagli dei servizi ma non puoi inviare richieste.',
+                            confirmButtonColor: '#c8102e'
+                        });
+                        return;
+                    }
+                @endauth
+
 
                 // Se si arriva qui, l'utente è autenticato.
                 // Procedi con la logica per l'utente autenticato.
@@ -437,6 +463,18 @@
             modalResubmitBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 const requestId = this.dataset.requestId;
+
+                @auth
+                    if ({{ auth()->user()->is_consultant ? 'true' : 'false' }}) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Azione non consentita',
+                            text: 'Come consulente, non puoi inviare pratiche.',
+                            confirmButtonColor: '#c8102e'
+                        });
+                        return;
+                    }
+                @endauth
 
                 const form = document.getElementById(`singleUploadFormModal-${requestId}`);
                 if (form) {
