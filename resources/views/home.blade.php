@@ -12,7 +12,7 @@
                     <div class="card-header d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#newsCollapse" aria-expanded="false" aria-controls="newsCollapse">
                         <h5 class="mb-0"><i class="bi bi-newspaper me-2"></i>{{ __('News e Aggiornamenti') }}</h5>
                         @if (isset($newsItems) && !$newsItems->isEmpty())
-                            <span class="badge bg-danger rounded-pill">{{ $newsItems->count() }}</span>
+                            <span class="badge bg-danger rounded-pill fs-6">{{ $newsItems->count() }}</span>
                         @endif
                     </div>
 
@@ -43,7 +43,7 @@
                     <div class="card-header d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#serviceRequestsCollapse" aria-expanded="false" aria-controls="serviceRequestsCollapse">
                         <h5 class="mb-0">{{ __('Le tue richieste di servizio') }}</h5>
                         @if (!$serviceRequests->isEmpty())
-                            <span class="badge bg-primary rounded-pill">{{ $serviceRequests->count() }}</span>
+                            <span class="badge bg-primary rounded-pill fs-6">{{ $serviceRequests->count() }}</span>
                         @endif
                     </div>
 
@@ -61,14 +61,34 @@
                             @else
                                 <p class="text-muted text-center mb-2 small"><em>Clicca su una richiesta per visualizzarne i dettagli.</em></p>
                             <div class="list-group">
-                                @foreach ($serviceRequests as $request)
+                                @foreach ($serviceRequests->whereNull('deleted_at') as $request)
+                                    @php
+                                        $statusClass = 'bg-secondary'; // default
+                                        switch ($request->status) {
+                                            case 'Richiesta integrazione':
+                                                $statusClass = 'bg-warning text-dark';
+                                                break;
+                                            case 'Inviata':
+                                                $statusClass = 'bg-info';
+                                                break;
+                                            case 'In attesa documenti':
+                                                $statusClass = 'bg-primary';
+                                                break;
+                                            case 'Conclusa':
+                                                $statusClass = 'bg-success';
+                                                break;
+                                            case 'Rifiutata':
+                                                $statusClass = 'bg-danger';
+                                                break;
+                                        }
+                                    @endphp
                                     <a href="{{ $request->detail_url ?? '#' }}" class="list-group-item list-group-item-action flex-column align-items-start mb-3 text-dark text-decoration-none position-relative">
                                         <div class="pe-4">
                                             <div class="d-flex w-100 justify-content-between">
                                                 <h5 class="mb-1">{{ $request->service_name }} ({{ $request->service_type }})</h5>
                                                 <small class="text-muted flex-shrink-0 ps-2">{{ $request->updated_at->format('d/m/Y H:i') }}</small>
                                             </div>
-                                            <p class="mb-1">Stato: <strong>{{ $request->status }}</strong></p>
+                                            <p class="mb-1">Stato: <span class="badge {{ $statusClass }} fs-6">{{ $request->status }}</span></p>
                                             @if ($request->admin_notes)
                                                 <div class="alert alert-info mt-2" role="alert">
                                                     <strong>Note del funzionario:</strong>
@@ -213,7 +233,7 @@
                             {{-- Pulsante con stato per utente loggato con richiesta esistente --}}
                             <a href="#" class="btn btn-light w-100 py-3 fw-bold position-relative" data-bs-toggle="modal" data-bs-target="#uvlModal" data-source="busta-paga">
                                 ANALISI BUSTA PAGA
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill {{ $statusClass }}">{{ $statusText }}</span>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill {{ $statusClass }} fs-6">{{ $statusText }}</span>
                             </a>
                         @else
                             {{-- Pulsante di default per utente loggato senza richiesta --}}
@@ -758,7 +778,7 @@
                 @guest
                     Swal.fire({
                         title: 'Accesso Richiesto',
-                        text: "Per accedere a questa sezione è necessario essere registrati come Consulente/Azienda.",
+                        text: "Per accedere a questa sezione è necessario essere registrati.",
                         icon: 'info',
                         showCancelButton: true,
                         confirmButtonText: 'Accedi',
@@ -774,12 +794,7 @@
                 @endguest
 
                 @auth
-                    const isConsultant = {{ auth()->user()->is_consultant ? 'true' : 'false' }};
-                    if (isConsultant) {
-                        window.open(contractsUrl, '_blank');
-                    } else {
-                        Swal.fire({ title: 'Accesso non consentito', text: 'Questa sezione è riservata ai soli Consulenti/Aziende.', icon: 'warning', confirmButtonColor: '#c8102e' });
-                    }
+                    window.open(contractsUrl, '_blank');
                 @endauth
             });
         }
