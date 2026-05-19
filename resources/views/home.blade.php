@@ -263,10 +263,12 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="d-grid gap-3 d-md-flex justify-content-md-center mb-4">
+                    <div class="d-grid gap-3 d-md-flex justify-content-md-center mb-4 flex-wrap">
                         <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#prevediCollapse" aria-expanded="false" aria-controls="prevediCollapse">PREVEDI</button>
                         <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#fondapiCollapse" aria-expanded="false" aria-controls="fondapiCollapse">FONDAPI</button>
                         <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#previdenzaCooperativaCollapse" aria-expanded="false" aria-controls="previdenzaCooperativaCollapse">PREVIDENZA COOPERATIVA</button>
+                        <a href="https://www.fondoarco.it/chi-siamo/cos-e-arco" target="_blank" class="btn btn-primary">FONDO ARCO</a>
+                        <a href="https://www.fondoconcreto.it/" target="_blank" class="btn btn-primary">FONDO CONCRETO</a>
                     </div>
 
                     <div class="accordion" id="fondiPensionisticiAccordion">

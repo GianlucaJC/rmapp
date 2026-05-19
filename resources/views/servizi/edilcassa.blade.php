@@ -29,6 +29,7 @@
                                                data-service-description="{{ $prestazione['descrizione_completa'] }}"
                                                data-service-type="{{ $prestazione['service_type'] }}"
                                                data-current-status="{{ $prestazione['current_status'] ?? '' }}"
+                                               data-button-text="{{ $prestazione['testo_bottone'] ?? '' }}"
                                                data-required-docs="{{ isset($prestazione['documentazione_richiesta']) ? json_encode($prestazione['documentazione_richiesta']) : '' }}"
                                                @if (isset($prestazione['active_request']) && $prestazione['active_request'] && $prestazione['active_request']->id)
                                                    data-active-request="{{ json_encode($prestazione['active_request']) }}"
@@ -75,7 +76,7 @@
                   <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
                     <div>
-                        <a href="#" id="modalProceedBtn" class="btn btn-success">Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica</a>
+                        <a href="#" id="modalProceedBtn" class="btn btn-success">Procedi</a>
                         <button type="button" id="modalResubmitBtn" class="btn btn-success d-none">Invia pratica aggiornata</button>
                     </div>
                   </div>
@@ -106,7 +107,7 @@
             const modalResubmitBtn = document.getElementById('modalResubmitBtn');
 
             // Funzione per aggiornare lo stato e gli attributi data del pulsante "Procedi"
-            function updateProceedButton(serviceTitle, serviceDescription, serviceType, currentStatus, requestId = null) {
+            function updateProceedButton(serviceTitle, serviceDescription, serviceType, currentStatus, buttonText, requestId = null) {
                 @auth
                     if ({{ auth()->user()->is_consultant ? 'true' : 'false' }}) {
                         modalProceedBtn.style.display = 'none';
@@ -118,6 +119,7 @@
                 modalProceedBtn.dataset.serviceDescription = serviceDescription; // Corretto
                 modalProceedBtn.dataset.serviceType = serviceType; // Corretto
                 modalProceedBtn.dataset.currentStatus = currentStatus; // Corretto
+                modalProceedBtn.dataset.buttonText = buttonText;
                 modalProceedBtn.dataset.requestId = requestId;
 
                 // Una richiesta è considerata "attiva" se non è né Conclusa né Rifiutata
@@ -134,7 +136,7 @@
                     if (currentStatus === 'Conclusa' || currentStatus === 'Rifiutata') {
                         modalProceedBtn.textContent = 'Procedi con una nuova presentazione';
                     } else {
-                        modalProceedBtn.textContent = 'Procedi con la presentazione';
+                        modalProceedBtn.textContent = buttonText;
                     }
                     modalProceedBtn.title = ''; // Pulisce il titolo
                 }
@@ -149,6 +151,7 @@
                     const serviceDescription = this.dataset.serviceDescription;
                     const serviceType = this.dataset.serviceType;
                     const currentStatus = this.dataset.currentStatus;
+                    const buttonText = this.dataset.buttonText;
                     const activeRequestData = this.dataset.activeRequest ? JSON.parse(this.dataset.activeRequest) : null;
                     const requiredDocs = this.dataset.requiredDocs ? JSON.parse(this.dataset.requiredDocs) : [];
 
@@ -285,7 +288,7 @@
                         modalProceedBtn.style.display = 'block';
                     }
 
-                    updateProceedButton(serviceTitle, serviceDescription, serviceType, currentStatus, activeRequestData ? activeRequestData.id : null); // Corretto
+                    updateProceedButton(serviceTitle, serviceDescription, serviceType, currentStatus, buttonText, activeRequestData ? activeRequestData.id : null); // Corretto
                     serviceModal.show();
                 });
             });
