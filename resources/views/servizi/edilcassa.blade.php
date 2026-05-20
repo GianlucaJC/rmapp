@@ -211,7 +211,7 @@
                                     <input type="hidden" name="service_request_id" value="${activeRequestData.id}">
                                     <div class="input-group mb-3">
                                         <input type="file" class="form-control" name="document" id="document-modal-${activeRequestData.id}" required>
-                                        <button class="btn btn-outline-secondary upload-single-btn-modal" type="submit" data-request-id="${activeRequestData.id}">Carica</button>
+                                        <button class="btn btn-warning upload-single-btn-modal" type="submit" data-request-id="${activeRequestData.id}">Carica</button>
                                     </div>
                                     <div class="progress mb-2" style="height: 20px; display: none;">
                                         <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
