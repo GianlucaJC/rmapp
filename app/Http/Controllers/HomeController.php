@@ -159,6 +159,46 @@ class HomeController extends Controller
         // In futuro, questi dati verranno dal database.
         return [
             [
+                'nome' => 'FERIE E GRATIFICA NATALIZIA', 
+                'icona' => 'bi-cash-stack', 
+                'descrizione' => 'Accantonamento per ferie e gratifica natalizia.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa contribuisce a pagare parte di quanto spetta ai lavoratori ad essa iscritti per le loro ferie e gratifica natalizia.</p><p>Nella fattispecie paga :</p><ul><li>l’ 8,50% di quanto spetta loro per le ferie</li><li>il 10% di quanto spetta loro per la gratifica natalizia</li></ul><p>Per un totale, quindi, complessivo del 18,50%, calcolato sugli elementi della retribuzione per tutte le ore di lavoro normale contrattuale effettivamente prestate, e sul trattamento economico per le festività.</p><p>Gli importi di tale percentuale, vanno accantonati da parte delle imprese, presso l’Edilcassa, secondo quanto stabilito localmente dalle organizzazioni territoriali aderenti alle associazioni nazionali contraenti.</p>'),
+                'service_type' => 'Edilcassa', 
+                'is_actionable' => false, 
+                'testo_bottone' => 'Informativa',
+                'documentazione_richiesta' => [['type' => 'info', 'description' => 'Questa è una prestazione automatica gestita tramite gli accantonamenti versati dall\'impresa. Non è richiesta un\'azione da parte dell\'utente.', 'inputs' => []]]
+            ],
+            [
+                'nome' => 'INTEGRAZIONE ALL’INDENNITÀ DI MALATTIA', 
+                'icona' => 'bi-bandaid-fill', 
+                'descrizione' => 'Integrazione del trattamento economico durante i periodi di malattia.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa contribuisce a pagare parte di quanto spetta ai lavoratori ad essa iscritti, per i periodi in cui essi si assentano dal luogo di lavoro per motivi di salute.</p><p>Durante tali periodi infatti, le imprese (entro i limiti della conservazione del posto di lavoro), sono tenute a pagare mensilmente, agli operai non in prova, una somma giornaliera.</p><p>Tale somma giornaliera, corrisponde all’importo che risulta moltiplicando le quote orarie della retribuzione per il numero di ore che risulta dividendo per 6 le ore dell’orario contrattuale settimanale, durante l’assenza per malattia.</p><p>Tale trattamento economico giornaliero, viene pagato dalle imprese agli operai per 6 giorni alla settimana, escluse le festività.</p>'),
+                'service_type' => 'Edilcassa', 
+                'is_actionable' => true, 
+                'testo_bottone' => 'Procedi con la presentazione',
+                'documentazione_richiesta' => [['type' => 'info', 'description' => 'Per questo servizio, la richiesta viene gestita senza l\'invio di documentazione iniziale. Sarai contattato per eventuali integrazioni.', 'inputs' => []]]
+            ],
+            [
+                'nome' => 'INTEGRAZIONE ALL’INDENNITÀ DI INFORTUNIO O MALATTIA PROFESSIONALE', 
+                'icona' => 'bi-hospital', 
+                'descrizione' => 'Integrazione del trattamento economico per infortuni o malattie professionali.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>L’ Edilcassa contribuisce a pagare parte di quanto spetta ai lavoratori ad essa iscritti, per i periodi in cui essi si assentano dal luogo di lavoro a causa di infortuni o malattie professionali.</p><p>Durante tali periodi infatti, le imprese (entro i limiti della conservazione del posto di lavoro) sono tenute a pagare mensilmente, agli operai non in prova, una somma giornaliera.</p>'),
+                'service_type' => 'Edilcassa', 
+                'is_actionable' => true, 
+                'testo_bottone' => 'Procedi con la presentazione',
+                'documentazione_richiesta' => [['type' => 'info', 'description' => 'Per questo servizio, la richiesta viene gestita senza l\'invio di documentazione iniziale. Sarai contattato per eventuali integrazioni.', 'inputs' => []]]
+            ],
+            [
+                'nome' => 'ANZIANITÀ PROFESSIONALE EDILE (A.P.E.)', 
+                'icona' => 'bi-person-workspace', 
+                'descrizione' => 'Contributo per i lavoratori che hanno maturato l\'anzianità professionale edile.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa paga un contributo a quei lavoratori ad essa iscritti, che abbiano maturato (anche in più province) l’anzianità professionale edile; ossia a quei lavoratori che, entro il 30 settembre del biennio precedente, abbiano accantonato 2.100 ore di lavoro.</p><p>Al fine di tale requisito vengono contate le ore di lavoro ordinario, di assenza per malattia/infortunio indennizzate, permessi sindacali e ore di formazione.</p><p>L’Edilcassa paga tale contributo in occasione del 1° maggio dell’anno successivo a ciascun biennio.</p>'),
+                'service_type' => 'Edilcassa', 
+                'is_actionable' => false, 
+                'testo_bottone' => 'Informativa',
+                'documentazione_richiesta' => [['type' => 'info', 'description' => 'Questa è una prestazione automatica basata sulle ore accantonate. Non è richiesta un\'azione da parte dell\'utente.', 'inputs' => []]]
+            ],
+            [
                 'nome' => 'SUSSIDIO MATRIMONIALE', 'icona' => 'bi-gem', 'descrizione' => 'Contributo una tantum di € 1.000 in occasione del matrimonio.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Ai lavoratori che si trovino nelle condizioni generali del presente regolamento, la Edilcassa del Lazio corrisponde un contributo in occasione del matrimonio pari ad <strong>€ 1.000, una tantum</strong>. La domanda per ottenere la prestazione redatta su apposito modello predisposto dall’Edilcassa del Lazio, deve essere presentata entro 180 giorni alla data in cui è stato contratto il matrimonio.</p>'),
                 'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
