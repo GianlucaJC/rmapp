@@ -15,7 +15,7 @@
                 <div class="card bg-success text-white h-100">
                     <div class="card-body text-center">
                         <i class="bi bi-building-check fs-1 mb-3"></i>
-                        <h5 class="card-title">PRESTAZIONI CASSA EDILE</h5>
+                        <h5 class="card-title">PRESTAZIONI CASSA EDILE ROMA</h5>
                         <p class="card-text">Consulta l'elenco delle prestazioni per la Cassa Edile di Roma.</p>
                     </div>
                 </div>
@@ -28,7 +28,7 @@
                 <div class="card bg-success text-white h-100">
                     <div class="card-body text-center">
                         <i class="bi bi-building-add fs-1 mb-3"></i>
-                        <h5 class="card-title">PRESTAZIONI EDILCASSA</h5>
+                        <h5 class="card-title">PRESTAZIONI EDILCASSA LAZIO</h5>
                         <p class="card-text">Consulta l'elenco delle prestazioni per l'Edilcassa del Lazio.</p>
                     </div>
                 </div>

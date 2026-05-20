@@ -30,6 +30,7 @@
                                                data-service-type="{{ $prestazione['service_type'] }}"
                                                data-current-status="{{ $prestazione['current_status'] ?? '' }}"
                                                data-button-text="{{ $prestazione['testo_bottone'] ?? '' }}"
+                                               data-service-actionable="{{ (isset($prestazione['is_actionable']) && $prestazione['is_actionable'] === false) ? 'false' : 'true' }}"
                                                data-required-docs="{{ isset($prestazione['documentazione_richiesta']) ? json_encode($prestazione['documentazione_richiesta']) : '' }}"
                                                @if (isset($prestazione['active_request']) && $prestazione['active_request'] && $prestazione['active_request']->id)
                                                    data-active-request="{{ json_encode($prestazione['active_request']) }}"
@@ -153,6 +154,7 @@
                     const currentStatus = this.dataset.currentStatus;
                     const buttonText = this.dataset.buttonText;
                     const activeRequestData = this.dataset.activeRequest ? JSON.parse(this.dataset.activeRequest) : null;
+                    const isActionable = this.dataset.serviceActionable === 'true';
                     const requiredDocs = this.dataset.requiredDocs ? JSON.parse(this.dataset.requiredDocs) : [];
 
                     modalTitleEl.innerHTML = serviceTitle;
@@ -163,32 +165,6 @@
                     serviceModalActiveRequestInfoEl.innerHTML = '';
                     modalProceedBtn.style.display = 'none';
                     modalResubmitBtn.classList.add('d-none');
-
-                    // Gestione della logica per richieste attive vs nuove richieste
-                    if (requiredDocs.length > 0) {
-                        let docsHtml = '<h6 class="text-muted">Documentazione/Dati Richiesti</h6>';
-                        requiredDocs.forEach(group => {
-                            if (group.description) {
-                                docsHtml += `<p class="small fst-italic">${group.description}</p>`;
-                            }
-                            group.inputs.forEach(input => {
-                                const requiredStar = input.required ? ' <span class="text-danger">*</span>' : '';
-                                const requiredAttr = input.required ? 'required' : '';
-                                docsHtml += '<div class="mb-3">';
-                                docsHtml += `<label for="doc_${input.name}" class="form-label small">${input.label}${requiredStar}</label>`;
-                                if (group.type === 'form') {
-                                    docsHtml += `<input type="${input.type}" class="form-control form-control-sm" id="doc_${input.name}" name="${input.name}" placeholder="${input.placeholder || ''}" ${requiredAttr}>`;
-                                } else if (group.type === 'upload') {
-                                    docsHtml += `<input type="${input.type}" class="form-control form-control-sm" id="doc_${input.name}" name="${input.name}" placeholder="${input.placeholder || ''}" ${requiredAttr}>`;
-                                }
-                                docsHtml += '</div>';
-                            });
-                        });
-                        modalDocsContainerEl.innerHTML = docsHtml;
-                        modalDocsContainerEl.style.display = 'block';
-                    } else {
-                        modalDocsContainerEl.style.display = 'none';
-                    }
 
                     if (activeRequestData) {
                         // Se esiste una richiesta attiva, mostra le sue informazioni
@@ -205,7 +181,7 @@
                                 </div>
                             `;
                         }
-
+ 
                         if (activeRequestData.status === 'Richiesta integrazione') {
                             // Se è richiesta integrazione, mostra il form di upload
                             activeRequestHtml += `
@@ -229,7 +205,7 @@
                                         `).join('') : ''
                                     }
                                 </div>
-
+ 
                                 <!-- Form per i nuovi upload -->
                                 <form id="singleUploadFormModal-${activeRequestData.id}" class="single-upload-form-modal" enctype="multipart/form-data" novalidate>
                                     <input type="hidden" name="service_request_id" value="${activeRequestData.id}">
@@ -243,7 +219,6 @@
                                     <small class="text-muted">Max 5MB per file (PDF, JPG, PNG)</small>
                                     <div class="form-text" id="single-upload-feedback-modal-${activeRequestData.id}"></div>
                                 </form>
-
                             `;
                             modalResubmitBtn.classList.remove('d-none');
                             modalResubmitBtn.dataset.requestId = activeRequestData.id;
@@ -253,42 +228,23 @@
                                 }
                             @endauth
                         } else {
-                            modalProceedBtn.style.display = 'block'; // Mostra il bottone "Procedi" standard
+                            modalProceedBtn.style.display = 'block'; // Mostra il bottone "Procedi" standard (che sarà disabilitato da updateProceedButton)
                         }
                         serviceModalActiveRequestInfoEl.innerHTML = activeRequestHtml;
                         serviceModalActiveRequestInfoEl.style.display = 'block';
                         modalDocsContainerEl.style.display = 'none'; // Nasconde i campi per nuova richiesta
                     } else {
-                        // Logica per nuova richiesta
-                        if (requiredDocs.length > 0) {
-                            let docsHtml = '<h6 class="text-muted">Documentazione/Dati Richiesti</h6>';
-                            requiredDocs.forEach(group => {
-                                if (group.description) {
-                                    docsHtml += `<p class="small fst-italic">${group.description}</p>`;
-                                }
-                                group.inputs.forEach(input => {
-                                    const requiredStar = input.required ? ' <span class="text-danger">*</span>' : '';
-                                    const requiredAttr = input.required ? 'required' : '';
-                                    docsHtml += '<div class="mb-3">';
-                                    docsHtml += `<label for="doc_${input.name}" class="form-label small">${input.label}${requiredStar}</label>`;
-                                    if (group.type === 'upload') {
-                                        docsHtml += `<input type="file" class="form-control form-control-sm" id="doc_${input.name}" name="${input.name}" ${requiredAttr}>`;
-                                    } else if (group.type === 'form') {
-                                        docsHtml += `<input type="${input.type}" class="form-control form-control-sm" id="doc_${input.name}" name="${input.name}" placeholder="${input.placeholder || ''}" ${requiredAttr}>`;
-                                    }
-                                    docsHtml += '</div>';
-                                });
-                            });
-                            modalDocsContainerEl.innerHTML = docsHtml;
-                            modalDocsContainerEl.style.display = 'block';
-                        } else {
-                            modalDocsContainerEl.style.display = 'none';
-                        }
+                        // Logica per nuova richiesta: non mostra l'elenco dei documenti.
+                        // Sarà il funzionario a specificarli in fase di integrazione.
                         serviceModalActiveRequestInfoEl.style.display = 'none';
-                        modalProceedBtn.style.display = 'block';
+                        modalDocsContainerEl.style.display = 'none'; // Nasconde sempre il contenitore dei documenti
+
+                        if (isActionable) {
+                            modalProceedBtn.style.display = 'block';
+                        }
                     }
 
-                    updateProceedButton(serviceTitle, serviceDescription, serviceType, currentStatus, buttonText, activeRequestData ? activeRequestData.id : null); // Corretto
+                    updateProceedButton(serviceTitle, serviceDescription, serviceType, currentStatus, buttonText, activeRequestData ? activeRequestData.id : null);
                     serviceModal.show();
                 });
             });
