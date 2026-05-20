@@ -135,7 +135,7 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md shadow-sm @if(session('admin_user.superadmin')) navbar-dark bg-danger @else navbar-light bg-white @endif">
+        <nav class="navbar navbar-expand-md shadow-sm fixed-top @if(session('admin_user.superadmin')) navbar-dark bg-danger @else navbar-light bg-white @endif">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/home') }}">
                     {{-- SVG Logo FILLEA CGIL --}}
@@ -180,6 +180,15 @@
 
                 </svg>
 
+                </a>
+
+                {{-- Contattaci button, always visible --}}
+                <ul class="navbar-nav flex-row order-md-last"> {{-- flex-row to keep it horizontal, order-md-last to push it right on larger screens --}}
+                    <li class="nav-item me-2"> {{-- me-2 for some spacing --}}
+                        <a class="btn btn-danger btn-sm" href="{{ route('contatti.index') }}">
+                            <i class="bi bi-telephone-fill me-1"></i> Contattaci
+                        </a>
+                    </li>
 
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -298,7 +307,7 @@
             </div>
         </nav>
 
-        <main class="py-4">
+        <main class="py-4" style="padding-top: 70px !important;"> {{-- Aggiunto padding-top per compensare la navbar fissa --}}
             <div class="container">
                 <div class="text-center mb-4">
                     <a href="{{ route('home') }}">
