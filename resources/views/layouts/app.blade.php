@@ -308,10 +308,10 @@
         </nav>
 
         <main class="py-4" style="padding-top: 70px !important;"> {{-- Aggiunto padding-top per compensare la navbar fissa --}}
-            <div class="container">
+            <div class="container mt-5">
                 <div class="text-center mb-4">
                     <a href="{{ route('home') }}">
-                        <img src="{{ asset('images/logo_roma.png') }}" alt="Logo Roma" style="height: 130px; background-color: rgba(255, 255, 255, 0.4); border-radius: 8px; padding: 5px;">
+                        <img src="{{ asset('images/logo_roma.png') }}" alt="Logo Roma" style="height: 130px; background-color: rgba(255, 255, 255, 0.4); border-radius: 8px; padding: 5px; box-sizing: border-box;">
                     </a>
                 </div>
             </div>
