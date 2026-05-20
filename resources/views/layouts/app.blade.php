@@ -185,7 +185,7 @@
                 {{-- Contattaci button, always visible --}}
                 <ul class="navbar-nav flex-row order-md-last"> {{-- flex-row to keep it horizontal, order-md-last to push it right on larger screens --}}
                     <li class="nav-item me-2"> {{-- me-2 for some spacing --}}
-                        <a class="btn btn-danger btn-sm" href="{{ route('contatti.index') }}">
+                        <a class="btn btn-warning btn-sm" href="{{ route('contatti.index') }}">
                             <i class="bi bi-telephone-fill me-1"></i> Contattaci
                         </a>
                     </li>
