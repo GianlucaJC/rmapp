@@ -58,15 +58,21 @@ Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify']
 Route::post('email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 
 // Rotta per la dashboard utente dopo il login.
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+// La rotta /home viene esclusa dai middleware di reindirizzamento per permettere l'accesso
+// anche agli amministratori loggati, che altrimenti verrebbero reindirizzati alla loro dashboard.
+Route::get('/home', [HomeController::class, 'index'])->name('home')
+    ->withoutMiddleware([\App\Http\Middleware\RedirectIfAuthenticated::class, \App\Http\Middleware\RedirectIfAdmin::class]);
 
 // Rotta per la pagina della privacy policy
 Route::view('/privacy-policy', 'privacy-policy')->name('privacy.policy');
 
 // Rotte per le pagine dei servizi
-Route::get('/servizi', [HomeController::class, 'serviziIndex'])->name('servizi.index');
-Route::get('/servizi/cassa-edile', [HomeController::class, 'cassaEdile'])->name('servizi.cassa-edile');
-Route::get('/servizi/edilcassa', [HomeController::class, 'edilcassa'])->name('servizi.edilcassa');
+Route::get('/servizi', [HomeController::class, 'serviziIndex'])->name('servizi.index')
+    ->withoutMiddleware([\App\Http\Middleware\RedirectIfAuthenticated::class, \App\Http\Middleware\RedirectIfAdmin::class]);
+Route::get('/servizi/cassa-edile', [HomeController::class, 'cassaEdile'])->name('servizi.cassa-edile')
+    ->withoutMiddleware([\App\Http\Middleware\RedirectIfAuthenticated::class, \App\Http\Middleware\RedirectIfAdmin::class]);
+Route::get('/servizi/edilcassa', [HomeController::class, 'edilcassa'])->name('servizi.edilcassa')
+    ->withoutMiddleware([\App\Http\Middleware\RedirectIfAuthenticated::class, \App\Http\Middleware\RedirectIfAdmin::class]);
 
 // Rotta per la pagina dei contatti
 Route::get('/contatti', [HomeController::class, 'contatti'])->name('contatti.index');

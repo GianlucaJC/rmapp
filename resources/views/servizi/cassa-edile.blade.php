@@ -108,6 +108,12 @@
 
             // Funzione per aggiornare lo stato e gli attributi data del pulsante "Procedi"
             function updateProceedButton(serviceTitle, serviceDescription, serviceType, currentStatus, buttonText, requestId = null) {
+                @if (session('admin_logged_in'))
+                    modalProceedBtn.style.display = 'none';
+                    modalResubmitBtn.classList.add('d-none');
+                    return;
+                @endif
+
                 @auth
                     if ({{ auth()->user()->is_consultant ? 'true' : 'false' }}) {
                         modalProceedBtn.style.display = 'none';
@@ -252,6 +258,9 @@
                                     modalResubmitBtn.classList.add('d-none');
                                 }
                             @endauth
+                            @if (session('admin_logged_in'))
+                                modalResubmitBtn.classList.add('d-none');
+                            @endif
                         } else {
                             modalProceedBtn.style.display = 'block'; // Mostra il bottone "Procedi" standard
                         }
@@ -295,6 +304,16 @@
 
             modalProceedBtn.addEventListener('click', function(e) {
                 e.preventDefault();
+
+                @if (session('admin_logged_in'))
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Azione non consentita',
+                        text: 'Come amministratore, puoi visualizzare i dettagli dei servizi ma non puoi inviare richieste.',
+                        confirmButtonColor: '#c8102e'
+                    });
+                    return;
+                @endif
 
                 @guest
                 Swal.fire({
@@ -466,6 +485,16 @@
             modalResubmitBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 const requestId = this.dataset.requestId;
+
+                @if (session('admin_logged_in'))
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Azione non consentita',
+                        text: 'Come amministratore, non puoi inviare pratiche.',
+                        confirmButtonColor: '#c8102e'
+                    });
+                    return;
+                @endif
 
                 @auth
                     if ({{ auth()->user()->is_consultant ? 'true' : 'false' }}) {

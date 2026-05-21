@@ -28,14 +28,17 @@ class HomeController extends Controller
     /**
      * Mostra la homepage pubblica dell'applicazione.
      */
-    public function index(): View
+    public function index(): View    
     {
         // Per ora, questa funzione restituisce semplicemente la vista 'home'.
         // Se l'utente è autenticato, recupera le sue richieste di servizio.
         $serviceRequests = collect(); // Inizializza come collezione vuota
         $newsItems = collect(); // Inizializza come collezione vuota
 
-        if (auth()->check()) {
+        $isUser = auth()->check();
+        $isAdmin = session()->has('admin_logged_in');
+
+        if ($isUser) {
             $user = auth()->user();
             $serviceRequests = ServiceRequest::where('user_id', $user->id)
                                             ->orderBy('updated_at', 'desc')
@@ -55,8 +58,10 @@ class HomeController extends Controller
                     $request->detail_url = route($routeName) . '#' . $fragment;
                 }
             }
+        }
 
-            // Recupera le news attive da mostrare nella dashboard
+        // Recupera le news attive da mostrare nella dashboard per utenti e admin
+        if ($isUser || $isAdmin) {
             $today = Carbon::today();
             $newsItems = News::where('is_suspended', false)
                 ->where(function ($query) use ($today) {
@@ -70,6 +75,7 @@ class HomeController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->get();
         }
+
 
         return view('home', compact('serviceRequests', 'newsItems'));
     }
@@ -87,8 +93,8 @@ class HomeController extends Controller
         // In futuro, questi dati verranno dal database.
         // Add 'service_type' to each service for tracking
         return [
-            ['nome' => 'Pagamento GNF', 'icona' => 'bi-cash-stack', 'descrizione' => 'Erogazione del trattamento economico per ferie e gratifica natalizia.', 'descrizione_completa' => $this->cleanHtmlDescription('<p>La Cassa Edile gestisce l’accantonamento degli importi versati dall’impresa per i propri dipendenti a titolo di <strong>Gratifica Natalizia</strong> e <strong>Ferie (GNF)</strong>, provvedendo alla liquidazione delle quote accantonate con due pagamenti semestrali:</p><ul><li style="list-style-type: none"><ul><li><p><strong>Trattamento economico per ferie</strong>: l’equivalente delle somme accantonate <strong>dal 1° ottobre al 31 marzo</strong> viene corrisposto nel corso del mese di luglio;</p></li><li><p><strong>Gratifica natalizia</strong>: l’equivalente delle somme accantonate <strong>dal 1° aprile al 30 settembre</strong> viene corrisposto nel corso del mese di dicembre.</p></li></ul></li></ul><p>Il pagamento della prestazione avviene in automatico sulla base degli accantonamenti mensili previsti a carico dell’impresa e del lavoratore (con riferimento a quanto calcolato in busta paga) e in riscontro dell’avvenuto versamento delle somme dovute effettuato dall’impresa.'), 'service_type' => 'Cassa Edile', 'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica'],
-            ['nome' => 'Pagamento APE', 'icona' => 'bi-person-workspace', 'descrizione' => 'Un premio per l\'Anzianità Professionale Edile.', 'descrizione_completa' => $this->cleanHtmlDescription('<p>Ogni anno la Cassa Edile liquida ai lavoratori iscritti <strong>in automatico</strong> e di regola nel mese di <strong>MAGGIO</strong> un Premio di professionalità disciplinato dal CCNL vigente collegato all’anzianità lavorativa che l’operaio matura nel settore edile.<br><br>Alla copertura degli oneri derivanti dalla disciplina contrattualmente disposta dell’<strong>Anzianità Professionale Edile (A.P.E.)</strong> si provvede con un contributo a carico dei datori di lavoro.<br><br>A seguito del versamento da parte delle imprese del contributo, calcolato sugli elementi della retribuzione per tutte le ore di lavoro effettivamente prestate e sul trattamento economico per le festività, all’operaio che in un biennio abbia maturato l’A.P.E., anche in più circoscrizioni territoriali, le Casse Edili corrispondono, nell’anno successivo – ciascuna per la propria competenza – la prestazione prevista.<br><br>Per aver diritto alla prestazione il lavoratore deve far valere nel biennio precedente all’erogazione almeno 2100 ore denunciate e versate presso la Cassa Edile di Roma o altre Casse. Ogni biennio scade il 30 settembre dell’anno precedente quello dell’erogazione.<br><br>La prestazione è stabilita secondo importi crescenti, in relazione al numero delle erogazioni del Premio A.P.E. percepite negli anni dal singolo operaio e calcolata moltiplicando i coefficienti prestabiliti per il numero di ore di lavoro ordinario effettivamente prestate, denunciate e versate alla Cassa Edile per il secondo anno del biennio (l’anno base per la liquidazione è il secondo del biennio).<br><br>Le erogazioni di importi a titolo di Anzianità Professionale Edile sono <strong>soggette a ritenuta IRPEF</strong> (la Cassa Edile emette pertanto la certificazione CU da considerare in fase di dichiarazione dei redditi).</p><br>'), 'service_type' => 'Cassa Edile', 'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI'],
+            ['nome' => 'Pagamento FERIE E GRATIFICA NATALIZIA', 'icona' => 'bi-cash-stack', 'descrizione' => 'Erogazione del trattamento economico per ferie e gratifica natalizia.', 'descrizione_completa' => $this->cleanHtmlDescription('<p>La Cassa Edile gestisce l’accantonamento degli importi versati dall’impresa per i propri dipendenti a titolo di <strong>Gratifica Natalizia</strong> e <strong>Ferie (GNF)</strong>, provvedendo alla liquidazione delle quote accantonate con due pagamenti semestrali:</p><ul><li style="list-style-type: none"><ul><li><p><strong>Trattamento economico per ferie</strong>: l’equivalente delle somme accantonate <strong>dal 1° ottobre al 31 marzo</strong> viene corrisposto nel corso del mese di luglio;</p></li><li><p><strong>Gratifica natalizia</strong>: l’equivalente delle somme accantonate <strong>dal 1° aprile al 30 settembre</strong> viene corrisposto nel corso del mese di dicembre.</p></li></ul></li></ul><p>Il pagamento della prestazione avviene in automatico sulla base degli accantonamenti mensili previsti a carico dell’impresa e del lavoratore (con riferimento a quanto calcolato in busta paga) e in riscontro dell’avvenuto versamento delle somme dovute effettuato dall’impresa.'), 'service_type' => 'Cassa Edile', 'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica'],
+            ['nome' => 'ANZIANITÀ PROFESSIONALE EDILE (A.P.E.)', 'icona' => 'bi-person-workspace', 'descrizione' => 'Un premio per l\'Anzianità Professionale Edile.', 'descrizione_completa' => $this->cleanHtmlDescription('<p>Ogni anno la Cassa Edile liquida ai lavoratori iscritti <strong>in automatico</strong> e di regola nel mese di <strong>MAGGIO</strong> un Premio di professionalità disciplinato dal CCNL vigente collegato all’anzianità lavorativa che l’operaio matura nel settore edile.<br><br>Alla copertura degli oneri derivanti dalla disciplina contrattualmente disposta dell’<strong>Anzianità Professionale Edile (A.P.E.)</strong> si provvede con un contributo a carico dei datori di lavoro.<br><br>A seguito del versamento da parte delle imprese del contributo, calcolato sugli elementi della retribuzione per tutte le ore di lavoro effettivamente prestate e sul trattamento economico per le festività, all’operaio che in un biennio abbia maturato l’A.P.E., anche in più circoscrizioni territoriali, le Casse Edili corrispondono, nell’anno successivo – ciascuna per la propria competenza – la prestazione prevista.<br><br>Per aver diritto alla prestazione il lavoratore deve far valere nel biennio precedente all’erogazione almeno 2100 ore denunciate e versate presso la Cassa Edile di Roma o altre Casse. Ogni biennio scade il 30 settembre dell’anno precedente quello dell’erogazione.<br><br>La prestazione è stabilita secondo importi crescenti, in relazione al numero delle erogazioni del Premio A.P.E. percepite negli anni dal singolo operaio e calcolata moltiplicando i coefficienti prestabiliti per il numero di ore di lavoro ordinario effettivamente prestate, denunciate e versate alla Cassa Edile per il secondo anno del biennio (l’anno base per la liquidazione è il secondo del biennio).<br><br>Le erogazioni di importi a titolo di Anzianità Professionale Edile sono <strong>soggette a ritenuta IRPEF</strong> (la Cassa Edile emette pertanto la certificazione CU da considerare in fase di dichiarazione dei redditi).</p><br>'), 'service_type' => 'Cassa Edile', 'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI'],
             ['nome' => 'Regolamento APE – CCNL Allegato C Comma 4', 'icona' => 'bi-file-earmark-ruled', 'descrizione' => 'Cumulo delle ore di lavoro per operai che si trasferiscono.', 'descrizione_completa' => $this->cleanHtmlDescription('<p>Nel caso di morte o di invalidità permanente assoluta al lavoro di operai che abbiano percepito almeno una volta la prestazione o comunque abbiano maturato il requisito per l’ottenimento dell’A.P.E. e per i quali nel biennio precedente l’evento siano stati effettuati gli accantonamenti relativi a Gratifica Natalizia e Ferie, la Cassa Edile, su richiesta dell’operaio o degli aventi causa (eredi), eroga una prestazione <strong>pari a 300 volte la retribuzione oraria minima contrattuale</strong> costituita dal minimo di paga base spettante all’operaio stesso al momento dell’evento.</p><br>'), 'service_type' => 'Cassa Edile', 'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica'],
             ['nome' => 'Indennità per Carenza Malattia', 'icona' => 'bi-bandaid', 'descrizione' => 'Indennità per i primi 3 giorni di malattia.', 'descrizione_completa' => $this->cleanHtmlDescription('<p>La Cassa Edile corrisponde un’indennità giornaliera definita “per carenza”, fissata in <strong>€ 36,00</strong> per i primi tre giorni, a persona, nel singolo anno solare e per un solo evento di malattia di durata non superiore a 6 giorni di calendario (1° gennaio – 31 dicembre), entro un limite massimo di <strong>€ 108,00</strong>.<br><br>Per avere diritto alla prestazione il lavoratore <strong>alla data dell’evento sanitario</strong> deve essere in forza con un’impresa iscritta e regolare alla BNI (avendo effettuato denunce e versamenti dei contributi dovuti) ed aver accantonato, nel corso dei 24 mesi precedenti, un numero minimo di 2100 ore di lavoro ordinario.<br><br>Per l’attivazione della richiesta della prestazione, oltre alla domanda del lavoratore è necessario che l’impresa comunichi l’evento tramite Denuncia MUT, allegando contestualmente la certificazione medica attestante la durata della malattia.</p>'), 'service_type' => 'Cassa Edile', 'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI'],
             ['nome' => 'Borse di Studio', 'icona' => 'bi-mortarboard-fill', 'descrizione' => 'Assegnazione di borse di studio per i figli dei lavoratori.', 'descrizione_completa' => $this->cleanHtmlDescription('<p>La Cassa Edile organizza annualmente per gli studenti figli dei lavoratori iscritti fiscalmente a carico e/o conviventi e i lavoratori studenti, che frequentino con profitto le scuole degli ordini e gradi indicati e che non risultino ripetenti o promossi con debito formativo né fuori corso e non aggiudicatari di altri premi analoghi nello stesso anno scolastico/accademico di afferenza, un concorso per l’assegnazione di una serie precisata di <strong>Borse di Studio</strong>.<br><br>Le modalità, il numero dei premi, i requisiti di partecipazione, i criteri di conferimento e la documentazione da presentare saranno resi noti nel Bando di Partecipazione, che sarà pubblicato sul sito della Cassa Edile orientativamente nel mese di <strong>GENNAIO</strong>.</p><br>'), 'service_type' => 'Cassa Edile', 'documentazione_richiesta' => [], 'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica'], // Nessun documento richiesto per l'invio iniziale
@@ -165,7 +171,7 @@ class HomeController extends Controller
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa contribuisce a pagare parte di quanto spetta ai lavoratori ad essa iscritti per le loro ferie e gratifica natalizia.</p><p>Nella fattispecie paga :</p><ul><li>l’ 8,50% di quanto spetta loro per le ferie</li><li>il 10% di quanto spetta loro per la gratifica natalizia</li></ul><p>Per un totale, quindi, complessivo del 18,50%, calcolato sugli elementi della retribuzione per tutte le ore di lavoro normale contrattuale effettivamente prestate, e sul trattamento economico per le festività.</p><p>Gli importi di tale percentuale, vanno accantonati da parte delle imprese, presso l’Edilcassa, secondo quanto stabilito localmente dalle organizzazioni territoriali aderenti alle associazioni nazionali contraenti.</p>'),
                 'service_type' => 'Edilcassa', 
                 'is_actionable' => true, 
-                'testo_bottone' => 'Procedi con la presentazione',
+                'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'info', 'description' => 'Questa è una prestazione automatica gestita tramite gli accantonamenti versati dall\'impresa. Non è richiesta un\'azione da parte dell\'utente.', 'inputs' => []]]
             ],
             [
@@ -175,7 +181,7 @@ class HomeController extends Controller
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa contribuisce a pagare parte di quanto spetta ai lavoratori ad essa iscritti, per i periodi in cui essi si assentano dal luogo di lavoro per motivi di salute.</p><p>Durante tali periodi infatti, le imprese (entro i limiti della conservazione del posto di lavoro), sono tenute a pagare mensilmente, agli operai non in prova, una somma giornaliera.</p><p>Tale somma giornaliera, corrisponde all’importo che risulta moltiplicando le quote orarie della retribuzione per il numero di ore che risulta dividendo per 6 le ore dell’orario contrattuale settimanale, durante l’assenza per malattia.</p><p>Tale trattamento economico giornaliero, viene pagato dalle imprese agli operai per 6 giorni alla settimana, escluse le festività.</p>'),
                 'service_type' => 'Edilcassa', 
                 'is_actionable' => true, 
-                'testo_bottone' => 'Procedi con la presentazione',
+                'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'info', 'description' => 'Per questo servizio, la richiesta viene gestita senza l\'invio di documentazione iniziale. Sarai contattato per eventuali integrazioni.', 'inputs' => []]]
             ],
             [
@@ -185,7 +191,7 @@ class HomeController extends Controller
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L’ Edilcassa contribuisce a pagare parte di quanto spetta ai lavoratori ad essa iscritti, per i periodi in cui essi si assentano dal luogo di lavoro a causa di infortuni o malattie professionali.</p><p>Durante tali periodi infatti, le imprese (entro i limiti della conservazione del posto di lavoro) sono tenute a pagare mensilmente, agli operai non in prova, una somma giornaliera.</p>'),
                 'service_type' => 'Edilcassa', 
                 'is_actionable' => true, 
-                'testo_bottone' => 'Procedi con la presentazione',
+                'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'info', 'description' => 'Per questo servizio, la richiesta viene gestita senza l\'invio di documentazione iniziale. Sarai contattato per eventuali integrazioni.', 'inputs' => []]]
             ],
             [
@@ -195,79 +201,79 @@ class HomeController extends Controller
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa paga un contributo a quei lavoratori ad essa iscritti, che abbiano maturato (anche in più province) l’anzianità professionale edile; ossia a quei lavoratori che, entro il 30 settembre del biennio precedente, abbiano accantonato 2.100 ore di lavoro.</p><p>Al fine di tale requisito vengono contate le ore di lavoro ordinario, di assenza per malattia/infortunio indennizzate, permessi sindacali e ore di formazione.</p><p>L’Edilcassa paga tale contributo in occasione del 1° maggio dell’anno successivo a ciascun biennio.</p>'),
                 'service_type' => 'Edilcassa', 
                 'is_actionable' => true, 
-                'testo_bottone' => 'Procedi con la presentazione',
+                'testo_bottone' => 'Procedi per VERIFICARE I REQUISITI',
                 'documentazione_richiesta' => [['type' => 'info', 'description' => 'Questa è una prestazione automatica basata sulle ore accantonate. Non è richiesta un\'azione da parte dell\'utente.', 'inputs' => []]]
             ],
             [
                 'nome' => 'SUSSIDIO MATRIMONIALE', 'icona' => 'bi-gem', 'descrizione' => 'Contributo una tantum di € 1.000 in occasione del matrimonio.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Ai lavoratori che si trovino nelle condizioni generali del presente regolamento, la Edilcassa del Lazio corrisponde un contributo in occasione del matrimonio pari ad <strong>€ 1.000, una tantum</strong>. La domanda per ottenere la prestazione redatta su apposito modello predisposto dall’Edilcassa del Lazio, deve essere presentata entro 180 giorni alla data in cui è stato contratto il matrimonio.</p>'),
-                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
+                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [['name' => 'certificato_matrimonio', 'label' => 'Certificato di matrimonio (se in lingua straniera, traduzione giurata)', 'type' => 'file', 'required' => true]]]]
             ],
             [
                 'nome' => 'CONGEDO MATERNITÀ', 'icona' => 'bi-person-heart', 'descrizione' => 'Contributo di € 200 mensili per i 5 mesi di astensione obbligatoria.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa del Lazio eroga, alle lavoratrici ad essa iscritte, un contributo di <strong>€ 200 mensili</strong> per i cinque mesi di astensione obbligatoria dal lavoro per maternità; sono quindi esclusi eventuali periodi di assenza anticipata dal lavoro.</p>'),
-                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
+                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [['name' => 'certificato_medico_asl', 'label' => 'Certificato medico ASL (gravidanza e data sospensione)', 'type' => 'file', 'required' => true], ['name' => 'dichiarazione_impresa', 'label' => 'Dichiarazione impresa (attestante rapporto di lavoro)', 'type' => 'file', 'required' => true]]]]
             ],
             [
                 'nome' => 'CONGEDO PARENTALE PATERNITÀ', 'icona' => 'bi-person-arms-up', 'descrizione' => 'Contributo di € 700 per congedo parentale facoltativo superiore a tre mesi.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa del Lazio eroga un contributo complessivo pari a <strong>€ 700</strong> riconosciuto ai lavoratori che usufruiscono del congedo parentale facoltativo per un periodo superiore a tre mesi anche continuativo.</p>'),
-                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
+                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [['name' => 'certificato_nascita', 'label' => 'Certificato di nascita del figlio', 'type' => 'file', 'required' => true], ['name' => 'domanda_congedo_cedolini', 'label' => 'Copia domanda congedo parentale e cedolini del periodo', 'type' => 'file', 'required' => true]]]]
             ],
             [
                 'nome' => 'ASSEGNO DI NATALITÀ', 'icona' => 'bi-gift-fill', 'descrizione' => 'Contributo annuale per i primi tre anni di vita del figlio.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Ai lavoratori che si trovino nelle condizioni generali del presente regolamento, la Edilcassa del Lazio corrisponde un contributo, in occasione della nascita di figli, così determinato:</p><ul><li>Per il 1° figlio <strong>€ 300,00</strong> annuale per i primi tre anni di vita;</li><li>Per il 2° figlio <strong>€ 400,00</strong> annuale per i primi tre anni di vita;</li><li>Dal 3° figlio <strong>€ 500,00</strong> annuale per i primi tre anni di vita.</li></ul><p>Se il figlio non fosse a totale carico del lavoratore, il contributo potrà essere riparametrato.</p>'),
-                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
+                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'upload', 'description' => 'Carica la documentazione richiesta. Per gli anni successivi al primo, la domanda va presentata entro 180gg dal compleanno.', 'inputs' => [['name' => 'certificato_nascita', 'label' => 'Certificato di nascita del figlio (da presentare entro 180 giorni dalla nascita)', 'type' => 'file', 'required' => true], ['name' => 'modello_730_cu', 'label' => 'Copia della prima pagina del modello 730 e/o CU', 'type' => 'file', 'required' => true]]]]
             ],
             [
                 'nome' => 'CONTRIBUTO ACQUISTO E RISTRUTTURAZIONE PRIMA CASA', 'icona' => 'bi-house-heart-fill', 'descrizione' => 'Contributo una tantum per finanziamento acquisto o ristrutturazione prima casa.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa del Lazio eroga un contributo una tantum, ai lavoratori che hanno sottoscritto il primo finanziamento per acquisto, costruzione o ristrutturazione prima casa con le seguenti specifiche:</p><ul><li><strong>€ 1.000</strong> se mutuo/finanziamento da € 17.000 a € 25.000;</li><li><strong>€ 1.500</strong> se mutuo/finanziamento da € 25.001 a € 50.000;</li><li><strong>€ 2.000</strong> se mutuo/finanziamento superiore a € 50.000.</li></ul><p>La casa deve essere situata nel Lazio. Il lavoratore deve avere iscrizione da tre anni continuativi alla Edilcassa del Lazio e diritto all’erogazione APE nel biennio antecedente. La domanda va presentata entro 180 giorni dalla contrazione del mutuo/finanziamento.</p>'),
-                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
+                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [['name' => 'documentazione_mutuo', 'label' => 'Documentazione mutuo/finanziamento', 'type' => 'file', 'required' => true], ['name' => 'pagamento_prima_rata', 'label' => 'Dimostrazione pagamento prima rata', 'type' => 'file', 'required' => true], ['name' => 'proprieta_immobile', 'label' => 'Dimostrazione proprietà immobile (per ristrutturazione)', 'type' => 'file', 'required' => false]]]]
             ],
             [
                 'nome' => 'CONTRIBUTO AFFITTO GIOVANI COPPIE', 'icona' => 'bi-key-fill', 'descrizione' => 'Contributo una tantum di € 1.000 per spese di locazione a giovani coppie.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa del Lazio eroga una tantum un contributo di <strong>€ 1.000</strong> per spese di locazione/affitto a giovani coppie con entrambi i componenti con meno di 40 anni dalla data della richiesta della prestazione.</p>'),
-                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
+                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [['name' => 'certificato_matrimonio_unione', 'label' => 'Certificato di matrimonio o unione civile (< 10 anni)', 'type' => 'file', 'required' => true], ['name' => 'contratto_affitto', 'label' => 'Contratto di affitto registrato', 'type' => 'file', 'required' => true], ['name' => 'certificato_residenza', 'label' => 'Certificato di residenza', 'type' => 'file', 'required' => true]]]]
             ],
             [
                 'nome' => 'CARENZA MALATTIA', 'icona' => 'bi-bandaid-fill', 'descrizione' => 'Contributo di € 50 al giorno per i primi 3 giorni di malattia.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa del Lazio prevede un contributo ai lavoratori iscritti, di <strong>€ 50,00</strong>, per ogni giorno lavorativo per i primi tre giorni di assenza dal lavoro per motivi di salute. Tale prestazione viene fornita per un unico evento nell’anno edile (ott.-sett) relativamente a periodi di malattia non superiori ai sei giorni di calendario.</p>'),
-                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
+                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [['name' => 'certificato_malattia', 'label' => 'Certificato di malattia (da presentare entro 90gg)', 'type' => 'file', 'required' => true]]]]
             ],
             [
                 'nome' => 'CONTRIBUTO ANNUALE PORTATORE HANDICAP', 'icona' => 'bi-person-wheelchair', 'descrizione' => 'Contributo annuale fino a € 1.800 per familiari con handicap.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>A ciascun nucleo familiare residente in Italia, in cui vi sia un componente minore, debitamente certificato, l’Edilcassa del Lazio eroga un contributo annuale sino ad un massimo di <strong>€ 1.800</strong>. Viene inoltre riconosciuto un contributo fisso pari a <strong>€ 80 lordi</strong> per ciascuna giornata nella quale il lavoratore si assenta dal lavoro se il familiare (coniuge o figlio a carico), portatore di handicap grave, è sottoposto a visita medica (massimo 5 visite annue).</p>'),
-                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
+                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [['name' => 'verbale_commissione_medica', 'label' => 'Copia verbale commissione medica attestante disabilità', 'type' => 'file', 'required' => true], ['name' => 'certificato_terapia', 'label' => 'Certificato del centro medico/riabilitazione (ove necessario)', 'type' => 'file', 'required' => false], ['name' => 'certificato_invalidita', 'label' => 'Certificato di commissione di prima istanza', 'type' => 'file', 'required' => true], ['name' => 'modello_730_cu', 'label' => 'Copia prima pagina Mod. 730 o CU', 'type' => 'file', 'required' => true], ['name' => 'dichiarazione_medico_visite', 'label' => 'Solo per visite: Dichiarazione medico accompagnamento familiare', 'type' => 'file', 'required' => false]]]]
             ],
             [
                 'nome' => 'PRESTAZIONI SANITARIE', 'icona' => 'bi-heart-pulse-fill', 'descrizione' => 'Contributo straordinario a integrazione dei rimborsi Sanedil.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Le prestazioni sanitarie sono di competenza del Sanedil. In via sperimentale la Edilcassa del Lazio erogherà ai lavoratori e ai loro familiari, un contributo straordinario alle spese mediche rimborsate dal Sanedil, sino alla concorrenza di quanto effettivamente speso e comunque sino all\'importo massimo di <strong>€ 2.000 per nucleo familiare/anno</strong>. Tale integrazione straordinaria verrà erogata nei limiti dello specifico stanziamento annuale.</p>'),
-                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
+                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [['name' => 'domanda_sanedil_rimborso', 'label' => 'Copia domanda presentata al Sanedil e relativo rimborso', 'type' => 'file', 'required' => true]]]]
             ],
             [
                 'nome' => 'MALATTIE PROFESSIONALI', 'icona' => 'bi-file-earmark-medical-fill', 'descrizione' => 'Contributo fino a € 150 per spese di certificazione medica.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Al Lavoratore che avanza richieste all’INAIL per il riconoscimento della malattia professionale, l’Edilcassa del Lazio, nel caso del riconoscimento, erogherà un contributo massimo di <strong>€ 150 all’anno</strong> per le spese sostenute per la certificazione medica. Per aver diritto alla prestazione il lavoratore deve aver percepito almeno un’erogazione del premio APE.</p>'),
-                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
+                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [['name' => 'certificato_medico_legale', 'label' => 'Certificato medico rilasciato dal medico legale', 'type' => 'file', 'required' => true], ['name' => 'fattura_pagamento', 'label' => 'Fattura in originale o copia conforme', 'type' => 'file', 'required' => true], ['name' => 'ricevuta_domanda_inail', 'label' => 'Ricevuta inoltro domanda all’INAIL', 'type' => 'file', 'required' => true], ['name' => 'riconoscimento_inail', 'label' => 'Riconoscimento della malattia professionale da parte dell’INAIL', 'type' => 'file', 'required' => true]]]]
             ],
             [
                 'nome' => 'ASSEGNO FUNERARIO', 'icona' => 'bi-flower1', 'descrizione' => 'Contributo per decesso del lavoratore o di un familiare a carico.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa del Lazio eroga, in caso di decesso del lavoratore (ad esclusione della causa di infortunio professionale) un contributo di <strong>€ 1.500,00</strong> agli eredi (coniuge e figli) e di <strong>€ 1.000,00</strong> nel caso di decesso del familiare (coniuge e figli a carico).</p>'),
-                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
+                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [['name' => 'certificato_morte', 'label' => 'Certificato di morte (da presentare entro 180gg)', 'type' => 'file', 'required' => true], ['name' => 'modello_730_cu', 'label' => 'Copia prima pagina Mod. 730 o CU', 'type' => 'file', 'required' => true], ['name' => 'atto_notorio_eredi', 'label' => 'Atto notorio con indicazione degli eredi', 'type' => 'file', 'required' => true], ['name' => 'delega_erede', 'label' => 'Delega a favore di uno degli eredi (nel caso di più eredi)', 'type' => 'file', 'required' => false], ['name' => 'autorizzazione_giudice', 'label' => 'Autorizzazione del giudice tutelare (nel caso di eredi minorenni)', 'type' => 'file', 'required' => false]]]]
             ],
             [
                 'nome' => 'PREMIO GIOVANI', 'icona' => 'bi-award-fill', 'descrizione' => 'Premio una tantum di € 1.000 per lavoratori neo assunti fino a 25 anni.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa del Lazio ai lavoratori neo assunti di età sino a 25 anni compiuti e che abbiano un’iscrizione almeno di un anno lavorativo consecutivo e un minimo 900 ore, eroga un premio una tantum di <strong>€ 1.000</strong>. La domanda va presentata entro e non oltre 180 giorni dal compimento del primo anno di iscrizione all’Edilcassa.</p>'),
-                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
+                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'info', 'description' => 'Per questo servizio, la richiesta viene gestita senza l\'invio di documentazione iniziale. Sarai contattato per eventuali integrazioni.', 'inputs' => []]]
             ],
             [
@@ -279,31 +285,31 @@ class HomeController extends Controller
             [
                 'nome' => 'SUSSIDIO FREQUENZA ASILO NIDO', 'icona' => 'bi-teddy-fill', 'descrizione' => 'Rimborso fino a € 700 annui per spese di asilo nido.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa del Lazio eroga per i figli dei lavoratori di età compresa da 0 a 3 anni e che frequentano un asilo nido pubblico o convenzionato un importo annuo fino a <strong>€ 700</strong>, a titolo di rimborso quota iscrizione e quota ISEE. La richiesta dovrà essere presentata nel corso dell’anno educativo.</p>'),
-                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
+                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [['name' => 'ricevute_spese_nido', 'label' => 'Copia ricevute spese sostenute (iscrizione e rette)', 'type' => 'file', 'required' => true], ['name' => 'modello_730_cu', 'label' => 'Copia prima pagina Mod. 730 o CU', 'type' => 'file', 'required' => true]]]]
             ],
             [
                 'nome' => 'SUSSIDIO MENSA SCOLASTICA', 'icona' => 'bi-apple', 'descrizione' => 'Rimborso fino a € 200 annui per servizio mensa scolastica.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa del Lazio eroga ai lavoratori, per ogni figlio fiscalmente a carico che frequenta la scuola materna, elementare e media, un importo annuo fino a <strong>€ 200</strong> a titolo di rimborso quota servizio mensa. La richiesta deve essere presentata nel corso dell’anno scolastico.</p>'),
-                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
+                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [['name' => 'ricevute_mensa', 'label' => 'Copia ricevute fiscali del servizio mensa', 'type' => 'file', 'required' => true], ['name' => 'modello_730_cu', 'label' => 'Copia prima pagina Mod. 730 o CU', 'type' => 'file', 'required' => true]]]]
             ],
             [
                 'nome' => 'SUSSIDIO TRASPORTO SCOLASTICO', 'icona' => 'bi-bus-front-fill', 'descrizione' => 'Sussidio fino a € 200 per trasporto scolastico.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa del Lazio eroga per ogni figlio fiscalmente a carico, iscritto a un istituto scolastico di scuola media superiore e fruitore di servizi di trasporto pubblico e/o scolastico, un sussidio per un importo fino a <strong>€ 100</strong> in caso di trasporto urbano, <strong>€ 200</strong> in caso di trasporto extraurbano. La richiesta deve essere presentata nel corso dell’anno scolastico.</p>'),
-                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
+                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [['name' => 'documento_trasporto', 'label' => 'Copia documento trasporto e relative ricevute', 'type' => 'file', 'required' => true], ['name' => 'modello_730_cu', 'label' => 'Copia prima pagina Mod. 730', 'type' => 'file', 'required' => true]]]]
             ],
             [
                 'nome' => 'BONUS PC / TABLET', 'icona' => 'bi-laptop-fill', 'descrizione' => 'Contributo una tantum di € 200 per acquisto PC/Tablet.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa del Lazio eroga una tantum a famiglie con figli frequentanti istituti scuola inferiore e superiore un contributo pari a <strong>€ 200</strong> per l’acquisto di tablet/PC. Requisito: ISEE anno precedente alla richiesta inferiore a € 18.000. La richiesta deve essere presentata nel corso dell’anno scolastico.</p>'),
-                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
+                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [['name' => 'fattura_acquisto', 'label' => 'Fattura di acquisto', 'type' => 'file', 'required' => true], ['name' => 'modello_730_cu', 'label' => 'Copia prima pagina Mod. 730', 'type' => 'file', 'required' => true], ['name' => 'attestazione_frequenza', 'label' => 'Attestazione frequenza istituto scolastico', 'type' => 'file', 'required' => true]]]]
             ],
             [
                 'nome' => 'CENTRI ESTIVI', 'icona' => 'bi-sun-fill', 'descrizione' => 'Contributo fino a € 250 per figlio per frequenza centri estivi.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L’Edilcassa del Lazio eroga annualmente un importo fino a <strong>€ 250</strong> per ogni figlio a carico di età massima 12 anni che frequenta un centro estivo.</p>'),
-                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'Procedi con la presentazione',
+                'service_type' => 'Edilcassa', 'is_actionable' => true, 'testo_bottone' => 'PROCEDI PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [['name' => 'ricevuta_centro_estivo', 'label' => 'Copia ricevuta fiscale con nominativo e periodo', 'type' => 'file', 'required' => true], ['name' => 'modello_730_cu', 'label' => 'Copia prima pagina Mod. 730', 'type' => 'file', 'required' => true]]]]
             ],
             [
