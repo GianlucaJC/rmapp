@@ -330,7 +330,7 @@
                                     <p>È un’associazione senza scopo di lucro, nata nel 1998 per iniziativa delle organizzazioni sindacali di categoria Feneal-Uil, Filca-Cisl, Fillea-Cgil e delle associazioni imprenditoriali FederlegnoArredo, Unital-Confapi, Fai-Cisl, Flai-Cgil, Uila-Uil, Legacoop Produzione e Servizi, Confcooperative Lavoro e Servizi, Agci-Produzione e Lavoro.</p>
                                     <p>L’obiettivo di Arco è quello di erogare ai propri iscritti una pensione complementare, aggiuntiva a quella pubblica.</p>
                                     <div class="text-center mt-3">
-                                        <a href="https://www.fondoarco.it/" target="_blank" class="btn btn-outline-primary"><i class="bi bi-box-arrow-up-right me-1"></i> Visita il sito</a>
+
                                         <a href="{{ route('contatti.index') }}" class="btn btn-outline-success"><i class="bi bi-telephone-fill me-1"></i> Contattaci per info</a>
                                     </div>
                                 </div>
@@ -347,7 +347,6 @@
                                     <p>È un’associazione senza scopo di lucro, nata nel 1999 per iniziativa delle organizzazioni sindacali di categoria Feneal-Uil, Filca-Cisl, Fillea-Cgil e delle associazioni imprenditoriali di settore.</p>
                                     <p>L’obiettivo di Concreto è quello di erogare ai propri iscritti una pensione complementare, aggiuntiva a quella pubblica.</p>
                                     <div class="text-center mt-3">
-                                        <a href="https://www.fondoconcreto.it/" target="_blank" class="btn btn-outline-primary"><i class="bi bi-box-arrow-up-right me-1"></i> Visita il sito</a>
                                         <a href="{{ route('contatti.index') }}" class="btn btn-outline-success"><i class="bi bi-telephone-fill me-1"></i> Contattaci per info</a>
                                     </div>
                                 </div>
