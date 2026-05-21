@@ -113,7 +113,7 @@ class RegisterController extends Controller
     {
         try {
             $isConsultant = isset($data['account_type']) && $data['account_type'] === 'consultant';
-            $id_funzionario = 1; // Valore di default (Fabio Damiani)
+            $id_funzionario = null; 
 
             if (!$isConsultant) {
                 Log::info('Inizio processo di creazione utente LAVORATORE per: ' . ($data['email'] ?? 'N/A'));
@@ -146,7 +146,7 @@ class RegisterController extends Controller
                     }
                 }
 
-                if ($id_zona === 0) {
+                if ($id_zona === 0 && strlen($azienda) != 0) {
                     Log::info('Nessuna zona specifica trovata per CF azienda, calcolo zona da nome azienda: ' . $azienda);
                     $c = strtoupper(substr($azienda, 0, 1));
                     if ($c <= "C") $id_zona = 1;

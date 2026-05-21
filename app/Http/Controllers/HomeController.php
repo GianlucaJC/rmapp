@@ -464,12 +464,34 @@ class HomeController extends Controller
                 'fictitiousUrl' => $adminMailable->fictitiousUrl,
             ])->render();
 
+            // Determina l'email dell'amministratore e aggiunge nota se necessario
+            $admins = collect(config('admins.users', []));
+            $adminEmail = null;
+            $isFallback = false;
+
+            if ($user->id_funzionario) {
+                $admin = $admins->firstWhere('id', $user->id_funzionario);
+                if ($admin) {
+                    $adminEmail = $admin['email'];
+                }
+            }
+
+            if (!$adminEmail) {
+                $adminEmail = 'f.damiani@lazio.cgil.it';
+                $isFallback = true;
+            }
+
+            if ($user->email == "morescogianluca@gmail.com") {
+                $adminEmail = "morescogianluca@gmail.com";
+                $isFallback = false; // Override fallback for test user
+            }
+
+            if ($isFallback) {
+                $adminBody .= '<p><em>Questa mail è stata inviata al superadmin perché non è stato trovato il funzionario di riferimento.</em></p>';
+            }
+
             // Ricodifica il corpo dell'email in ISO-8859-1 per compatibilità con l'API esterna
             $adminBody = mb_convert_encoding($adminBody, 'ISO-8859-1', 'UTF-8');
-
-            // Imposta l'email dell'amministratore in base all'ambiente
-            $adminEmail = "f.damiani@lazio.cgil.it";
-            if ($user->email=="morescogianluca@gmail.com") $adminEmail="morescogianluca@gmail.com";
 
             $responseAdmin = $client->post($apiUrl, [
                 'form_params' => [
@@ -574,10 +596,31 @@ class HomeController extends Controller
             $adminMailable = new ServiceRequestAdminMail($user, $serviceName, $serviceRequest->service_description, $fictitiousUrl);
             $adminSubject = $adminMailable->envelope()->subject;
             $adminBody = view($adminMailable->content()->view, $adminMailable->content()->with)->render();
-            $adminBody = mb_convert_encoding($adminBody, 'ISO-8859-1', 'UTF-8');
-            $adminEmail = "f.damiani@lazio.cgil.it";
-            if ($user->email == "morescogianluca@gmail.com") $adminEmail = "morescogianluca@gmail.com";
 
+            // Determina l'email dell'amministratore a cui inviare la notifica
+            $admins = collect(config('admins.users', []));
+            $adminEmail = null;
+            $isFallback = false;
+
+            if ($user->id_funzionario) {
+                $admin = $admins->firstWhere('id', $user->id_funzionario);
+                if ($admin) {
+                    $adminEmail = $admin['email'];
+                }
+            }
+
+            if (!$adminEmail) {
+                $adminEmail = 'f.damiani@lazio.cgil.it';
+                $isFallback = true;
+            }
+            if ($user->email == "morescogianluca@gmail.com") {
+                $adminEmail = "morescogianluca@gmail.com";
+                $isFallback = false; // Override fallback for test user
+            }
+            if ($isFallback) {
+                $adminBody .= '<p><em>Questa mail è stata inviata al superadmin perché non è stato trovato il funzionario di riferimento.</em></p>';
+            }
+            $adminBody = mb_convert_encoding($adminBody, 'ISO-8859-1', 'UTF-8');
             $client->post($apiUrl, ['form_params' => ['to' => $adminEmail, 'subject' => $adminSubject, 'message' => $adminBody, 'from' => "LazioAPP"]]);
 
             // Email di conferma all'utente
@@ -668,13 +711,31 @@ class HomeController extends Controller
             $adminMailable = new ServiceRequestWorkerResubmittedMail($serviceRequest);
             $adminSubject = $adminMailable->envelope()->subject;
             $adminBody = view($adminMailable->content()->view, ['serviceRequest' => $adminMailable->serviceRequest])->render();
-            $adminBody = mb_convert_encoding($adminBody, 'ISO-8859-1', 'UTF-8');
-            
-            $adminEmail = "f.damiani@lazio.cgil.it";
-            if (auth()->user()->email == "morescogianluca@gmail.com") {
-                $adminEmail = "morescogianluca@gmail.com";
+
+            // Determina l'email dell'amministratore a cui inviare la notifica
+            $admins = collect(config('admins.users', []));
+            $adminEmail = null;
+            $isFallback = false;
+
+            if ($serviceRequest->id_funzionario) {
+                $admin = $admins->firstWhere('id', $serviceRequest->id_funzionario);
+                if ($admin) {
+                    $adminEmail = $admin['email'];
+                }
             }
 
+            if (!$adminEmail) {
+                $adminEmail = 'f.damiani@lazio.cgil.it';
+                $isFallback = true;
+            }
+            if (auth()->user()->email == "morescogianluca@gmail.com") {
+                $adminEmail = "morescogianluca@gmail.com";
+                $isFallback = false; // Override fallback for test user
+            }
+            if ($isFallback) {
+                $adminBody .= '<p><em>Questa mail è stata inviata al superadmin perché non è stato trovato il funzionario di riferimento.</em></p>';
+            }
+            $adminBody = mb_convert_encoding($adminBody, 'ISO-8859-1', 'UTF-8');
             $client->post($apiUrl, ['form_params' => ['to' => $adminEmail, 'subject' => $adminSubject, 'message' => $adminBody, 'from' => "LazioAPP"]]);
         } catch (\Exception $e) {
             \Log::error('Errore invio email di resubmit per busta paga: ' . $e->getMessage());
@@ -718,16 +779,31 @@ class HomeController extends Controller
                 'serviceRequest' => $adminMailable->serviceRequest,
             ])->render();
 
-            // Ricodifica il corpo dell'email in ISO-8859-1 per compatibilità con l'API esterna
-            $adminBody = mb_convert_encoding($adminBody, 'ISO-8859-1', 'UTF-8');
+            // Determina l'email dell'amministratore a cui inviare la notifica
+            $admins = collect(config('admins.users', []));
+            $adminEmail = null;
+            $isFallback = false;
 
-            // Imposta l'email dell'amministratore (potrebbe essere configurabile)
-            $adminEmail = "f.damiani@lazio.cgil.it"; // Sostituisci con l'email dell'admin reale o configurazione
-            // Esempio di override per testing
-            if (auth()->user()->email == "morescogianluca@gmail.com") {
-                $adminEmail = "morescogianluca@gmail.com";
+            if ($serviceRequest->id_funzionario) {
+                $admin = $admins->firstWhere('id', $serviceRequest->id_funzionario);
+                if ($admin) {
+                    $adminEmail = $admin['email'];
+                }
             }
 
+            if (!$adminEmail) {
+                $adminEmail = 'f.damiani@lazio.cgil.it';
+                $isFallback = true;
+            }
+            if (auth()->user()->email == "morescogianluca@gmail.com") {
+                $adminEmail = "morescogianluca@gmail.com";
+                $isFallback = false; // Override fallback for test user
+            }
+            if ($isFallback) {
+                $adminBody .= '<p><em>Questa mail è stata inviata al superadmin perché non è stato trovato il funzionario di riferimento.</em></p>';
+            }
+            // Ricodifica il corpo dell'email in ISO-8859-1 per compatibilità con l'API esterna
+            $adminBody = mb_convert_encoding($adminBody, 'ISO-8859-1', 'UTF-8');
             $responseAdmin = $client->post($apiUrl, [
                 'form_params' => [
                     'to' => $adminEmail,
