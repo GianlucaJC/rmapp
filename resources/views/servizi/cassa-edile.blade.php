@@ -324,8 +324,17 @@
                 Swal.fire({
                     icon: 'warning',
                     title: 'Accesso Richiesto',
-                    html: `Per procedere con la richiesta del servizio è necessario effettuare il <a href="{{ route('login') }}">login</a>.`,
-                    confirmButtonColor: '#c8102e',
+                    text: 'Per procedere con la richiesta del servizio è necessario effettuare il login.',
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="bi bi-box-arrow-in-right me-2"></i> Accedi ora!',
+                    cancelButtonText: 'Annulla',
+                    confirmButtonColor: '#0d6efd', // Blu standard per azione primaria
+                    cancelButtonColor: '#6c757d',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '{{ route('login') }}';
+                    }
                 });
                 return; // Stop execution for guests
                 @endguest
