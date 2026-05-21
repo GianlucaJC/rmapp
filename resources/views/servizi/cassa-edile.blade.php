@@ -62,6 +62,11 @@
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="modal-title" id="serviceModalLabel">Dettaglio Prestazione</h5>
+                        <div style='margin-left:20px'>
+                            <a class="btn btn-warning btn-sm" href="{{ route('contatti.index') }}">
+                                <i class="bi bi-telephone-fill me-1"></i> Contattaci
+                            </a>           
+                        </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
