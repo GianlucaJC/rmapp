@@ -257,7 +257,9 @@
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
-                                    @if(Auth::user()->is_consultant)
+                                    @if(Auth::user()->job_title === 'Funzionario Fillea Cgil')
+                                        <span class="badge bg-secondary rounded-pill align-middle ms-1">Funzionario</span>
+                                    @elseif(Auth::user()->is_consultant)
                                         <span class="badge bg-info text-dark rounded-pill align-middle ms-1">Consulente</span>
                                     @else
                                         <span class="badge bg-success rounded-pill align-middle ms-1">Lavoratore</span>

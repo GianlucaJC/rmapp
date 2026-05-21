@@ -30,12 +30,21 @@ class UserController extends Controller
     {
         if ($request->ajax()) {
             // Seleziona tutti i campi necessari per la tabella e per la modale
-            $data = User::select(['id', 'name', 'last_name', 'email', 'codice_fiscale', 'phone_number', 'contract_type', 'job_title', 'created_at']);
+            $data = User::select(['id', 'name', 'last_name', 'email', 'codice_fiscale', 'phone_number', 'contract_type', 'job_title', 'created_at', 'is_consultant']);
             // Aggiungi la relazione user_id per poterla usare nel render della colonna user_name
             $data->addSelect(['id as user_id']);
 
             return DataTables::of($data)
                 ->addIndexColumn()
+                ->addColumn('user_type', function(User $user) {
+                    if ($user->job_title === 'Funzionario Fillea Cgil') {
+                        return '<span class="badge bg-secondary">Funzionario</span>';
+                    }
+                    if ($user->is_consultant) {
+                        return '<span class="badge bg-info text-dark">Consulente</span>';
+                    }
+                    return '<span class="badge bg-success">Lavoratore</span>';
+                })
                 ->addColumn('actions', function(User $user) {
                     $editUrl = route('admin.users.edit', $user->id);
                     $actions = '<a href="'.$editUrl.'" class="btn btn-info btn-sm me-1"><i class="bi bi-pencil"></i> Modifica</a>';
@@ -55,7 +64,7 @@ class UserController extends Controller
 
                     return $actions;
                 })
-                ->rawColumns(['actions'])
+                ->rawColumns(['actions', 'user_type'])
                 ->make(true);
         }
     }

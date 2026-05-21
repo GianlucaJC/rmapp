@@ -20,6 +20,7 @@
                                         <option value="" disabled selected>Scegli il tipo di account...</option>
                                         <option value="worker">Lavoratore</option>
                                         <option value="consultant">Consulente / Azienda</option>
+                                        <option value="funzionario">Funzionario Fillea Cgil</option>
                                     </select>
                                 </div>
                             </div>

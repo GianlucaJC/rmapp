@@ -61,7 +61,7 @@ class RegisterController extends Controller
 
             // Step 2: Se il tipo è stato scelto, mostra il form di registrazione completo.
             $account_type = $request->query('type');
-            if (!in_array($account_type, ['worker', 'consultant'])) {
+            if (!in_array($account_type, ['worker', 'consultant', 'funzionario'])) {
                 // Se il tipo non è valido, reindirizza al primo step.
                 return redirect()->route('register', ['from' => 'contracts']);
             }
@@ -92,10 +92,10 @@ class RegisterController extends Controller
         ];
 
         // Il tipo di account è sempre richiesto nel form di registrazione.
-        $rules['account_type'] = ['required', 'string', 'in:worker,consultant'];
+        $rules['account_type'] = ['required', 'string', 'in:worker,consultant,funzionario'];
 
-        $isConsultant = isset($data['account_type']) && $data['account_type'] === 'consultant';
-        if (!$isConsultant) {
+        $isWorker = isset($data['account_type']) && $data['account_type'] === 'worker';
+        if ($isWorker) {
             $rules['contract_type'] = ['required', 'string', 'max:255'];
             $rules['job_title'] = ['required', 'string', 'max:255'];
         }
@@ -112,10 +112,12 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         try {
-            $isConsultant = isset($data['account_type']) && $data['account_type'] === 'consultant';
-            $id_funzionario = null; 
+            $accountType = $data['account_type'];
+            $id_funzionario = null;
+            $job_title = $data['job_title'] ?? '';
+            $is_consultant = false;
 
-            if (!$isConsultant) {
+            if ($accountType === 'worker') {
                 Log::info('Inizio processo di creazione utente LAVORATORE per: ' . ($data['email'] ?? 'N/A'));
                 // --- Logica per determinare il funzionario per il lavoratore ---
                 $codiceFiscale = strtoupper($data['codice_fiscale']);
@@ -163,9 +165,13 @@ class RegisterController extends Controller
 
                 Log::info('Funzionario assegnato (id_funzionario): ' . $id_funzionario);
                 // --- Fine logica funzionario ---
-            } else {
+            } elseif ($accountType === 'consultant') {
                 Log::info('Inizio processo di creazione utente CONSULENTE per: ' . ($data['email'] ?? 'N/A'));
-                $id_funzionario = null; // Nessun funzionario per i consulenti
+                $is_consultant = true;
+            } elseif ($accountType === 'funzionario') {
+                Log::info('Inizio processo di creazione utente FUNZIONARIO per: ' . ($data['email'] ?? 'N/A'));
+                $is_consultant = true; // Trattato come un consulente per i permessi
+                $job_title = 'Funzionario Fillea Cgil';
             }
 
             return User::create([
@@ -174,11 +180,11 @@ class RegisterController extends Controller
                 'codice_fiscale' => strtoupper($data['codice_fiscale']),
                 'phone_number' => $data['phone_number'],
                 'contract_type' => $data['contract_type'] ?? '',
-                'job_title' => $data['job_title'] ?? '',
+                'job_title' => $job_title,
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
                 'id_funzionario' => $id_funzionario,
-                'is_consultant' => $isConsultant,
+                'is_consultant' => $is_consultant,
             ]);
 
         } catch (\Throwable $e) { // Cattura sia Exception che Error (per PHP 7+)

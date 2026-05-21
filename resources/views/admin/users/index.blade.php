@@ -30,6 +30,7 @@
                                     <th>Nome</th>
                                     <th>Cognome</th>
                                     <th>Email</th>
+                                    <th>Tipologia</th>
                                     <th>Codice Fiscale</th>
                                     <th>Telefono</th>
                                     <th>Azioni</th>
@@ -65,6 +66,7 @@
                     { data: 'name', name: 'name' },
                     { data: 'last_name', name: 'last_name' },
                     { data: 'email', name: 'email' },
+                    { data: 'user_type', name: 'user_type', orderable: false, searchable: false },
                     { data: 'codice_fiscale', name: 'codice_fiscale' },
                     { data: 'phone_number', name: 'phone_number' },
                     { data: 'actions', name: 'actions', orderable: false, searchable: false },
