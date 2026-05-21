@@ -267,8 +267,8 @@
                         <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#prevediCollapse" aria-expanded="false" aria-controls="prevediCollapse">PREVEDI</button>
                         <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#fondapiCollapse" aria-expanded="false" aria-controls="fondapiCollapse">FONDAPI</button>
                         <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#previdenzaCooperativaCollapse" aria-expanded="false" aria-controls="previdenzaCooperativaCollapse">PREVIDENZA COOPERATIVA</button>
-                        <a href="https://www.fondoarco.it/chi-siamo/cos-e-arco" target="_blank" class="btn btn-primary">FONDO ARCO</a>
-                        <a href="https://www.fondoconcreto.it/" target="_blank" class="btn btn-primary">FONDO CONCRETO</a>
+                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#fondoArcoCollapse" aria-expanded="false" aria-controls="fondoArcoCollapse">FONDO ARCO</button>
+                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#fondoConcretoCollapse" aria-expanded="false" aria-controls="fondoConcretoCollapse">FONDO CONCRETO</button>
                     </div>
 
                     <div class="accordion" id="fondiPensionisticiAccordion">
@@ -314,6 +314,40 @@
                                     <p>Siamo il fondo pensione delle lavoratrici e dei lavoratori delle cooperative e, attraverso i nostri servizi, tutti i soci e i dipendenti di ogni livello possono realizzare concretamente il proprio diritto costituzionale alla previdenza complementare.</p>
                                     <p>Forniamo un fondamentale servizio di welfare contrattuale alle cooperative e sostegno economico ai dipendenti, ai soci e alle loro famiglie, riuscendo a offrire loro condizioni agevolate, grazie alla forza negoziale della nostra unione.</p>
                                     <div class="text-center mt-3">
+                                        <a href="{{ route('contatti.index') }}" class="btn btn-outline-success"><i class="bi bi-telephone-fill me-1"></i> Contattaci per info</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FONDO ARCO -->
+                        <div class="accordion-item border-0">
+                            <div id="fondoArcoCollapse" class="accordion-collapse collapse" data-bs-parent="#fondiPensionisticiAccordion">
+                                <div class="accordion-body p-0">
+                                    <hr>
+                                    <h4 class="text-primary mb-3">FONDO ARCO</h4>
+                                    <p>Arco è il Fondo Pensione Complementare per i lavoratori dei settori del legno, del sughero, del mobile, dell'arredamento e boschivi e forestali.</p>
+                                    <p>È un’associazione senza scopo di lucro, nata nel 1998 per iniziativa delle organizzazioni sindacali di categoria Feneal-Uil, Filca-Cisl, Fillea-Cgil e delle associazioni imprenditoriali FederlegnoArredo, Unital-Confapi, Fai-Cisl, Flai-Cgil, Uila-Uil, Legacoop Produzione e Servizi, Confcooperative Lavoro e Servizi, Agci-Produzione e Lavoro.</p>
+                                    <p>L’obiettivo di Arco è quello di erogare ai propri iscritti una pensione complementare, aggiuntiva a quella pubblica.</p>
+                                    <div class="text-center mt-3">
+                                        <a href="https://www.fondoarco.it/" target="_blank" class="btn btn-outline-primary"><i class="bi bi-box-arrow-up-right me-1"></i> Visita il sito</a>
+                                        <a href="{{ route('contatti.index') }}" class="btn btn-outline-success"><i class="bi bi-telephone-fill me-1"></i> Contattaci per info</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FONDO CONCRETO -->
+                        <div class="accordion-item border-0">
+                            <div id="fondoConcretoCollapse" class="accordion-collapse collapse" data-bs-parent="#fondiPensionisticiAccordion">
+                                <div class="accordion-body p-0">
+                                    <hr>
+                                    <h4 class="text-primary mb-3">FONDO CONCRETO</h4>
+                                    <p>CONCRETO è il Fondo Pensione Complementare per i lavoratori dell’industria del cemento, della calce e dei suoi derivati, del fibrocemento, della ceramica e dei materiali refrattari, e del settore lapideo.</p>
+                                    <p>È un’associazione senza scopo di lucro, nata nel 1999 per iniziativa delle organizzazioni sindacali di categoria Feneal-Uil, Filca-Cisl, Fillea-Cgil e delle associazioni imprenditoriali di settore.</p>
+                                    <p>L’obiettivo di Concreto è quello di erogare ai propri iscritti una pensione complementare, aggiuntiva a quella pubblica.</p>
+                                    <div class="text-center mt-3">
+                                        <a href="https://www.fondoconcreto.it/" target="_blank" class="btn btn-outline-primary"><i class="bi bi-box-arrow-up-right me-1"></i> Visita il sito</a>
                                         <a href="{{ route('contatti.index') }}" class="btn btn-outline-success"><i class="bi bi-telephone-fill me-1"></i> Contattaci per info</a>
                                     </div>
                                 </div>
