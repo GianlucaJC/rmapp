@@ -48,10 +48,6 @@
             </a>
         </div>
 
-        <!-- Placeholder per altre Casse Edili -->
-        <div class="col-12">
-            <p class="text-muted mt-4">Le prestazioni per le altre casse edili provinciali (Viterbo, Rieti, Frosinone) saranno disponibili a breve.</p>
-        </div>
 
     </div>
 
