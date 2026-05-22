@@ -669,6 +669,120 @@ class HomeController extends Controller
         return view('servizi.cassa-edile-rieti', compact('prestazioniCassaEdileRieti'));
     }
 
+    private function cassaEdileViterboData()
+    {
+        // In futuro, questi dati verranno dal database.
+        return [
+            [
+                'nome' => 'Gratifica natalizia e ferie (GNF)',
+                'icona' => 'bi-cash-stack',
+                'descrizione' => 'Erogazione degli accantonamenti per gratifica natalizia e ferie.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>La Cassa Edile di Viterbo eroga gli accantonamenti per ferie e gratifica natalizia nei mesi di <strong>giugno</strong> e <strong>dicembre</strong>. L\'erogazione è automatica tramite domiciliazione postale o accredito su conto corrente.</p>'),
+                'service_type' => 'Cassa Edile Viterbo',
+                'testo_bottone' => 'Informativa',
+                'is_actionable' => false,
+            ],
+            [
+                'nome' => 'Assegno Promozionale Giovani',
+                'icona' => 'bi-award-fill',
+                'descrizione' => 'Assegno di € 260,00 per giovani lavoratori.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>I giovani assunti prima del compimento del 32° anno di età possono richiedere un assegno di <strong>€ 260,00</strong>.</p><p><strong>Requisiti:</strong> Aver maturato 1.000 ore di lavoro nei 36 mesi successivi all\'assunzione.</p><p><strong>Scadenza:</strong> La domanda va presentata entro 180 giorni dalla maturazione del diritto.</p>'),
+                'service_type' => 'Cassa Edile Viterbo',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'Assegno di Natalità',
+                'icona' => 'bi-gift-fill',
+                'descrizione' => 'Assegno di € 700,00 per ogni figlio nato.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>I lavoratori iscritti hanno diritto, per ogni figlio nato, ad un assegno di natalità pari a <strong>€ 700,00</strong>.</p><p><strong>Requisiti:</strong> Aver maturato 1.000 ore di lavoro nei 12 mesi precedenti la domanda.</p><p><strong>Scadenza:</strong> Presentare la domanda entro 90 giorni dalla nascita.</p>'),
+                'service_type' => 'Cassa Edile Viterbo',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'Contributo Straordinario',
+                'icona' => 'bi-exclamation-diamond-fill',
+                'descrizione' => 'Sussidi per particolari condizioni di necessità.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>È possibile richiedere sussidi straordinari per eventi che non rientrano in altre assistenze. La domanda, documentata, viene esaminata da una Commissione. L\'importo massimo è di <strong>€ 260,00</strong> (salvo autorizzazione per importi superiori).</p>'),
+                'service_type' => 'Cassa Edile Viterbo',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'Sussidio Malattia',
+                'icona' => 'bi-bandaid-fill',
+                'descrizione' => 'Sussidio di € 60,00 per malattia da 6 a 12 giorni.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Il lavoratore può beneficiare, nel caso di malattia di durata superiore a 6 fino a 12 giorni, di un sussidio di <strong>€ 60,00</strong>. La prestazione è concessa una sola volta all’anno.</p><p><strong>Scadenza:</strong> La domanda va presentata entro 90 giorni dalla fine dell’evento.</p>'),
+                'service_type' => 'Cassa Edile Viterbo',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'Cure Termali',
+                'icona' => 'bi-droplet-half',
+                'descrizione' => 'Contributo giornaliero per cure termali.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>La Cassa Edile concede un contributo per cure termali (massimo 12 giorni) pari a: <strong>€ 5,00/giorno</strong> in provincia di Viterbo, <strong>€ 8,00/giorno</strong> fuori provincia.</p><p><strong>Requisiti:</strong> Almeno 500 ore di lavoro nei 12 mesi precedenti.</p><p><strong>Scadenza:</strong> Domanda entro 3 mesi dall\'inizio delle cure.</p><p><strong>Documenti da presentare (in fase di integrazione):</strong> Prescrizione dello specialista e certificato della stazione termale.</p>'),
+                'service_type' => 'Cassa Edile Viterbo',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'Sussidio in caso di morte',
+                'icona' => 'bi-flower1',
+                'descrizione' => 'Contributo per decesso del lavoratore o del coniuge.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>In caso di decesso del lavoratore, viene riconosciuto agli eredi un contributo di <strong>€ 520,00</strong> più <strong>€ 100,00</strong> per ogni figlio minorenne a carico. In caso di decesso del coniuge fiscalmente a carico, il contributo è di <strong>€ 520,00</strong>.</p><p><strong>Scadenza:</strong> La domanda va presentata entro 3 mesi dalla data del decesso.</p>'),
+                'service_type' => 'Cassa Edile Viterbo',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'Richiesta APE Decesso',
+                'icona' => 'bi-person-x-fill',
+                'descrizione' => 'Erogazione APE in caso di morte o invalidità permanente assoluta.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Viene erogata in caso di morte o di invalidità permanente assoluta al lavoro, purché la prestazione APE sia stata percepita almeno una volta o siano stati maturati i requisiti.</p><p><strong>Documenti da presentare (in fase di integrazione):</strong> Certificato di morte e atto notorio indicante gli eredi con delega a riscuotere.</p>'),
+                'service_type' => 'Cassa Edile Viterbo',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Mostra l'elenco delle prestazioni della Cassa Edile di Viterbo.
+     */
+    public function cassaEdileViterbo(): View
+    {
+        $prestazioniCassaEdileViterbo = $this->cassaEdileViterboData();
+
+        foreach ($prestazioniCassaEdileViterbo as &$prestazione) {
+            $prestazione['slug'] = Str::slug($prestazione['nome']);
+        }
+        unset($prestazione);
+
+        if (auth()->check()) {
+            $user = auth()->user();
+            $latestRequests = ServiceRequest::where('user_id', $user->id)
+                                            ->where('service_type', 'Cassa Edile Viterbo')
+                                            ->orderBy('updated_at', 'desc')
+                                            ->get()
+                                            ->unique('service_name')
+                                            ->keyBy('service_name');
+
+            foreach ($prestazioniCassaEdileViterbo as &$prestazione) {
+                if (isset($latestRequests[$prestazione['nome']])) {
+                    $request = $latestRequests[$prestazione['nome']];
+                    $prestazione['current_status'] = $request->status;
+                    $prestazione['request_date'] = $request->updated_at->format('d/m/Y');
+                    $prestazione['active_request'] = $request;
+                }
+            }
+            unset($prestazione);
+        }
+
+        return view('servizi.cassa-edile-viterbo', compact('prestazioniCassaEdileViterbo'));
+    }
+
     /**
      * Gestisce l'invio della richiesta di servizio tramite email.
      */
@@ -708,6 +822,8 @@ class HomeController extends Controller
             $allServices = $this->cassaEdileLatinaData();
         } else if ($serviceType == 'Cassa Edile Rieti') {
             $allServices = $this->cassaEdileRietiData();
+        } else if ($serviceType == 'Cassa Edile Viterbo') {
+            $allServices = $this->cassaEdileViterboData();
         }
         $serviceDefinition = collect($allServices)->firstWhere('nome', $serviceTitle);
 

@@ -75,6 +75,8 @@ Route::get('/servizi/cassa-edile-latina', [HomeController::class, 'cassaEdileLat
     ->withoutMiddleware([\App\Http\Middleware\RedirectIfAuthenticated::class, \App\Http\Middleware\RedirectIfAdmin::class]);
 Route::get('/servizi/cassa-edile-rieti', [HomeController::class, 'cassaEdileRieti'])->name('servizi.cassa-edile-rieti')
     ->withoutMiddleware([\App\Http\Middleware\RedirectIfAuthenticated::class, \App\Http\Middleware\RedirectIfAdmin::class]);
+Route::get('/servizi/cassa-edile-viterbo', [HomeController::class, 'cassaEdileViterbo'])->name('servizi.cassa-edile-viterbo')
+    ->withoutMiddleware([\App\Http\Middleware\RedirectIfAuthenticated::class, \App\Http\Middleware\RedirectIfAdmin::class]);
 Route::get('/servizi/edilcassa', [HomeController::class, 'edilcassa'])->name('servizi.edilcassa')
     ->withoutMiddleware([\App\Http\Middleware\RedirectIfAuthenticated::class, \App\Http\Middleware\RedirectIfAdmin::class]);
 

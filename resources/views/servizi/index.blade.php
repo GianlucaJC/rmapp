@@ -48,6 +48,20 @@
             </a>
         </div>
 
+        <!-- Card Cassa Edile Viterbo -->
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ route('servizi.cassa-edile-viterbo') }}" class="feature-box">
+                <div class="card bg-success text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-building-check fs-1 mb-3"></i>
+                        <h5 class="card-title">PRESTAZIONI CASSA EDILE VITERBO</h5>
+                        <p class="card-text">Consulta l'elenco delle prestazioni per la Cassa Edile di Viterbo.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+
     </div>
 
     <hr class="my-5">
