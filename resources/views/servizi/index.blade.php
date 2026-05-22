@@ -35,20 +35,36 @@
             </a>
         </div>
 
-        <!-- Card Edilcassa -->
+        <!-- Card Cassa Edile Rieti -->
         <div class="col-md-6 col-lg-4">
-            <a href="{{ route('servizi.edilcassa') }}" class="feature-box">
+            <a href="{{ route('servizi.cassa-edile-rieti') }}" class="feature-box">
                 <div class="card bg-success text-white h-100">
                     <div class="card-body text-center">
-                        <i class="bi bi-building-add fs-1 mb-3"></i>
-                        <h5 class="card-title">PRESTAZIONI EDILCASSA LAZIO</h5>
-                        <p class="card-text">Consulta l'elenco delle prestazioni per l'Edilcassa del Lazio.</p>
+                        <i class="bi bi-building-check fs-1 mb-3"></i>
+                        <h5 class="card-title">PRESTAZIONI CASSA EDILE RIETI</h5>
+                        <p class="card-text">Consulta l'elenco delle prestazioni per la Cassa Edile di Rieti.</p>
                     </div>
                 </div>
             </a>
         </div>
 
+    </div>
 
+    <hr class="my-5">
+
+    <div class="row justify-content-center g-4 text-center">
+        <!-- Card Edilcassa (Regionale) -->
+        <div class="col-md-8 col-lg-5">
+            <a href="{{ route('servizi.edilcassa') }}" class="feature-box">
+                <div class="card bg-success text-white h-100 border-light border-2 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-buildings-fill fs-1 mb-3"></i>
+                        <h5 class="card-title">PRESTAZIONI EDILCASSA</h5>
+                        <p class="card-text">Consulta l'elenco delle prestazioni per l'Edilcassa del Lazio.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
 
     <div class="text-center mt-5">

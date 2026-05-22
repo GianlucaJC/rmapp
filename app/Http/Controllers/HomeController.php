@@ -497,6 +497,178 @@ class HomeController extends Controller
         return view('servizi.cassa-edile-latina', compact('prestazioniCassaEdileLatina'));
     }
 
+    private function cassaEdileRietiData()
+    {
+        // In futuro, questi dati verranno dal database.
+        return [
+            [
+                'nome' => 'GNF Gratifica Natalizia Ferie',
+                'icona' => 'bi-cash-stack',
+                'descrizione' => 'Liquidazione accantonamenti per gratifica natalizia e ferie.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Le quote accantonate alla Cassa Edile a titolo di ferie e gratifica natalizia vengono pagate agli operai a Luglio (periodo 1/10-31/03) e Dicembre (periodo 1/04-30/09). L\'erogazione è automatica tramite bonifico bancario.</p>'),
+                'service_type' => 'Cassa Edile Rieti',
+                'testo_bottone' => 'Informativa',
+                'is_actionable' => false,
+            ],
+            [
+                'nome' => 'A.P.E. Anzianità Professionale Edile',
+                'icona' => 'bi-person-workspace',
+                'descrizione' => 'Premio per l\'Anzianità Professionale Edile maturata.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>L\'operaio matura il diritto all’Anzianità Professionale Edile (A.P.E.) quando in un biennio (1 Ott - 30 Sett) accumula almeno 2.100 ore. La liquidazione viene effettuata in automatico in occasione del 1° Maggio dell’anno successivo.</p>'),
+                'service_type' => 'Cassa Edile Rieti',
+                'testo_bottone' => 'Informativa',
+                'is_actionable' => false,
+            ],
+            [
+                'nome' => 'Sostegno studio per figli di operai deceduti',
+                'icona' => 'bi-book-half',
+                'descrizione' => 'Sostegno allo studio per figli di operai deceduti sul lavoro.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>È rivolto ai figli di lavoratori operai edili deceduti in seguito ad infortunio sul lavoro (dal 1° Gennaio 2021). Il beneficio è corrisposto sotto forma di sostegno allo studio (<strong>€ 1.000 mensili</strong>), dall’iscrizione al 1° anno delle scuole secondarie di secondo grado fino alla laurea. La domanda va presentata al Sanedil. Il diritto è riconosciuto a far data dal 1° gennaio 2026.</p>'),
+                'service_type' => 'Cassa Edile Rieti',
+                'testo_bottone' => 'Informativa',
+                'is_actionable' => false,
+            ],
+            [
+                'nome' => 'Premio natalità',
+                'icona' => 'bi-gift-fill',
+                'descrizione' => 'Premio di € 1.300 per la nascita di un figlio (max 2 volte).',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Viene riconosciuto un premio di <strong>€ 1.300,00</strong> (soggetto a ritenute) per la nascita del figlio, per un massimo di 2 volte.</p><p><strong>Requisiti:</strong> Essere in forza ad impresa iscritta e regolare, con anzianità di almeno 900 ore nei 12 mesi precedenti.</p><p><strong>Scadenza:</strong> Domanda da presentare entro 60 giorni dalla nascita.</p>'),
+                'service_type' => 'Cassa Edile Rieti',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [
+                    ['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [
+                        ['name' => 'stato_famiglia', 'label' => 'Stato di famiglia', 'type' => 'file', 'required' => true],
+                        ['name' => 'certificato_nascita', 'label' => 'Certificato di nascita del figlio', 'type' => 'file', 'required' => true],
+                    ]]
+                ],
+            ],
+            [
+                'nome' => 'Rimborso carenza malattia',
+                'icona' => 'bi-bandaid-fill',
+                'descrizione' => 'Rimborso di € 300 per i giorni di carenza INPS.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Viene rimborsato, una sola volta all’anno edile (01/10-30/09), un importo di <strong>€ 300,00</strong> (soggetto a ritenute) per i giorni di carenza INPS in caso di malattia.</p><p><strong>Requisiti:</strong> Essere in forza ad impresa iscritta e regolare, con anzianità di almeno 900 ore nei 12 mesi precedenti.</p><p><strong>Scadenza:</strong> Domanda da presentare entro 60 giorni dall’evento.</p>'),
+                'service_type' => 'Cassa Edile Rieti',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [
+                    ['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [
+                        ['name' => 'busta_paga', 'label' => 'Busta paga', 'type' => 'file', 'required' => true],
+                        ['name' => 'certificato_malattia', 'label' => 'Certificato di malattia', 'type' => 'file', 'required' => true],
+                    ]]
+                ],
+            ],
+            [
+                'nome' => 'Borse di studio',
+                'icona' => 'bi-mortarboard-fill',
+                'descrizione' => 'Borse di studio per licenza media, superiori e università.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Vengono erogate borse di studio per vari livelli di istruzione:</p><ul><li>Licenza Media: <strong>€ 600,00</strong> (media > 7)</li><li>Scuole Superiori: <strong>€ 800,00</strong> (media > 7)</li><li>Università: <strong>€ 1.000,00</strong> (media < 27/30) o <strong>€ 1.250,00</strong> (media >= 27/30), in regola con il piano di studi e media >= 21/30.</li></ul><p><strong>Requisiti:</strong> Essere in forza ad impresa iscritta e regolare, con anzianità di almeno 900 ore nei 12 mesi precedenti (ott-sett).</p><p><strong>Scadenza:</strong> Domanda entro il 30 Settembre, documentazione entro il 31 Marzo successivo.</p>'),
+                'service_type' => 'Cassa Edile Rieti',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [
+                    ['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [
+                        ['name' => 'stato_famiglia', 'label' => 'Stato di famiglia', 'type' => 'file', 'required' => true],
+                        ['name' => 'certificato_voti', 'label' => 'Certificato dei voti riportati', 'type' => 'file', 'required' => true],
+                        ['name' => 'piano_studi', 'label' => 'Piano di studi del corso di laurea (solo per università)', 'type' => 'file', 'required' => false],
+                    ]]
+                ],
+            ],
+            [
+                'nome' => 'Assegno funerario',
+                'icona' => 'bi-flower1',
+                'descrizione' => 'Assegno per decesso del lavoratore.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Viene erogato un assegno di <strong>€ 2.000,00</strong> per il decesso dell\'iscritto. L\'importo è elevato a <strong>€ 5.000,00</strong> in caso di morte per infortunio professionale in cantiere.</p><p><strong>Requisiti:</strong> Essere in forza ad impresa iscritta e regolare, con anzianità di 900 ore nei 12 mesi precedenti (o 1200 ore nel Lazio con 700 a Rieti).</p><p><strong>Scadenza:</strong> Entro un anno dall’evento.</p>'),
+                'service_type' => 'Cassa Edile Rieti',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [
+                    ['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [
+                        ['name' => 'certificato_morte', 'label' => 'Certificato di morte', 'type' => 'file', 'required' => true],
+                        ['name' => 'stato_famiglia', 'label' => 'Stato di famiglia', 'type' => 'file', 'required' => true],
+                        ['name' => 'atto_notorio_eredi', 'label' => 'Atto notorio indicante gli eredi', 'type' => 'file', 'required' => true],
+                        ['name' => 'delega_eredi', 'label' => 'Delega con firma autenticata per eredi maggiorenni (se più di uno)', 'type' => 'file', 'required' => false],
+                        ['name' => 'autorizzazione_giudice', 'label' => 'Autorizzazione giudice tutelare (per eredi minorenni)', 'type' => 'file', 'required' => false],
+                    ]]
+                ],
+            ],
+            [
+                'nome' => 'Contributi straordinari',
+                'icona' => 'bi-exclamation-diamond-fill',
+                'descrizione' => 'Prestazione per spese rilevanti dovute a gravi motivi.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>La prestazione viene erogata per spese di entità rilevante sostenute per gravi motivi di salute o familiari.</p><p><strong>Requisiti:</strong> Essere in forza ad impresa iscritta e regolare, con anzianità di 900 ore nei 12 mesi precedenti.</p><p><strong>Scadenza:</strong> Entro 90 giorni dall’evento.</p>'),
+                'service_type' => 'Cassa Edile Rieti',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [
+                    ['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [
+                        ['name' => 'documentazione_comprovante', 'label' => 'Documentazione comprovante l’eccezionalità dell’evento e delle spese', 'type' => 'file', 'required' => true],
+                    ]]
+                ],
+            ],
+            [
+                'nome' => 'Premio promozionale di settore',
+                'icona' => 'bi-award-fill',
+                'descrizione' => 'Premio una tantum di € 500 per giovani lavoratori.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Premio "una tantum" di <strong>€ 500,00</strong> (soggetto a ritenute) da liquidare contestualmente alla 1ª erogazione A.P.E. ai giovani lavoratori (fino a 25 anni di età).</p>'),
+                'service_type' => 'Cassa Edile Rieti',
+                'testo_bottone' => 'Informativa',
+                'is_actionable' => false,
+            ],
+            [
+                'nome' => 'Soggiorni marini',
+                'icona' => 'bi-suitcase-lg-fill',
+                'descrizione' => 'Soggiorni in appartamento per una settimana.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Soggiorni in appartamento per una settimana. Il lavoratore può usufruire della prestazione ogni 4 anni.</p><p><strong>Requisiti:</strong> Essere in forza ad impresa iscritta e regolare, con anzianità di almeno 900 ore nei 12 mesi precedenti (apr-mar).</p><p><strong>Scadenza:</strong> Domanda da presentare entro il 31 MAGGIO di ogni anno.</p><p><strong>Importante:</strong> È obbligatorio comunicare i nominativi dei componenti del nucleo familiare che parteciperanno.</p>'),
+                'service_type' => 'Cassa Edile Rieti',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'Fondo Prepensionamento',
+                'icona' => 'bi-hourglass-bottom',
+                'descrizione' => 'Fondo Nazionale per l\'accompagnamento alla pensione.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Il Fondo Nazionale “Prepensionamenti” è istituito presso la CNCE e alimentato da un contributo a carico dei datori di lavoro. Le risorse sono rivolte agli operai che raggiungono i requisiti per il pensionamento, al netto della Naspi spettante.</p>'),
+                'service_type' => 'Cassa Edile Rieti',
+                'testo_bottone' => 'Informativa',
+                'is_actionable' => false,
+            ],
+        ];
+    }
+
+    /**
+     * Mostra l'elenco delle prestazioni della Cassa Edile di Rieti.
+     */
+    public function cassaEdileRieti(): View
+    {
+        $prestazioniCassaEdileRieti = $this->cassaEdileRietiData();
+
+        // Aggiunge uno 'slug' per l'ID HTML a ogni prestazione per permettere l'ancoraggio
+        foreach ($prestazioniCassaEdileRieti as &$prestazione) {
+            $prestazione['slug'] = Str::slug($prestazione['nome']);
+        }
+        unset($prestazione); // Rompe il riferimento dell'ultima iterazione
+
+        // Check for existing service requests for the authenticated user
+        if (auth()->check()) {
+            $user = auth()->user();
+            // Get the latest request for each service for this user and service type
+            $latestRequests = ServiceRequest::where('user_id', $user->id)
+                                            ->where('service_type', 'Cassa Edile Rieti')
+                                            ->orderBy('updated_at', 'desc')
+                                            ->get()
+                                            ->unique('service_name') // Gets the first occurrence which is the latest
+                                            ->keyBy('service_name');
+
+            foreach ($prestazioniCassaEdileRieti as &$prestazione) {
+                if (isset($latestRequests[$prestazione['nome']])) {
+                    $request = $latestRequests[$prestazione['nome']];
+                    $prestazione['current_status'] = $request->status;
+                    $prestazione['request_date'] = $request->updated_at->format('d/m/Y');
+                    $prestazione['active_request'] = $request; // Pass the full request object
+                }
+            }
+            unset($prestazione); // Break the reference
+        }
+
+        return view('servizi.cassa-edile-rieti', compact('prestazioniCassaEdileRieti'));
+    }
+
     /**
      * Gestisce l'invio della richiesta di servizio tramite email.
      */
@@ -534,6 +706,8 @@ class HomeController extends Controller
             $allServices = $this->edilcassaData();
         } else if ($serviceType == 'Cassa Edile Latina') {
             $allServices = $this->cassaEdileLatinaData();
+        } else if ($serviceType == 'Cassa Edile Rieti') {
+            $allServices = $this->cassaEdileRietiData();
         }
         $serviceDefinition = collect($allServices)->firstWhere('nome', $serviceTitle);
 
