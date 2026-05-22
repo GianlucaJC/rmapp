@@ -816,9 +816,11 @@
                         text: "Per accedere a questa sezione è necessario essere registrati.",
                         icon: 'info',
                         showCancelButton: true,
+                        showDenyButton: true,
                         confirmButtonText: 'Accedi',
                         cancelButtonText: 'Registrati',
-                        reverseButtons: true
+                        denyButtonText: 'Chiudi',
+                        reverseButtons: true,
                     }).then((result) => {
                         if (result.isConfirmed) {
                             window.location.href = '{{ route('login') }}';

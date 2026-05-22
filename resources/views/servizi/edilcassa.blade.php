@@ -15,31 +15,31 @@
                         <div class="flip-card w-100" tabindex="0">
                             <div class="flip-card-inner">
                                 <div class="flip-card-front">
-                                    <div class="card h-100 w-100 d-flex flex-column">
-                                        <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-4">
-                                            <i class="bi {{ $prestazione['icona'] }} fs-1 mb-3 text-success"></i>
-                                            <h6 class="card-title mb-0">{{ $prestazione['nome'] }}</h6>
-                                            @if (isset($prestazione['current_status']))
-                                                <span class="badge bg-danger mt-2" style="font-size: 0.85em;">Stato: {{ $prestazione['current_status'] }} il {{ $prestazione['request_date'] }}</span>
-                                            @endif
+                                    <a href="#" class="btn-show-guide d-block text-decoration-none h-100" title="Dettagli e Guida alla presentazione"
+                                       data-service-title="{{ $prestazione['nome'] }}"
+                                       data-service-description="{{ $prestazione['descrizione_completa'] }}"
+                                       data-service-type="{{ $prestazione['service_type'] }}"
+                                       data-current-status="{{ $prestazione['current_status'] ?? '' }}"
+                                       data-button-text="{{ $prestazione['testo_bottone'] ?? '' }}"
+                                       data-service-actionable="{{ (isset($prestazione['is_actionable']) && $prestazione['is_actionable'] === false) ? 'false' : 'true' }}"
+                                       data-required-docs="{{ isset($prestazione['documentazione_richiesta']) ? json_encode($prestazione['documentazione_richiesta']) : '' }}"
+                                       @if (isset($prestazione['active_request']) && $prestazione['active_request'] && $prestazione['active_request']->id)
+                                           data-active-request="{{ json_encode($prestazione['active_request']) }}"
+                                       @endif
+                                    >
+                                        <div class="card h-100 w-100 d-flex flex-column">
+                                            <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-4">
+                                                <i class="bi {{ $prestazione['icona'] }} fs-1 mb-3 text-success"></i>
+                                                <h6 class="card-title mb-0 text-dark">{{ $prestazione['nome'] }}</h6>
+                                                @if (isset($prestazione['current_status']))
+                                                    <span class="badge bg-danger mt-2" style="font-size: 0.85em;">Stato: {{ $prestazione['current_status'] }} il {{ $prestazione['request_date'] }}</span>
+                                                @endif
+                                            </div>
+                                            <div class="card-footer bg-transparent border-0 d-flex justify-content-center pt-0 pb-3">
+                                                <span class="btn btn-sm btn-primary disabled" style="pointer-events: none;"><i class="bi bi-book"></i> Dettagli</span>
+                                            </div>
                                         </div>
-                                        <div class="card-footer bg-transparent border-0 d-flex justify-content-center pt-0 pb-3">
-                                            <a href="#" class="btn btn-sm btn-primary btn-show-guide" title="Dettagli e Guida alla presentazione"
-                                               data-service-title="{{ $prestazione['nome'] }}"
-                                               data-service-description="{{ $prestazione['descrizione_completa'] }}"
-                                               data-service-type="{{ $prestazione['service_type'] }}"
-                                               data-current-status="{{ $prestazione['current_status'] ?? '' }}"
-                                               data-button-text="{{ $prestazione['testo_bottone'] ?? '' }}"
-                                               data-service-actionable="{{ (isset($prestazione['is_actionable']) && $prestazione['is_actionable'] === false) ? 'false' : 'true' }}"
-                                               data-required-docs="{{ isset($prestazione['documentazione_richiesta']) ? json_encode($prestazione['documentazione_richiesta']) : '' }}"
-                                               @if (isset($prestazione['active_request']) && $prestazione['active_request'] && $prestazione['active_request']->id)
-                                                   data-active-request="{{ json_encode($prestazione['active_request']) }}"
-                                               @endif
-                                            >
-                                                <i class="bi bi-book"></i> Dettagli
-                                            </a>
-                                        </div>
-                                    </div>
+                                    </a>
                                 </div>
                                 <div class="flip-card-back">
                                     <div class="card bg-dark text-white h-100 w-100">
