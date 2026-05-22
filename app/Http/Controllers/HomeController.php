@@ -371,6 +371,132 @@ class HomeController extends Controller
         return view('servizi.edilcassa', compact('prestazioniEdilcassa'));
     }
 
+    private function cassaEdileLatinaData()
+    {
+        // In futuro, questi dati verranno dal database.
+        return [
+            [
+                'nome' => 'Gratifica ferie e natalizia',
+                'icona' => 'bi-cash-stack',
+                'descrizione' => 'Trattamento economico per ferie e gratifica natalizia.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Il datore di lavoro deve provvedere all’accantonamento presso Cassa Edile di Latina degli importi relativi al trattamento economico per ferie (8,50%) e gratifica natalizia (10%) dei suoi lavoratori dipendenti. Il trattamento per ferie viene versato annualmente a luglio, la gratifica natalizia a dicembre. Spetta anche durante assenza per malattia, infortunio o malattia professionale.</p>'),
+                'service_type' => 'Cassa Edile Latina',
+                'testo_bottone' => 'Informativa',
+                'is_actionable' => false, // Automatic
+            ],
+            [
+                'nome' => 'Anzianità Professionale Edile (A.P.E.)',
+                'icona' => 'bi-person-workspace',
+                'descrizione' => 'Premio per l\'Anzianità Professionale Edile maturata.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>L’operaio matura il diritto all’Anzianità Professionale Edile (A.P.E.) quando in un biennio (che scade il 30 settembre) accumula almeno 2.100 ore (lavoro, malattia, infortunio, congedi). L\'erogazione avviene da parte della Cassa Edile di Latina in occasione del 1° maggio. L\'importo aumenta con l\'anzianità di iscrizione.</p>'),
+                'service_type' => 'Cassa Edile Latina',
+                'testo_bottone' => 'Informativa',
+                'is_actionable' => false, // Automatic
+            ],
+            [
+                'nome' => 'Buoni Libro per Scuole Medie Inferiori',
+                'icona' => 'bi-book',
+                'descrizione' => 'Assegno di € 150,00 (o € 250,00) per i figli iscritti alla scuola media.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>La Cassa Edile eroga ai figli dei lavoratori iscritti alla scuola media dell’obbligo (I, II e III media) un assegno di <strong>€ 150,00</strong>. Per i promossi con la media dell’otto o superiore l’importo dell’assegno sarà di <strong>€ 250,00</strong> (al netto delle ritenute).</p><p><strong>Requisiti:</strong> Il lavoratore deve aver maturato 900 ore in 12 mesi o 1800 ore in 24 mesi alla data del 30 settembre precedente.</p><p><strong>Scadenza:</strong> Le domande vanno presentate improrogabilmente entro il 15 Dicembre.</p>'),
+                'service_type' => 'Cassa Edile Latina',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'Borse di Studio per Scuole Medie Superiori',
+                'icona' => 'bi-mortarboard-fill',
+                'descrizione' => 'Borsa di studio di € 200,00 (o € 350,00) per scuole superiori.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Ai figli dei lavoratori iscritti che frequentano scuole medie superiori statali, regionali o parificate, la Cassa Edile eroga una Borsa di Studio di <strong>€ 200,00</strong>. Per i promossi con la media dell’otto o superiore l’importo dell’assegno sarà di <strong>€ 350,00</strong> (al netto delle ritenute). Sono esclusi i respinti e i rimandati.</p><p><strong>Requisiti:</strong> Il lavoratore deve aver maturato 900 ore in 12 mesi o 1800 ore in 24 mesi alla data del 30 settembre precedente.</p><p><strong>Scadenza:</strong> Le domande vanno presentate improrogabilmente entro il 15 Dicembre.</p>'),
+                'service_type' => 'Cassa Edile Latina',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'Borse di Studio Universitarie',
+                'icona' => 'bi-mortarboard-fill',
+                'descrizione' => 'Borsa di studio di € 750,00 per studenti universitari.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>A favore dei figli dei lavoratori che entro il compimento del 26° anno di età, risultino iscritti a corsi di laurea in regola con il piano di studi e con i crediti formativi, la Cassa Edile eroga Borse di Studio dell’importo di <strong>€ 750,00</strong>.</p><p><strong>Requisiti:</strong> Il lavoratore deve aver maturato 900 ore in 12 mesi o 1800 ore in 24 mesi alla data del 30 settembre precedente.</p><p><strong>Scadenza:</strong> La domanda va presentata improrogabilmente entro il 28 Febbraio.</p>'),
+                'service_type' => 'Cassa Edile Latina',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'Premio di Inserimento nel Settore Edile',
+                'icona' => 'bi-award-fill',
+                'descrizione' => 'Premio una tantum di € 400 per i giovani lavoratori.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Ai lavoratori che iniziano, per la prima volta, la loro attività in edilizia e che, entro il compimento del 23° anno d’età possono vantare una permanenza nel settore di almeno 600 ore di accantonamento presso la Cassa Edile di Latina, verrà erogato un premio una tantum di <strong>€ 400</strong>.</p>'),
+                'service_type' => 'Cassa Edile Latina',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'Viaggi studio per i figli dei lavoratori',
+                'icona' => 'bi-airplane-engines-fill',
+                'descrizione' => 'Viaggi studio all\'estero per perfezionare le lingue.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Per i figli dei lavoratori verranno organizzati nei periodi estivi viaggi studio all’Estero per perfezionare le lingue della comunità Europea. Le modalità verranno decise, annualmente, dalla Commissione Assistenze.</p>'),
+                'service_type' => 'Cassa Edile Latina',
+                'testo_bottone' => 'Informativa',
+                'is_actionable' => false,
+            ],
+            [
+                'nome' => 'Assegno Funerario',
+                'icona' => 'bi-flower1',
+                'descrizione' => 'Assegno di € 1.500 (lavoratore) o € 1.000 (familiare).',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>La Cassa Edile corrisponde un assegno di <strong>€ 1.500,00</strong> in caso di decesso del lavoratore, o di <strong>€ 1.000,00</strong> in caso di decesso di un familiare (figli entro il compimento del 18° anno o 26° se studente).</p>'),
+                'service_type' => 'Cassa Edile Latina',
+                'testo_bottone' => 'Procedi con la richiesta',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'Soggiorni Estivi e Progetto Erasmus',
+                'icona' => 'bi-suitcase-lg-fill',
+                'descrizione' => 'Soggiorni estivi e progetti Erasmus.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Informazioni non ancora disponibili. Le modalità verranno definite annualmente.</p>'),
+                'service_type' => 'Cassa Edile Latina',
+                'testo_bottone' => 'Informativa',
+                'is_actionable' => false,
+            ],
+        ];
+    }
+
+    /**
+     * Mostra l'elenco delle prestazioni della Cassa Edile di Latina.
+     */
+    public function cassaEdileLatina(): View
+    {
+        $prestazioniCassaEdileLatina = $this->cassaEdileLatinaData();
+
+        // Aggiunge uno 'slug' per l'ID HTML a ogni prestazione per permettere l'ancoraggio
+        foreach ($prestazioniCassaEdileLatina as &$prestazione) {
+            $prestazione['slug'] = Str::slug($prestazione['nome']);
+        }
+        unset($prestazione); // Rompe il riferimento dell'ultima iterazione
+
+        // Check for existing service requests for the authenticated user
+        if (auth()->check()) {
+            $user = auth()->user();
+            // Get the latest request for each service for this user and service type
+            $latestRequests = ServiceRequest::where('user_id', $user->id)
+                                            ->where('service_type', 'Cassa Edile Latina')
+                                            ->orderBy('updated_at', 'desc')
+                                            ->get()
+                                            ->unique('service_name') // Gets the first occurrence which is the latest
+                                            ->keyBy('service_name');
+
+            foreach ($prestazioniCassaEdileLatina as &$prestazione) {
+                if (isset($latestRequests[$prestazione['nome']])) {
+                    $request = $latestRequests[$prestazione['nome']];
+                    $prestazione['current_status'] = $request->status;
+                    $prestazione['request_date'] = $request->updated_at->format('d/m/Y');
+                    $prestazione['active_request'] = $request; // Pass the full request object
+                }
+            }
+            unset($prestazione); // Break the reference
+        }
+
+        return view('servizi.cassa-edile-latina', compact('prestazioniCassaEdileLatina'));
+    }
+
     /**
      * Gestisce l'invio della richiesta di servizio tramite email.
      */
@@ -406,6 +532,8 @@ class HomeController extends Controller
             $allServices = $this->cassaEdileData();
         } else if ($serviceType == 'Edilcassa') {
             $allServices = $this->edilcassaData();
+        } else if ($serviceType == 'Cassa Edile Latina') {
+            $allServices = $this->cassaEdileLatinaData();
         }
         $serviceDefinition = collect($allServices)->firstWhere('nome', $serviceTitle);
 

@@ -7,10 +7,10 @@
         <p class="lead">Seleziona l'ente di tuo interesse.</p>
     </div>
 
-    <div class="row justify-content-center g-4">
+    <div class="row justify-content-center g-4 text-center">
 
-        <!-- Card Cassa Edile -->
-        <div class="col-md-6 col-lg-5">
+        <!-- Card Cassa Edile Roma -->
+        <div class="col-md-6 col-lg-4">
             <a href="{{ route('servizi.cassa-edile') }}" class="feature-box">
                 <div class="card bg-success text-white h-100">
                     <div class="card-body text-center">
@@ -22,8 +22,21 @@
             </a>
         </div>
 
+        <!-- Card Cassa Edile Latina -->
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ route('servizi.cassa-edile-latina') }}" class="feature-box">
+                <div class="card bg-success text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-building-check fs-1 mb-3"></i>
+                        <h5 class="card-title">PRESTAZIONI CASSA EDILE LATINA</h5>
+                        <p class="card-text">Consulta l'elenco delle prestazioni per la Cassa Edile di Latina.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
         <!-- Card Edilcassa -->
-        <div class="col-md-6 col-lg-5">
+        <div class="col-md-6 col-lg-4">
             <a href="{{ route('servizi.edilcassa') }}" class="feature-box">
                 <div class="card bg-success text-white h-100">
                     <div class="card-body text-center">
@@ -33,6 +46,11 @@
                     </div>
                 </div>
             </a>
+        </div>
+
+        <!-- Placeholder per altre Casse Edili -->
+        <div class="col-12">
+            <p class="text-muted mt-4">Le prestazioni per le altre casse edili provinciali (Viterbo, Rieti, Frosinone) saranno disponibili a breve.</p>
         </div>
 
     </div>
