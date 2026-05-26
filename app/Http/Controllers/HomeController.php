@@ -688,7 +688,7 @@ class HomeController extends Controller
                 'descrizione' => 'Un premio per l\'Anzianità Professionale Edile.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Ogni anno la Cassa Edile liquida ai lavoratori iscritti <strong>in automatico</strong> e di regola nel mese di <strong>MAGGIO</strong> un Premio di professionalità disciplinato dal CCNL vigente collegato all’anzianità lavorativa che l’operaio matura nel settore edile. </p>'),
                 'service_type' => 'Cassa Edile Viterbo',
-                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI',
                 'is_actionable' => false,
             ],            
             [
