@@ -792,6 +792,165 @@ class HomeController extends Controller
         return view('servizi.cassa-edile-viterbo', compact('prestazioniCassaEdileViterbo'));
     }
 
+    private function cassaEdileFrosinoneData()
+    {
+        // In futuro, questi dati verranno dal database.
+        return [
+            [
+                'nome' => 'GNF E GRATIFICA NATALIZIA',
+                'icona' => 'bi-cash-stack',
+                'descrizione' => 'Erogazione degli accantonamenti per ferie e gratifica natalizia.',
+                'descrizione_completa' => $this->cleanHtmlDescription("<p>La Cassa Edile di FROSINONE eroga gli accantonamenti per ferie e gratifica natalizia nei mesi di giugno e dicembre. L'erogazione è automatica tramite domiciliazione postale o accredito su conto corrente.</p>"),
+                'service_type' => 'Cassa Edile Frosinone',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
+                'is_actionable' => false,
+            ],
+            [
+                'nome' => 'ANZIANITÀ PROFESSIONALE EDILE (A.P.E.)',
+                'icona' => 'bi-person-workspace',
+                'descrizione' => 'Premio per l\'Anzianità Professionale Edile.',
+                'descrizione_completa' => $this->cleanHtmlDescription("<p>Ogni anno la Cassa Edile liquida ai lavoratori iscritti in automatico e di regola nel mese di MAGGIO un Premio di professionalità disciplinato dal CCNL vigente collegato all’anzianità lavorativa che l’operaio matura nel settore edile.</p>"),
+                'service_type' => 'Cassa Edile Frosinone',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI',
+                'is_actionable' => false,
+            ],
+            [
+                'nome' => 'PREMIO GIOVANI',
+                'icona' => 'bi-award-fill',
+                'descrizione' => 'Contributo “Una Tantum” per giovani lavoratori.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Contributo “Una Tantum” riservato all’iscritto che abbia maturato alle dipendenze di un’impresa in regola con i versamenti un minimo di 1500 ore presso la Cassa Edile di Frosinone nel Triennio precedente la domanda da inoltrare entro il compimento del 26° anno di età. Documenti da allegare: Documento d’Identità in corso di validità.</p>'),
+                'service_type' => 'Cassa Edile Frosinone',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'ASSEGNO DI NOZZE',
+                'icona' => 'bi-gem',
+                'descrizione' => 'Contributo per l\'iscritto che contrae matrimonio.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Contributo riservato all’iscritto che contrae matrimonio (civile e/o religioso) e che abbia maturato 1.500 ore coperte da versamento nel biennio precedente l’evento di cui almeno 500 ore presso la Cassa Edile di Frosinone nei 12 mesi precedenti l’evento.</p>'),
+                'service_type' => 'Cassa Edile Frosinone',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'RICHIESTA ANTICIPAZIONE TFR',
+                'icona' => 'bi-wallet2',
+                'descrizione' => 'Anticipazione del TFR per vari motivi.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>L’anticipazione del proprio TFR viene erogato, secondo la normativa vigente per i seguenti motivi:</p><ul><li>Richiesta di anticipazione per spese sanitarie</li><li>Richiesta di anticipazione per acquisto prima casa</li><li>Richiesta di anticipazione per ristrutturazione prima casa</li></ul>'),
+                'service_type' => 'Cassa Edile Frosinone',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'Prestazione Extra-Contrattuale per Decesso – Invalidità – Legge 104',
+                'icona' => 'bi-person-exclamation',
+                'descrizione' => 'Prestazioni per decesso, invalidità e Legge 104.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<ul><li>DECESSO ISCRITTO (richiesta da presentare entro 12 mesi dall’evento)</li><li>DECESSO ISCRITTO SUL LAVORO (richiesta da presentare entro 12 mesi dall’evento)</li><li>DECESSO FAMILIARE 1° GRADO (Coniuge o figlio) (richiesta da presentare entro 12 mesi dall’evento)</li><li>INVALIDITA’ PERMANENTE PER LAVORATORE O FAMILIARE DI 1° GRADO - Coniuge o figlio (Una tantum)</li><li>CONTRIBUTO art. 33 L. 104/1992 (Handicap grave) - (una richiesta per anno solare)</li><li>CONTRIBUTO art. 33, commi 1 e 2, L. 104/1992 (una richiesta per anno solare)</li></ul>'),
+                'service_type' => 'Cassa Edile Frosinone',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'BONUS EDILE SAR',
+                'icona' => 'bi-star-fill',
+                'descrizione' => 'Bonus Edile SAR.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Informazioni non disponibili.</p>'),
+                'service_type' => 'Cassa Edile Frosinone',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'CONTRIBUTO MALATTIE',
+                'icona' => 'bi-heart-pulse',
+                'descrizione' => 'Contributo per condizioni patologiche certificate.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Il contributo è riservato agli iscritti in stato condizioni patologiche certificate. Per l’accesso il lavoratore deve aver maturato 1500 ore coperte da versamento nel biennio precedente l’evento di cui almeno 500 ore presso la Cassa Edile di Frosinone con malattia certificata nel periodo dal 180° al 270° giorno (solo giornate non indennizzate da INPS). Il contributo può essere richiesto tutto l’anno ed è erogabile una sola volta l’anno.</p>'),
+                'service_type' => 'Cassa Edile Frosinone',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'CONTRIBUTO NASCITA',
+                'icona' => 'bi-gift-fill',
+                'descrizione' => 'Contributo per la nascita di un figlio.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Il contributo è riservato agli iscritti che, alla data della nascita del proprio figlio, abbiano maturato un minimo di 1500 ore lavorate coperte da versamento nel biennio precedente, di cui almeno 500 ore presso la Cassa Edile di Frosinone nei 12 mesi precedenti alla data dell’evento (nascita). Il contributo deve essere richiesto entro 180 giorni dalla data dell’evento.</p>'),
+                'service_type' => 'Cassa Edile Frosinone',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'SOSTEGNO DISTURBO SPETTRO AUTISTICO',
+                'icona' => 'bi-person-heart',
+                'descrizione' => 'Contributo per figli a carico affetti da disturbi dello spettro autistico.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Il contributo è riservato agli iscritti con figli a carico affetti da disturbi dello spettro autistico documentata. 1500 ore coperte da versamento nel biennio precedente l’evento di cui almeno 500 ore presso la Cassa Edile di Frosinone nei 12 mesi precedenti l’evento. Il contributo è erogabile una sola volta l’anno.</p>'),
+                'service_type' => 'Cassa Edile Frosinone',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'INFORTUNIO SUL LAVORO',
+                'icona' => 'bi-hospital',
+                'descrizione' => 'Contributo per infortunio occorso sul luogo di lavoro.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Per avere diritto al Contributo, il lavoratore iscritto deve aver maturato alla data dell’evento (data Infortunio), un minimo di 1.500 ore lavorate e coperte da versamento nel biennio precedente, di cui almeno 500 ore presso la Cassa Edile di Frosinone nei 12 mesi precedenti alla data dell’evento. Riconosciuto per Infortunio occorso sul luogo di lavoro attestato da certificazione Inail entro 12 mesi dal rilascio.</p>'),
+                'service_type' => 'Cassa Edile Frosinone',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'DOMANDA SOGGIORNO STUDIO ERASMUS',
+                'icona' => 'bi-airplane-engines-fill',
+                'descrizione' => 'Iniziativa rivolta ai figli e alle figlie dei lavoratori iscritti.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>L’iniziativa è rivolta ai figli e alle figlie dei lavoratori iscritti.</p>'),
+                'service_type' => 'Cassa Edile Frosinone',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
+                'documentazione_richiesta' => [],
+            ],
+            [
+                'nome' => 'SOSTEGNO SALUTE',
+                'icona' => 'bi-bandaid-fill',
+                'descrizione' => 'Contributo per malattia non superiore a 6 giorni.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Il contributo è riservato agli iscritti in caso di MALATTIA NON SUPERIORE A 6 GIORNI. 1500 ore coperte da versamento nel biennio precedente l’evento di cui almeno 500 ore presso la Cassa Edile di Frosinone nei 12 mesi precedenti l’evento. Il contributo è erogabile UNA sola volta l’anno. La presente richiesta, a pena di decadenza, deve essere presentata entro 60 gg. dal termine della malattia.</p>'),
+                'service_type' => 'Cassa Edile Frosinone',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
+                'documentazione_richiesta' => [],
+            ],
+        ];
+    }
+
+    /**
+     * Mostra l'elenco delle prestazioni della Cassa Edile di Frosinone.
+     */
+    public function cassaEdileFrosinone(): View
+    {
+        $prestazioniCassaEdileFrosinone = $this->cassaEdileFrosinoneData();
+
+        foreach ($prestazioniCassaEdileFrosinone as &$prestazione) {
+            $prestazione['slug'] = Str::slug($prestazione['nome']);
+        }
+        unset($prestazione);
+
+        if (auth()->check()) {
+            $user = auth()->user();
+            $latestRequests = ServiceRequest::where('user_id', $user->id)
+                                            ->where('service_type', 'Cassa Edile Frosinone')
+                                            ->orderBy('updated_at', 'desc')
+                                            ->get()
+                                            ->unique('service_name')
+                                            ->keyBy('service_name');
+
+            foreach ($prestazioniCassaEdileFrosinone as &$prestazione) {
+                if (isset($latestRequests[$prestazione['nome']])) {
+                    $request = $latestRequests[$prestazione['nome']];
+                    $prestazione['current_status'] = $request->status;
+                    $prestazione['request_date'] = $request->updated_at->format('d/m/Y');
+                    $prestazione['active_request'] = $request;
+                }
+            }
+            unset($prestazione);
+        }
+
+        return view('servizi.cassa-edile-frosinone', compact('prestazioniCassaEdileFrosinone'));
+    }
+
     /**
      * Gestisce l'invio della richiesta di servizio tramite email.
      */
@@ -833,6 +992,8 @@ class HomeController extends Controller
             $allServices = $this->cassaEdileRietiData();
         } else if ($serviceType == 'Cassa Edile Viterbo') {
             $allServices = $this->cassaEdileViterboData();
+        } else if ($serviceType == 'Cassa Edile Frosinone') {
+            $allServices = $this->cassaEdileFrosinoneData();
         }
         $serviceDefinition = collect($allServices)->firstWhere('nome', $serviceTitle);
 

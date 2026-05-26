@@ -61,6 +61,19 @@
             </a>
         </div>
 
+        <!-- Card Cassa Edile Frosinone -->
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ route('servizi.cassa-edile-frosinone') }}" class="feature-box">
+                <div class="card bg-success text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-building-check fs-1 mb-3"></i>
+                        <h5 class="card-title">PRESTAZIONI CASSA EDILE FROSINONE</h5>
+                        <p class="card-text">Consulta l'elenco delle prestazioni per la Cassa Edile di Frosinone.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
 
     </div>
 
