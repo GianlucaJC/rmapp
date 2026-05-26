@@ -381,7 +381,7 @@ class HomeController extends Controller
                 'descrizione' => 'Trattamento economico per ferie e gratifica natalizia.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Il datore di lavoro deve provvedere all’accantonamento presso Cassa Edile di Latina degli importi relativi al trattamento economico per ferie (8,50%) e gratifica natalizia (10%) dei suoi lavoratori dipendenti. Il trattamento per ferie viene versato annualmente a luglio, la gratifica natalizia a dicembre. Spetta anche durante assenza per malattia, infortunio o malattia professionale.</p>'),
                 'service_type' => 'Cassa Edile Latina',
-                'testo_bottone' => 'Informativa',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'is_actionable' => false, // Automatic
             ],
             [
@@ -390,7 +390,7 @@ class HomeController extends Controller
                 'descrizione' => 'Premio per l\'Anzianità Professionale Edile maturata.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L’operaio matura il diritto all’Anzianità Professionale Edile (A.P.E.) quando in un biennio (che scade il 30 settembre) accumula almeno 2.100 ore (lavoro, malattia, infortunio, congedi). L\'erogazione avviene da parte della Cassa Edile di Latina in occasione del 1° maggio. L\'importo aumenta con l\'anzianità di iscrizione.</p>'),
                 'service_type' => 'Cassa Edile Latina',
-                'testo_bottone' => 'Informativa',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI',
                 'is_actionable' => false, // Automatic
             ],
             [
@@ -399,7 +399,7 @@ class HomeController extends Controller
                 'descrizione' => 'Assegno di € 150,00 (o € 250,00) per i figli iscritti alla scuola media.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>La Cassa Edile eroga ai figli dei lavoratori iscritti alla scuola media dell’obbligo (I, II e III media) un assegno di <strong>€ 150,00</strong>. Per i promossi con la media dell’otto o superiore l’importo dell’assegno sarà di <strong>€ 250,00</strong> (al netto delle ritenute).</p><p><strong>Requisiti:</strong> Il lavoratore deve aver maturato 900 ore in 12 mesi o 1800 ore in 24 mesi alla data del 30 settembre precedente.</p><p><strong>Scadenza:</strong> Le domande vanno presentate improrogabilmente entro il 15 Dicembre.</p>'),
                 'service_type' => 'Cassa Edile Latina',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [],
             ],
             [
@@ -408,7 +408,7 @@ class HomeController extends Controller
                 'descrizione' => 'Borsa di studio di € 200,00 (o € 350,00) per scuole superiori.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Ai figli dei lavoratori iscritti che frequentano scuole medie superiori statali, regionali o parificate, la Cassa Edile eroga una Borsa di Studio di <strong>€ 200,00</strong>. Per i promossi con la media dell’otto o superiore l’importo dell’assegno sarà di <strong>€ 350,00</strong> (al netto delle ritenute). Sono esclusi i respinti e i rimandati.</p><p><strong>Requisiti:</strong> Il lavoratore deve aver maturato 900 ore in 12 mesi o 1800 ore in 24 mesi alla data del 30 settembre precedente.</p><p><strong>Scadenza:</strong> Le domande vanno presentate improrogabilmente entro il 15 Dicembre.</p>'),
                 'service_type' => 'Cassa Edile Latina',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [],
             ],
             [
@@ -417,7 +417,7 @@ class HomeController extends Controller
                 'descrizione' => 'Borsa di studio di € 750,00 per studenti universitari.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>A favore dei figli dei lavoratori che entro il compimento del 26° anno di età, risultino iscritti a corsi di laurea in regola con il piano di studi e con i crediti formativi, la Cassa Edile eroga Borse di Studio dell’importo di <strong>€ 750,00</strong>.</p><p><strong>Requisiti:</strong> Il lavoratore deve aver maturato 900 ore in 12 mesi o 1800 ore in 24 mesi alla data del 30 settembre precedente.</p><p><strong>Scadenza:</strong> La domanda va presentata improrogabilmente entro il 28 Febbraio.</p>'),
                 'service_type' => 'Cassa Edile Latina',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [],
             ],
             [
@@ -426,7 +426,7 @@ class HomeController extends Controller
                 'descrizione' => 'Premio una tantum di € 400 per i giovani lavoratori.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Ai lavoratori che iniziano, per la prima volta, la loro attività in edilizia e che, entro il compimento del 23° anno d’età possono vantare una permanenza nel settore di almeno 600 ore di accantonamento presso la Cassa Edile di Latina, verrà erogato un premio una tantum di <strong>€ 400</strong>.</p>'),
                 'service_type' => 'Cassa Edile Latina',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [],
             ],
             [
@@ -444,7 +444,7 @@ class HomeController extends Controller
                 'descrizione' => 'Assegno di € 1.500 (lavoratore) o € 1.000 (familiare).',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>La Cassa Edile corrisponde un assegno di <strong>€ 1.500,00</strong> in caso di decesso del lavoratore, o di <strong>€ 1.000,00</strong> in caso di decesso di un familiare (figli entro il compimento del 18° anno o 26° se studente).</p>'),
                 'service_type' => 'Cassa Edile Latina',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [],
             ],
             [
@@ -453,7 +453,7 @@ class HomeController extends Controller
                 'descrizione' => 'Soggiorni estivi e progetti Erasmus.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Informazioni non ancora disponibili. Le modalità verranno definite annualmente.</p>'),
                 'service_type' => 'Cassa Edile Latina',
-                'testo_bottone' => 'Informativa',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'is_actionable' => false,
             ],
         ];
@@ -507,7 +507,7 @@ class HomeController extends Controller
                 'descrizione' => 'Liquidazione accantonamenti per gratifica natalizia e ferie.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Le quote accantonate alla Cassa Edile a titolo di ferie e gratifica natalizia vengono pagate agli operai a Luglio (periodo 1/10-31/03) e Dicembre (periodo 1/04-30/09). L\'erogazione è automatica tramite bonifico bancario.</p>'),
                 'service_type' => 'Cassa Edile Rieti',
-                'testo_bottone' => 'Informativa',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'is_actionable' => false,
             ],
             [
@@ -516,7 +516,7 @@ class HomeController extends Controller
                 'descrizione' => 'Premio per l\'Anzianità Professionale Edile maturata.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>L\'operaio matura il diritto all’Anzianità Professionale Edile (A.P.E.) quando in un biennio (1 Ott - 30 Sett) accumula almeno 2.100 ore. La liquidazione viene effettuata in automatico in occasione del 1° Maggio dell’anno successivo.</p>'),
                 'service_type' => 'Cassa Edile Rieti',
-                'testo_bottone' => 'Informativa',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI',
                 'is_actionable' => false,
             ],
             [
@@ -525,7 +525,7 @@ class HomeController extends Controller
                 'descrizione' => 'Sostegno allo studio per figli di operai deceduti sul lavoro.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>È rivolto ai figli di lavoratori operai edili deceduti in seguito ad infortunio sul lavoro (dal 1° Gennaio 2021). Il beneficio è corrisposto sotto forma di sostegno allo studio (<strong>€ 1.000 mensili</strong>), dall’iscrizione al 1° anno delle scuole secondarie di secondo grado fino alla laurea. La domanda va presentata al Sanedil. Il diritto è riconosciuto a far data dal 1° gennaio 2026.</p>'),
                 'service_type' => 'Cassa Edile Rieti',
-                'testo_bottone' => 'Informativa',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'is_actionable' => false,
             ],
             [
@@ -534,7 +534,7 @@ class HomeController extends Controller
                 'descrizione' => 'Premio di € 1.300 per la nascita di un figlio (max 2 volte).',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Viene riconosciuto un premio di <strong>€ 1.300,00</strong> (soggetto a ritenute) per la nascita del figlio, per un massimo di 2 volte.</p><p><strong>Requisiti:</strong> Essere in forza ad impresa iscritta e regolare, con anzianità di almeno 900 ore nei 12 mesi precedenti.</p><p><strong>Scadenza:</strong> Domanda da presentare entro 60 giorni dalla nascita.</p>'),
                 'service_type' => 'Cassa Edile Rieti',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [
                     ['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [
                         ['name' => 'stato_famiglia', 'label' => 'Stato di famiglia', 'type' => 'file', 'required' => true],
@@ -548,7 +548,7 @@ class HomeController extends Controller
                 'descrizione' => 'Rimborso di € 300 per i giorni di carenza INPS.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Viene rimborsato, una sola volta all’anno edile (01/10-30/09), un importo di <strong>€ 300,00</strong> (soggetto a ritenute) per i giorni di carenza INPS in caso di malattia.</p><p><strong>Requisiti:</strong> Essere in forza ad impresa iscritta e regolare, con anzianità di almeno 900 ore nei 12 mesi precedenti.</p><p><strong>Scadenza:</strong> Domanda da presentare entro 60 giorni dall’evento.</p>'),
                 'service_type' => 'Cassa Edile Rieti',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [
                     ['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [
                         ['name' => 'busta_paga', 'label' => 'Busta paga', 'type' => 'file', 'required' => true],
@@ -562,7 +562,7 @@ class HomeController extends Controller
                 'descrizione' => 'Borse di studio per licenza media, superiori e università.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Vengono erogate borse di studio per vari livelli di istruzione:</p><ul><li>Licenza Media: <strong>€ 600,00</strong> (media > 7)</li><li>Scuole Superiori: <strong>€ 800,00</strong> (media > 7)</li><li>Università: <strong>€ 1.000,00</strong> (media < 27/30) o <strong>€ 1.250,00</strong> (media >= 27/30), in regola con il piano di studi e media >= 21/30.</li></ul><p><strong>Requisiti:</strong> Essere in forza ad impresa iscritta e regolare, con anzianità di almeno 900 ore nei 12 mesi precedenti (ott-sett).</p><p><strong>Scadenza:</strong> Domanda entro il 30 Settembre, documentazione entro il 31 Marzo successivo.</p>'),
                 'service_type' => 'Cassa Edile Rieti',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [
                     ['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [
                         ['name' => 'stato_famiglia', 'label' => 'Stato di famiglia', 'type' => 'file', 'required' => true],
@@ -577,7 +577,7 @@ class HomeController extends Controller
                 'descrizione' => 'Assegno per decesso del lavoratore.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Viene erogato un assegno di <strong>€ 2.000,00</strong> per il decesso dell\'iscritto. L\'importo è elevato a <strong>€ 5.000,00</strong> in caso di morte per infortunio professionale in cantiere.</p><p><strong>Requisiti:</strong> Essere in forza ad impresa iscritta e regolare, con anzianità di 900 ore nei 12 mesi precedenti (o 1200 ore nel Lazio con 700 a Rieti).</p><p><strong>Scadenza:</strong> Entro un anno dall’evento.</p>'),
                 'service_type' => 'Cassa Edile Rieti',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [
                     ['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [
                         ['name' => 'certificato_morte', 'label' => 'Certificato di morte', 'type' => 'file', 'required' => true],
@@ -594,7 +594,7 @@ class HomeController extends Controller
                 'descrizione' => 'Prestazione per spese rilevanti dovute a gravi motivi.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>La prestazione viene erogata per spese di entità rilevante sostenute per gravi motivi di salute o familiari.</p><p><strong>Requisiti:</strong> Essere in forza ad impresa iscritta e regolare, con anzianità di 900 ore nei 12 mesi precedenti.</p><p><strong>Scadenza:</strong> Entro 90 giorni dall’evento.</p>'),
                 'service_type' => 'Cassa Edile Rieti',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [
                     ['type' => 'upload', 'description' => 'Carica la documentazione richiesta.', 'inputs' => [
                         ['name' => 'documentazione_comprovante', 'label' => 'Documentazione comprovante l’eccezionalità dell’evento e delle spese', 'type' => 'file', 'required' => true],
@@ -607,7 +607,7 @@ class HomeController extends Controller
                 'descrizione' => 'Premio una tantum di € 500 per giovani lavoratori.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Premio "una tantum" di <strong>€ 500,00</strong> (soggetto a ritenute) da liquidare contestualmente alla 1ª erogazione A.P.E. ai giovani lavoratori (fino a 25 anni di età).</p>'),
                 'service_type' => 'Cassa Edile Rieti',
-                'testo_bottone' => 'Informativa',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'is_actionable' => false,
             ],
             [
@@ -616,7 +616,7 @@ class HomeController extends Controller
                 'descrizione' => 'Soggiorni in appartamento per una settimana.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Soggiorni in appartamento per una settimana. Il lavoratore può usufruire della prestazione ogni 4 anni.</p><p><strong>Requisiti:</strong> Essere in forza ad impresa iscritta e regolare, con anzianità di almeno 900 ore nei 12 mesi precedenti (apr-mar).</p><p><strong>Scadenza:</strong> Domanda da presentare entro il 31 MAGGIO di ogni anno.</p><p><strong>Importante:</strong> È obbligatorio comunicare i nominativi dei componenti del nucleo familiare che parteciperanno.</p>'),
                 'service_type' => 'Cassa Edile Rieti',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [],
             ],
             [
@@ -625,7 +625,7 @@ class HomeController extends Controller
                 'descrizione' => 'Fondo Nazionale per l\'accompagnamento alla pensione.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Il Fondo Nazionale “Prepensionamenti” è istituito presso la CNCE e alimentato da un contributo a carico dei datori di lavoro. Le risorse sono rivolte agli operai che raggiungono i requisiti per il pensionamento, al netto della Naspi spettante.</p>'),
                 'service_type' => 'Cassa Edile Rieti',
-                'testo_bottone' => 'Informativa',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'is_actionable' => false,
             ],
         ];
@@ -679,16 +679,25 @@ class HomeController extends Controller
                 'descrizione' => 'Erogazione degli accantonamenti per gratifica natalizia e ferie.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>La Cassa Edile di Viterbo eroga gli accantonamenti per ferie e gratifica natalizia nei mesi di <strong>giugno</strong> e <strong>dicembre</strong>. L\'erogazione è automatica tramite domiciliazione postale o accredito su conto corrente.</p>'),
                 'service_type' => 'Cassa Edile Viterbo',
-                'testo_bottone' => 'Informativa',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'is_actionable' => false,
             ],
+            [
+                'nome' => 'ANZIANITÀ PROFESSIONALE EDILE (A.P.E.)',
+                'icona' => 'bi-person-workspace',
+                'descrizione' => 'Un premio per l\'Anzianità Professionale Edile.',
+                'descrizione_completa' => $this->cleanHtmlDescription('<p>Ogni anno la Cassa Edile liquida ai lavoratori iscritti <strong>in automatico</strong> e di regola nel mese di <strong>MAGGIO</strong> un Premio di professionalità disciplinato dal CCNL vigente collegato all’anzianità lavorativa che l’operaio matura nel settore edile. </p>'),
+                'service_type' => 'Cassa Edile Viterbo',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
+                'is_actionable' => false,
+            ],            
             [
                 'nome' => 'Assegno Promozionale Giovani',
                 'icona' => 'bi-award-fill',
                 'descrizione' => 'Assegno di € 260,00 per giovani lavoratori.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>I giovani assunti prima del compimento del 32° anno di età possono richiedere un assegno di <strong>€ 260,00</strong>.</p><p><strong>Requisiti:</strong> Aver maturato 1.000 ore di lavoro nei 36 mesi successivi all\'assunzione.</p><p><strong>Scadenza:</strong> La domanda va presentata entro 180 giorni dalla maturazione del diritto.</p>'),
                 'service_type' => 'Cassa Edile Viterbo',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [],
             ],
             [
@@ -697,7 +706,7 @@ class HomeController extends Controller
                 'descrizione' => 'Assegno di € 700,00 per ogni figlio nato.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>I lavoratori iscritti hanno diritto, per ogni figlio nato, ad un assegno di natalità pari a <strong>€ 700,00</strong>.</p><p><strong>Requisiti:</strong> Aver maturato 1.000 ore di lavoro nei 12 mesi precedenti la domanda.</p><p><strong>Scadenza:</strong> Presentare la domanda entro 90 giorni dalla nascita.</p>'),
                 'service_type' => 'Cassa Edile Viterbo',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [],
             ],
             [
@@ -706,7 +715,7 @@ class HomeController extends Controller
                 'descrizione' => 'Sussidi per particolari condizioni di necessità.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>È possibile richiedere sussidi straordinari per eventi che non rientrano in altre assistenze. La domanda, documentata, viene esaminata da una Commissione. L\'importo massimo è di <strong>€ 260,00</strong> (salvo autorizzazione per importi superiori).</p>'),
                 'service_type' => 'Cassa Edile Viterbo',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [],
             ],
             [
@@ -715,7 +724,7 @@ class HomeController extends Controller
                 'descrizione' => 'Sussidio di € 60,00 per malattia da 6 a 12 giorni.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Il lavoratore può beneficiare, nel caso di malattia di durata superiore a 6 fino a 12 giorni, di un sussidio di <strong>€ 60,00</strong>. La prestazione è concessa una sola volta all’anno.</p><p><strong>Scadenza:</strong> La domanda va presentata entro 90 giorni dalla fine dell’evento.</p>'),
                 'service_type' => 'Cassa Edile Viterbo',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [],
             ],
             [
@@ -724,7 +733,7 @@ class HomeController extends Controller
                 'descrizione' => 'Contributo giornaliero per cure termali.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>La Cassa Edile concede un contributo per cure termali (massimo 12 giorni) pari a: <strong>€ 5,00/giorno</strong> in provincia di Viterbo, <strong>€ 8,00/giorno</strong> fuori provincia.</p><p><strong>Requisiti:</strong> Almeno 500 ore di lavoro nei 12 mesi precedenti.</p><p><strong>Scadenza:</strong> Domanda entro 3 mesi dall\'inizio delle cure.</p><p><strong>Documenti da presentare (in fase di integrazione):</strong> Prescrizione dello specialista e certificato della stazione termale.</p>'),
                 'service_type' => 'Cassa Edile Viterbo',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [],
             ],
             [
@@ -733,7 +742,7 @@ class HomeController extends Controller
                 'descrizione' => 'Contributo per decesso del lavoratore o del coniuge.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>In caso di decesso del lavoratore, viene riconosciuto agli eredi un contributo di <strong>€ 520,00</strong> più <strong>€ 100,00</strong> per ogni figlio minorenne a carico. In caso di decesso del coniuge fiscalmente a carico, il contributo è di <strong>€ 520,00</strong>.</p><p><strong>Scadenza:</strong> La domanda va presentata entro 3 mesi dalla data del decesso.</p>'),
                 'service_type' => 'Cassa Edile Viterbo',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [],
             ],
             [
@@ -742,7 +751,7 @@ class HomeController extends Controller
                 'descrizione' => 'Erogazione APE in caso di morte o invalidità permanente assoluta.',
                 'descrizione_completa' => $this->cleanHtmlDescription('<p>Viene erogata in caso di morte o di invalidità permanente assoluta al lavoro, purché la prestazione APE sia stata percepita almeno una volta o siano stati maturati i requisiti.</p><p><strong>Documenti da presentare (in fase di integrazione):</strong> Certificato di morte e atto notorio indicante gli eredi con delega a riscuotere.</p>'),
                 'service_type' => 'Cassa Edile Viterbo',
-                'testo_bottone' => 'Procedi con la richiesta',
+                'testo_bottone' => 'Procedi PER VERIFICARE I REQUISITI, istruire la pratica e ricevere la modulistica',
                 'documentazione_richiesta' => [],
             ],
         ];
