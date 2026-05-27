@@ -25,8 +25,29 @@
                                         <h6 class="mb-1 fw-bold">{{ $news->title }}</h6>
                                         <small class="text-muted flex-shrink-0 ps-2">{{ $news->created_at->format('d/m/Y') }}</small>
                                     </div>
+                                    @php
+                                        // Usa preg_split per una divisione più robusta.
+                                        // Gestisce: <!--more-->, &lt;!--more--&gt;, e il tag avvolto in un <p> con eventuali spazi.
+                                        $pattern = '/\s*(?:<p>)?\s*(?:&lt;!--more--&gt;|<!--more-->)\s*(?:<\/p>)?\s*/';
+                                        $contentParts = preg_split($pattern, $news->content, 2);
+
+                                        $preview = $contentParts[0];
+                                        $hasMore = count($contentParts) > 1;
+                                        if ($hasMore) {
+                                            $fullContent = $contentParts[1];
+                                        }
+                                    @endphp
                                     <div class="news-content mt-2 small">
-                                        {!! $news->content !!}
+                                        <div class="news-preview">{!! $preview !!}</div>
+
+                                        @if ($hasMore)
+                                            <div class="collapse" id="news-full-{{ $news->id }}">
+                                                <div class="news-full-content">
+                                                    {!! $fullContent !!}
+                                                </div>
+                                            </div>
+                                            <a href="#" class="read-more-link small fw-bold text-decoration-none" data-bs-toggle="collapse" data-bs-target="#news-full-{{ $news->id }}" aria-expanded="false" aria-controls="news-full-{{ $news->id }}">Leggi tutto</a>
+                                        @endif
                                     </div>
                                 </div>
                             @empty
@@ -653,6 +674,21 @@
                 });
             });
         }
+
+        // Gestione "Leggi tutto" / "Mostra meno" per le news
+        const newsCollapses = document.querySelectorAll('[id^="news-full-"]');
+        newsCollapses.forEach(collapseEl => {
+            const readMoreLink = document.querySelector(`a[data-bs-target="#${collapseEl.id}"]`);
+            if (readMoreLink) {
+                // Usiamo gli eventi di bootstrap per cambiare il testo al momento giusto
+                collapseEl.addEventListener('show.bs.collapse', () => {
+                    readMoreLink.textContent = 'Mostra meno';
+                });
+                collapseEl.addEventListener('hide.bs.collapse', () => {
+                    readMoreLink.textContent = 'Leggi tutto';
+                });
+            }
+        });
 
         // Logica per la modale UVL e l'upload della busta paga
         const uvlModalEl = document.getElementById('uvlModal');
