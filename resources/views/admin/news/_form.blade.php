@@ -16,6 +16,18 @@
 <div class="mb-3">
     <label for="content" class="form-label">Contenuto</label>
     <textarea class="form-control" id="content" name="content" rows="10">{{ old('content', $news->content) }}</textarea>
+    <div class="form-text mt-3 bg-light p-3 rounded border">
+        <p class="fw-bold mb-1"><i class="bi bi-info-circle-fill me-1"></i> Istruzioni per l'anteprima ("Leggi tutto")</p>
+        <p class="mb-2 small">Per dividere la news in un'anteprima e un contenuto completo, inserisci il seguente marcatore nel punto esatto in cui vuoi che il testo si interrompa:</p>
+        <pre class="mb-2 p-2 bg-white border rounded"><code>&lt;!--more--&gt;</code></pre>
+        <ul class="small mb-0 ps-4">
+            <li>Il testo <strong>prima</strong> del marcatore sarà l'anteprima visibile a tutti.</li>
+            <li>Il testo <strong>dopo</strong> il marcatore apparirà solo dopo aver cliccato su "Leggi tutto".</li>
+            <li>
+                <strong>Consiglio:</strong> Per assicurarti che funzioni correttamente, passa alla modalità "Codice Sorgente" dell'editor (tasto <code>&lt;/&gt;</code>) e inserisci il marcatore su una nuova riga, tra due paragrafi.
+            </li>
+        </ul>
+    </div>
 </div>
 
 <div class="row">
