@@ -808,7 +808,7 @@
         if (contractsLink) {
             contractsLink.addEventListener('click', function(e) {
                 e.preventDefault();
-                const contractsUrl = 'https://www.costruire.net/?page_id=830';
+                const contractsUrl = 'https://www.costruire.net/contratti-e-tabelle/';
 
                 @guest
                     Swal.fire({
