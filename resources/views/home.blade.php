@@ -103,7 +103,14 @@
                                                 break;
                                         }
                                     @endphp
-                                    <a href="{{ $request->detail_url ?? '#' }}" class="list-group-item list-group-item-action flex-column align-items-start mb-3 text-dark text-decoration-none position-relative">
+                                    <a href="{{ $request->detail_url ?? '#' }}" 
+                                       class="list-group-item list-group-item-action flex-column align-items-start mb-3 text-dark text-decoration-none position-relative"
+                                       @if(isset($request->busta_paga_trigger))
+                                           data-bs-toggle="modal" 
+                                           data-bs-target="#uvlModal" 
+                                           data-source="busta-paga"
+                                       @endif
+                                    >
                                         <div class="pe-4">
                                             <div class="d-flex w-100 justify-content-between">
                                                 <h5 class="mb-1">{{ $request->service_name }} ({{ $request->service_type }})</h5>
@@ -217,8 +224,8 @@
             </div>
 
             <!-- Altri link principali -->
-            <div class="row justify-content-center mt-5 gy-3">
-                <div class="col-md-4">
+            <div class="row justify-content-center mt-5 gy-4">
+                <div class="col-md-6 col-lg-3">
                     @auth
                         @php
                             // Cerca una richiesta di "Analisi Busta Paga" per l'utente loggato.
@@ -258,18 +265,21 @@
                             </a>
                         @else
                             {{-- Pulsante di default per utente loggato senza richiesta --}}
-                            <a href="#" class="btn btn-info w-100 py-3 fw-bold text-white" data-bs-toggle="modal" data-bs-target="#uvlModal" data-source="busta-paga">INVIACI LA TUA BUSTA PAGA</a>
+                            <a href="#" class="btn btn-light w-100 py-3 fw-bold" data-bs-toggle="modal" data-bs-target="#uvlModal" data-source="busta-paga">INVIACI LA TUA BUSTA PAGA</a>
                         @endif
                     @else
                         {{-- Pulsante di default per utente non loggato --}}
-                        <a href="#" class="btn btn-info w-100 py-3 fw-bold text-white" data-bs-toggle="modal" data-bs-target="#uvlModal" data-source="busta-paga">INVIACI LA TUA BUSTA PAGA</a>
+                        <a href="#" class="btn btn-light w-100 py-3 fw-bold" data-bs-toggle="modal" data-bs-target="#uvlModal" data-source="busta-paga">INVIACI LA TUA BUSTA PAGA</a>
                     @endauth
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6 col-lg-3">
                     <a href="https://www.costruire.net" target="_blank" class="btn btn-light w-100 py-3 fw-bold">COSTRUIRE.NET</a>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6 col-lg-3">
                     <a href="#" id="contracts-link" class="btn btn-light w-100 py-3 fw-bold">CONTRATTI E TABELLE PAGA</a>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <a href="#" class="btn btn-light w-100 py-3 fw-bold" data-bs-toggle="modal" data-bs-target="#prepensionamentiModal">FONDO PREPENSIONAMENTI (FP)</a>
                 </div>
             </div>
         </div>
@@ -614,6 +624,97 @@
         </div>
     </div>
 
+    <!-- Modale Fondo Nazionale Prepensionamenti (FP) -->
+    <div class="modal fade" id="prepensionamentiModal" tabindex="-1" aria-labelledby="prepensionamentiModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-secondary text-white">
+                    <h5 class="modal-title" id="prepensionamentiModalLabel"><i class="bi bi-hourglass-bottom me-2"></i>Fondo Nazionale Prepensionamenti (FP)</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-center">Il Fondo Nazionale per l'accompagnamento alla pensione dei lavoratori edili, istituito per sostenere gli operai prossimi al pensionamento.</p>
+                    
+                    <div class="d-grid gap-3 d-md-flex justify-content-md-center mb-4 flex-wrap">
+                        <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#fpCosaCollapse" aria-expanded="false" aria-controls="fpCosaCollapse">Cos'è</button>
+                        <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#fpRequisitiCollapse" aria-expanded="false" aria-controls="fpRequisitiCollapse">Requisiti</button>
+                        <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#fpPrestazioniCollapse" aria-expanded="false" aria-controls="fpPrestazioniCollapse">Prestazioni</button>
+                    </div>
+
+                    <div class="accordion" id="prepensionamentiAccordion">
+                        <!-- Cos'è -->
+                        <div class="accordion-item border-0">
+                            <div id="fpCosaCollapse" class="accordion-collapse collapse" data-bs-parent="#prepensionamentiAccordion">
+                                <div class="accordion-body p-0">
+                                    <hr>
+                                    <h4 class="text-secondary mb-3">Cos'è il Fondo Prepensionamenti</h4>
+                                    <p>Il Fondo è stato istituito per fornire un sostegno economico agli operai edili che, dopo aver cessato il rapporto di lavoro, si trovano in un periodo di "vuoto" tra la fine della NASpI e il raggiungimento dei requisiti per la pensione.</p>
+                                    <p>L'obiettivo è accompagnare il lavoratore fino alla pensione, garantendo una continuità di reddito e/o contributiva.</p>
+                                    <div class="text-center mt-3">
+                                        <a href="{{ route('contatti.index') }}" class="btn btn-outline-success"><i class="bi bi-telephone-fill me-1"></i> Contattaci per info</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Requisiti -->
+                        <div class="accordion-item border-0">
+                            <div id="fpRequisitiCollapse" class="accordion-collapse collapse" data-bs-parent="#prepensionamentiAccordion">
+                                <div class="accordion-body p-0">
+                                    <hr>
+                                    <h4 class="text-secondary mb-3">Requisiti di Accesso</h4>
+                                    <p>Per accedere al Fondo, il lavoratore deve:</p>
+                                    <ul>
+                                        <li>Essere un operaio edile in stato di disoccupazione per licenziamento o risoluzione consensuale che diano accesso alla NASpI.</li>
+                                        <li>Aver maturato almeno 2.100 ore valide ai fini APE nei 24 mesi precedenti la cessazione del rapporto di lavoro.</li>
+                                        <li>Raggiungere il diritto alla pensione (vecchiaia o anticipata) entro un massimo di 36 mesi dalla fine della NASpI.</li>
+                                    </ul>
+                                    <div class="text-center mt-3">
+                                        <a href="{{ route('contatti.index') }}" class="btn btn-outline-success"><i class="bi bi-telephone-fill me-1"></i> Contattaci per info</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prestazioni -->
+                        <div class="accordion-item border-0">
+                            <div id="fpPrestazioniCollapse" class="accordion-collapse collapse" data-bs-parent="#prepensionamentiAccordion">
+                                <div class="accordion-body p-0">
+                                    <hr>
+                                    <h4 class="text-secondary mb-3">Le Prestazioni Offerte</h4>
+                                    <p>Il Fondo interviene in due fasi:</p>
+                                    <ol>
+                                        <li><strong>Durante la NASpI:</strong> Il Fondo integra la prestazione NASpI per coprire la decurtazione (décalage) prevista dalla legge, mantenendo l'importo al 100% del valore iniziale.</li>
+                                        <li><strong>Dopo la NASpI:</strong> Al termine della NASpI, il lavoratore può scegliere tra:
+                                            <ul>
+                                                <li><strong>Integrazione al reddito:</strong> Un'erogazione mensile pari al massimale della CIGO operai.</li>
+                                                <li><strong>Contribuzione volontaria:</strong> Il pagamento diretto all'INPS dei contributi volontari autorizzati, per non perdere anzianità contributiva.</li>
+                                            </ul>
+                                        </li>
+                                    </ol>
+                                    <div class="text-center mt-3">
+                                        <a href="{{ route('contatti.index') }}" class="btn btn-outline-success"><i class="bi bi-telephone-fill me-1"></i> Contattaci per info</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <p>Per tutti i dettagli, la modulistica e le normative, visita il sito ufficiale.</p>
+                        <a href="https://www.cnce.it/fondo-prepensionamenti/" target="_blank" class="btn btn-outline-primary">
+                            <i class="bi bi-box-arrow-up-right me-2"></i>
+                            Vai al sito CNCE - Fondo Prepensionamenti
+                        </a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Modale per messaggi di successo/errore --}}
     <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -666,6 +767,21 @@
             fondiPensionisticiModalEl.addEventListener('hidden.bs.modal', function (event) {
                 // Trova tutti gli elementi collassabili all'interno di questa modale che sono attualmente aperti
                 const collapseElements = fondiPensionisticiModalEl.querySelectorAll('.accordion-collapse.collapse.show');
+                
+                // Nascondi ogni elemento che è attualmente visibile usando l'API di Bootstrap
+                collapseElements.forEach(function(el) {
+                    const collapseInstance = bootstrap.Collapse.getInstance(el) || new bootstrap.Collapse(el);
+                    collapseInstance.hide();
+                });
+            });
+        }
+
+        // Resetta lo stato della modale Fondo Prepensionamenti quando viene chiusa
+        const prepensionamentiModalEl = document.getElementById('prepensionamentiModal');
+        if (prepensionamentiModalEl) {
+            prepensionamentiModalEl.addEventListener('hidden.bs.modal', function (event) {
+                // Trova tutti gli elementi collassabili all'interno di questa modale che sono attualmente aperti
+                const collapseElements = prepensionamentiModalEl.querySelectorAll('.accordion-collapse.collapse.show');
                 
                 // Nascondi ogni elemento che è attualmente visibile usando l'API di Bootstrap
                 collapseElements.forEach(function(el) {

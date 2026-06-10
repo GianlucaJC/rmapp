@@ -44,13 +44,27 @@ class HomeController extends Controller
                                             ->orderBy('updated_at', 'desc')
                                             ->get();
 
-            // Aggiunge un URL di dettaglio a ogni richiesta per il reindirizzamento
+            // Aggiunge un URL di dettaglio o un trigger per modale a ogni richiesta
             foreach ($serviceRequests as $request) {
+                // Gestione speciale per l'analisi busta paga, che apre una modale
+                if ($request->service_type === 'Consulenza' && $request->service_name === 'Analisi Busta Paga') {
+                    $request->busta_paga_trigger = true; // Aggiungo un flag per il frontend
+                    continue; // Prossima iterazione, non serve un detail_url per questo tipo
+                }
+
                 $routeName = '';
-                if ($request->service_type === 'Cassa Edile') {
-                    $routeName = 'servizi.cassa-edile';
-                } elseif ($request->service_type === 'Edilcassa') {
-                    $routeName = 'servizi.edilcassa';
+                // Mappa per gestire dinamicamente i tipi di servizio e associarli alle rotte corrette
+                $serviceTypeMap = [
+                    'Cassa Edile' => 'servizi.cassa-edile',
+                    'Edilcassa' => 'servizi.edilcassa',
+                    'Cassa Edile Latina' => 'servizi.cassa-edile-latina',
+                    'Cassa Edile Rieti' => 'servizi.cassa-edile-rieti',
+                    'Cassa Edile Viterbo' => 'servizi.cassa-edile-viterbo',
+                    'Cassa Edile Frosinone' => 'servizi.cassa-edile-frosinone',
+                ];
+
+                if (isset($serviceTypeMap[$request->service_type])) {
+                    $routeName = $serviceTypeMap[$request->service_type];
                 }
 
                 if ($routeName && !empty($request->service_name)) {
