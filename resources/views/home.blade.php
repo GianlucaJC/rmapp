@@ -954,7 +954,7 @@
         if (contractsLink) {
             contractsLink.addEventListener('click', function(e) {
                 e.preventDefault();
-                const contractsUrl = 'https://www.costruire.net/contratti-e-tabelle/';
+                const contractsUrl = 'https://www.costruire.net/tabelle-2/';
 
                 @guest
                     Swal.fire({
