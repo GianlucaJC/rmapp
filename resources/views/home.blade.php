@@ -700,13 +700,7 @@
                         </div>
                     </div>
 
-                    <div class="text-center mt-4">
-                        <p>Per tutti i dettagli, la modulistica e le normative, visita il sito ufficiale.</p>
-                        <a href="https://www.cnce.it/fondo-prepensionamenti/" target="_blank" class="btn btn-outline-primary">
-                            <i class="bi bi-box-arrow-up-right me-2"></i>
-                            Vai al sito CNCE - Fondo Prepensionamenti
-                        </a>
-                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
