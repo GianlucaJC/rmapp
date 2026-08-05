@@ -131,6 +131,41 @@
         body {
             top: 0px !important; /* Sovrascrive lo stile inline aggiunto da Google Translate per il banner */
         }
+
+        @media (max-width: 767.98px) {
+            .header-contact-actions {
+                gap: 0.25rem;
+            }
+
+            .header-contact-actions .nav-item {
+                margin-right: 0 !important;
+            }
+
+            .header-contact-actions .btn {
+                padding: 0.25rem 0.4rem;
+                font-size: 0.625rem;
+                white-space: nowrap;
+            }
+
+            .header-contact-actions .btn i {
+                font-size: 0.6875rem;
+            }
+        }
+
+        @media (max-width: 300px) {
+            .header-contact-actions {
+                gap: 0.125rem;
+            }
+
+            .header-contact-actions .btn {
+                padding: 0.2rem 0.25rem;
+                font-size: 0.5rem;
+            }
+
+            .header-contact-actions .btn i {
+                font-size: 0.5625rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -183,14 +218,18 @@
                 </a>
 
                 {{-- Contattaci button, always visible --}}
-                <ul class="navbar-nav flex-row order-md-last"> {{-- flex-row to keep it horizontal, order-md-last to push it right on larger screens --}}
+                <ul class="navbar-nav flex-row flex-nowrap order-md-last header-contact-actions"> {{-- flex-row to keep it horizontal, order-md-last to push it right on larger screens --}}
                     <li class="nav-item me-2"> {{-- me-2 for some spacing --}}
                         <a class="btn btn-warning btn-sm" href="{{ route('contatti.index') }}">
                             <i class="bi bi-telephone-fill me-1"></i> Contattaci
                         </a>
                     </li>
-
-                </a>
+                    <li class="nav-item me-2">
+                        <a class="btn btn-warning btn-sm" href="{{ route('contatti.index') }}">
+                            <i class="bi bi-telephone-fill me-1"></i> Verifica versamenti Cassa Edile e Inps
+                        </a>
+                    </li>
+                </ul>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
