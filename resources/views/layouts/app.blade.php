@@ -146,10 +146,12 @@
             }
 
             .header-contact-actions {
+                align-items: stretch;
                 gap: 0.25rem;
             }
 
             .header-contact-actions .nav-item {
+                display: flex;
                 margin-right: 0 !important;
             }
 
@@ -158,10 +160,17 @@
                 padding: 0.5rem 0.4rem;
                 font-size: 0.6875rem;
                 white-space: nowrap;
+                align-items: center;
+                display: flex;
             }
 
             .header-contact-actions .btn i {
                 font-size: 0.8125rem;
+            }
+
+            .header-contact-actions .btn-verifica-versamenti {
+                line-height: 1.2;
+                white-space: normal;
             }
 
             .navbar-toggler {
@@ -238,12 +247,12 @@
                 <ul class="navbar-nav flex-row flex-nowrap order-md-last header-contact-actions"> {{-- flex-row to keep it horizontal, order-md-last to push it right on larger screens --}}
                     <li class="nav-item me-2"> {{-- me-2 for some spacing --}}
                         <a class="btn btn-warning btn-sm" href="{{ route('contatti.index') }}">
-                            <i class="bi bi-telephone-fill me-1"></i> CONTATTACI
+                            <i class="bi bi-telephone-fill me-1"></i><span>CONTATTACI</span>
                         </a>
                     </li>
                     <li class="nav-item me-2">
-                        <a class="btn btn-warning btn-sm" href="{{ route('contatti.index') }}">
-                            <i class="bi bi-telephone-fill me-1"></i> VERIFICA VERSAMENTI CASSA EDILE E INPS
+                        <a class="btn btn-warning btn-sm btn-verifica-versamenti" href="{{ route('contatti.index') }}">
+                            <i class="bi bi-telephone-fill me-1"></i><span>VERIFICA VERSAMENTI<br>- CASSA EDILE / INPS</span>
                         </a>
                     </li>
                 </ul>
