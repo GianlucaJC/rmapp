@@ -154,13 +154,14 @@
             }
 
             .header-contact-actions .btn {
-                padding: 0.25rem 0.4rem;
-                font-size: 0.625rem;
+                min-height: 42px;
+                padding: 0.5rem 0.4rem;
+                font-size: 0.6875rem;
                 white-space: nowrap;
             }
 
             .header-contact-actions .btn i {
-                font-size: 0.6875rem;
+                font-size: 0.8125rem;
             }
 
             .navbar-toggler {
@@ -237,12 +238,12 @@
                 <ul class="navbar-nav flex-row flex-nowrap order-md-last header-contact-actions"> {{-- flex-row to keep it horizontal, order-md-last to push it right on larger screens --}}
                     <li class="nav-item me-2"> {{-- me-2 for some spacing --}}
                         <a class="btn btn-warning btn-sm" href="{{ route('contatti.index') }}">
-                            <i class="bi bi-telephone-fill me-1"></i> Contattaci
+                            <i class="bi bi-telephone-fill me-1"></i> CONTATTACI
                         </a>
                     </li>
                     <li class="nav-item me-2">
                         <a class="btn btn-warning btn-sm" href="{{ route('contatti.index') }}">
-                            <i class="bi bi-telephone-fill me-1"></i> Verifica versamenti Cassa Edile e Inps
+                            <i class="bi bi-telephone-fill me-1"></i> VERIFICA VERSAMENTI CASSA EDILE E INPS
                         </a>
                     </li>
                 </ul>
