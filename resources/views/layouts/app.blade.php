@@ -133,6 +133,10 @@
         }
 
         @media (max-width: 767.98px) {
+            .navbar > .container {
+                padding-top: 0.5rem;
+            }
+
             .header-contact-actions {
                 gap: 0.25rem;
             }
@@ -149,6 +153,10 @@
 
             .header-contact-actions .btn i {
                 font-size: 0.6875rem;
+            }
+
+            .navbar-toggler {
+                margin-top: 0.5rem;
             }
         }
 
