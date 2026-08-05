@@ -132,7 +132,15 @@
             top: 0px !important; /* Sovrascrive lo stile inline aggiunto da Google Translate per il banner */
         }
 
+        .main-content {
+            padding-top: 70px !important;
+        }
+
         @media (max-width: 767.98px) {
+            .main-content {
+                padding-top: 110px !important;
+            }
+
             .navbar > .container {
                 padding-top: 0.5rem;
             }
@@ -356,7 +364,7 @@
             </div>
         </nav>
 
-        <main class="py-4" style="padding-top: 70px !important;"> {{-- Aggiunto padding-top per compensare la navbar fissa --}}
+        <main class="py-4 main-content"> {{-- Aggiunto padding-top per compensare la navbar fissa --}}
             <div class="container mt-5">
                 <div class="text-center mb-4">
                     <a href="{{ route('home') }}">
