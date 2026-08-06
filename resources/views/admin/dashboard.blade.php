@@ -36,6 +36,8 @@
                                 <option value="Inviata">Inviata</option>
                                 <option value="Richiesta integrazione">Richiesta integrazione</option>
                                 <option value="In attesa documenti">In attesa documenti</option>
+                                <option value="Documentazione acquisita">Documentazione acquisita</option>
+                                <option value="In lavorazione">In lavorazione</option>
                                 <option value="Conclusa">Conclusa</option>
                                 <option value="Rifiutata">Rifiutata</option>
                             </select>

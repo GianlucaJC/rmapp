@@ -130,7 +130,7 @@
                         <div class="mb-3">
                             <label for="status" class="form-label fw-bold">Cambia Stato</label>
                             <select class="form-select" id="status" name="status">
-                                @foreach(['Inviata', 'Richiesta integrazione', 'In attesa documenti', 'Conclusa', 'Rifiutata'] as $status)
+                                @foreach(['Inviata', 'Richiesta integrazione', 'In attesa documenti', 'Documentazione acquisita', 'In lavorazione', 'Conclusa', 'Rifiutata'] as $status)
                                     <option value="{{ $status }}" @if($serviceRequest->status == $status) selected @endif>{{ $status }}</option>
                                 @endforeach
                             </select>

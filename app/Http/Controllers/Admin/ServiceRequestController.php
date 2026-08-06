@@ -123,7 +123,7 @@ class ServiceRequestController extends Controller
     public function update(Request $request, ServiceRequest $serviceRequest)
     {
         $request->validate([
-            'status' => 'required|string|in:Inviata,Richiesta integrazione,In attesa documenti,Conclusa,Rifiutata',
+            'status' => 'required|string|in:Inviata,Richiesta integrazione,In attesa documenti,Documentazione acquisita,In lavorazione,Conclusa,Rifiutata',
             'admin_notes' => 'nullable|string',
         ]);
 
